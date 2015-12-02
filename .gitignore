@@ -24,3 +24,5 @@ _testmain.go
 *.prof
 
 queue/src/main
+
+queue/omega-queue
