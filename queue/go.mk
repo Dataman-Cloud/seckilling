@@ -91,7 +91,9 @@ $(APPBIN): gomkbuild
 ##########################################################################################
 
 .PHONY: gomkbuild
-gomkbuild: $(GOSOURCES) ; @go build -o omega-queue src/main.go
+gomkbuild: $(GOSOURCES) ;
+	 @export GO15VENDOREXPERIMENT=1
+	 @go build -o omega-queue src/main.go
 
 .PHONY: gomkxbuild
 gomkxbuild: ; $(GOX)
@@ -103,6 +105,7 @@ gomkenv: ; @go env
 gomkclean:
 	@rm -vf $(APPBIN)_*_386 $(APPBIN)_*_amd64 $(APPBIN)_*_arm $(APPBIN)_*.exe
 	@rm -vf $(COVERAGEOUT) $(COVERAGETMP)
+	@rm -vf ./omega-queue
 	@go clean
 
 .PHONY: gomkupdate
