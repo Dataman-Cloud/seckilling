@@ -1,0 +1,20 @@
+#!/bin/bash
+set -e
+
+if ! test -e autogen/gen.go; then
+	echo >&2 'error: generate must be run before binary'
+	false
+fi
+
+rm -f dist/traefik
+
+if [ -z "$VERSION" ]; then
+    VERSION=$(git rev-parse HEAD)
+fi
+
+if [ -z "$DATE" ]; then
+    DATE=$(date -u '+%Y-%m-%d_%I:%M:%S%p')
+fi
+
+# Build binaries
+CGO_ENABLED=0 go build -ldflags "-X main.Version=$VERSION -X main.BuildDate=$DATE" -a -installsuffix nocgo -o dist/traefik .

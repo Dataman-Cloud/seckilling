@@ -1,0 +1,38 @@
+{{$frontends := List .Prefix "/frontends/" }}
+{{$backends :=  List .Prefix "/backends/"}}
+
+{{range $backends}}
+{{$backend := .}}
+{{$servers := List $backend "/servers/" }}
+
+{{$circuitBreaker := Get . "/circuitbreaker/" "expression"}}
+{{with $circuitBreaker}}
+[backends.{{Last $backend}}.circuitBreaker]
+    expression = "{{$circuitBreaker}}"
+{{end}}
+
+{{$loadBalancer := Get . "/loadbalancer/" "method"}}
+{{with $loadBalancer}}
+[backends.{{Last $backend}}.loadBalancer]
+    method = "{{$loadBalancer}}"
+{{end}}
+
+{{range $servers}}
+[backends.{{Last $backend}}.servers.{{Last .}}]
+    url = "{{Get . "/url"}}"
+    weight = {{Get . "/weight"}}
+{{end}}
+{{end}}
+
+[frontends]{{range $frontends}}
+    {{$frontend := Last .}}
+    [frontends.{{$frontend}}]
+    backend = "{{Get . "/backend"}}"
+    passHostHeader = "{{GetBool . "/passHostHeader"}}"
+    {{$routes := List . "/routes/"}}
+        {{range $routes}}
+        [frontends.{{$frontend}}.routes.{{Last .}}]
+        rule = "{{Get . "/rule"}}"
+        value = "{{Get . "/value"}}"
+        {{end}}
+{{end}}
