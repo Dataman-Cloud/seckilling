@@ -26,3 +26,9 @@ _testmain.go
 queue/src/main
 
 queue/omega-queue
+
+*.log
+
+seckill-proxy/seckill-proxy
+
+seckill-proxy/traefik.toml
