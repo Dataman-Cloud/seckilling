@@ -26,6 +26,7 @@ func parseExpression(in string) (hpredicate, error) {
 			"LatencyAtQuantileMS": latencyAtQuantile,
 			"NetworkErrorRatio":   networkErrorRatio,
 			"ResponseCodeRatio":   responseCodeRatio,
+			"ResponseCount":       responseCount,
 		},
 	})
 	if err != nil {
@@ -44,6 +45,12 @@ func parseExpression(in string) (hpredicate, error) {
 
 type toInt func(c *CircuitBreaker) int
 type toFloat64 func(c *CircuitBreaker) float64
+
+func responseCount() toInt {
+	return func(c *CircuitBreaker) int {
+		return 5
+	}
+}
 
 func latencyAtQuantile(quantile float64) toInt {
 	return func(c *CircuitBreaker) int {
