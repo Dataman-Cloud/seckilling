@@ -3,7 +3,7 @@ package middlewares
 import (
 	"net/http"
 
-	"github.com/mailgun/oxy/cbreaker"
+	"github.com/Dataman-Cloud/seckilling/seckill-proxy/oxy/cbreaker"
 )
 
 // CircuitBreaker holds the oxy circuit breaker.
