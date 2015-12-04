@@ -203,27 +203,6 @@
 			"branch": "master"
 		},
 		{
-			"importpath": "github.com/mailgun/oxy/cbreaker",
-			"repository": "https://github.com/mailgun/oxy",
-			"revision": "8d49f51577f79f0ffd7607ec9fab42b300002851",
-			"branch": "master",
-			"path": "/cbreaker"
-		},
-		{
-			"importpath": "github.com/mailgun/oxy/forward",
-			"repository": "https://github.com/mailgun/oxy",
-			"revision": "8d49f51577f79f0ffd7607ec9fab42b300002851",
-			"branch": "master",
-			"path": "/forward"
-		},
-		{
-			"importpath": "github.com/mailgun/oxy/roundrobin",
-			"repository": "https://github.com/mailgun/oxy",
-			"revision": "8d49f51577f79f0ffd7607ec9fab42b300002851",
-			"branch": "master",
-			"path": "/roundrobin"
-		},
-		{
 			"importpath": "github.com/mailgun/timetools",
 			"repository": "https://github.com/mailgun/timetools",
 			"revision": "fd192d755b00c968d312d23f521eb0cdc6f66bd0",

@@ -1,0 +1,33 @@
+# rules
+[backends]
+  [backends.backend1]
+    [backends.backend1.circuitbreaker]
+      expression = "ResponseCount() > 3"
+    [backends.backend1.servers.server1]
+    url = "http://www.baidu.com"
+    weight = 10
+    [backends.backend1.servers.server2]
+    url = "http://www.baidu.com"
+    weight = 1
+  [backends.backend2]
+    [backends.backend2.LoadBalancer]
+      method = "drr"
+    [backends.backend2.servers.server1]
+    url = "http://www.baidu.com"
+    weight = 1
+    [backends.backend2.servers.server2]
+    url = "http://www.baidu.com"
+    weight = 2
+
+[frontends]
+  [frontends.frontend1]
+  backend = "backend2"
+    [frontends.frontend1.routes.test_1]
+    rule = "Host"
+    value = "test.localhost"
+  [frontends.frontend2]
+  backend = "backend1"
+  passHostHeader = true
+    [frontends.frontend2.routes.test_2]
+    rule = "Path"
+    value = "/test"
