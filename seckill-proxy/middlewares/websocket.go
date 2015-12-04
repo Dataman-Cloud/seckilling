@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Dataman-Cloud/seckilling/seckill-proxy/oxy/roundrobin"
 	log "github.com/Sirupsen/logrus"
-	"github.com/mailgun/oxy/roundrobin"
 )
 
 // WebsocketUpgrader holds Websocket configuration.
