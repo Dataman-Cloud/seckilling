@@ -2,6 +2,12 @@
 	"version": 0,
 	"dependencies": [
 		{
+			"importpath": "github.com/BurntSushi/toml",
+			"repository": "https://github.com/BurntSushi/toml",
+			"revision": "056c9bc7be7190eaa7715723883caffa5f8fa3e4",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/BurntSushi/ty",
 			"repository": "https://github.com/BurntSushi/ty",
 			"revision": "6add9cd6ad42d389d6ead1dde60b4ad71e46fd74",
