@@ -20,6 +20,7 @@ type LoadBalancer struct {
 // CircuitBreaker holds circuit breaker configuration.
 type CircuitBreaker struct {
 	Expression string `json:"expression,omitempty"`
+	Fallback   string `json:"fallback,omitempty"`
 }
 
 // Server holds server configuration.

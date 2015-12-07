@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/Dataman-Cloud/seckilling/seckill-proxy/stats"
 	"github.com/vulcand/predicate"
 )
 
@@ -48,7 +49,13 @@ type toFloat64 func(c *CircuitBreaker) float64
 
 func responseCount() toInt {
 	return func(c *CircuitBreaker) int {
-		return 5
+		metric := stats.Metrics
+		if metric == nil {
+			return -1
+		}
+		totalCount := metric.Data().TotalCount
+		fmt.Println(totalCount)
+		return totalCount
 	}
 }
 
