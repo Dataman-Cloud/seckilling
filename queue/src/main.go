@@ -21,7 +21,7 @@ func main() {
 	e.Use(mw.Recover())
 
 	// Routes
-	e.Get("/", hello)
+	e.Get("/test", hello)
 
 	// Start server
 	e.Run(":1323")

@@ -19,12 +19,12 @@ import (
 	"github.com/Dataman-Cloud/seckilling/seckill-proxy/oxy/forward"
 	"github.com/Dataman-Cloud/seckilling/seckill-proxy/oxy/roundrobin"
 	"github.com/Dataman-Cloud/seckilling/seckill-proxy/provider"
+	"github.com/Dataman-Cloud/seckilling/seckill-proxy/stats"
 	"github.com/Dataman-Cloud/seckilling/seckill-proxy/types"
 	log "github.com/Sirupsen/logrus"
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
 	"github.com/mailgun/manners"
-	"github.com/thoas/stats"
 	"gopkg.in/alecthomas/kingpin.v2"
 	"sync"
 )
@@ -33,7 +33,7 @@ var (
 	globalConfigFile      = kingpin.Arg("conf", "Main configration file.").Default("traefik.toml").String()
 	version               = kingpin.Flag("version", "Get Version.").Short('v').Bool()
 	currentConfigurations = make(configs)
-	metrics               = stats.New()
+	metrics               = stats.Metrics
 	oxyLogger             = &OxyLogger{}
 )
 
@@ -350,7 +350,8 @@ func LoadConfig(configurations configs, globalConfiguration *GlobalConfiguration
 				var negroni = negroni.New()
 				if configuration.Backends[frontend.Backend].CircuitBreaker != nil {
 					log.Infof("Creating circuit breaker %s", configuration.Backends[frontend.Backend].CircuitBreaker.Expression)
-					negroni.Use(middlewares.NewCircuitBreaker(lb, configuration.Backends[frontend.Backend].CircuitBreaker.Expression, cbreaker.Logger(oxyLogger)))
+					cbRedirectFallback := http.RedirectHandler(configuration.Backends[frontend.Backend].CircuitBreaker.Fallback, 301)
+					negroni.Use(middlewares.NewCircuitBreaker(lb, configuration.Backends[frontend.Backend].CircuitBreaker.Expression, cbreaker.Fallback(cbRedirectFallback), cbreaker.Logger(oxyLogger)))
 				} else {
 					negroni.UseHandler(lb)
 				}
