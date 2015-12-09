@@ -2,8 +2,6 @@ package kafka
 
 import (
 	"log"
-	"os"
-	"os/signal"
 
 	"github.com/Shopify/sarama"
 	"github.com/spf13/viper"
@@ -35,18 +33,12 @@ func StartKafkaProducer() {
 		}
 	}()
 
-	signals := make(chan os.Signal, 1)
-	signal.Notify(signals, os.Interrupt)
-
-ProducerLoop:
 	for {
 		select {
 		case message := <-ProducerMessage:
 			producer.Input() <- &sarama.ProducerMessage{Topic: topic, Key: nil, Value: sarama.StringEncoder(message)}
 		case err = <-producer.Errors():
 			log.Println("Failed to produce message", err)
-		case <-signals:
-			break ProducerLoop
 		}
 	}
 
