@@ -93,7 +93,7 @@ $(APPBIN): gomkbuild
 .PHONY: gomkbuild
 gomkbuild: $(GOSOURCES) ;
 	 @export GO15VENDOREXPERIMENT=1
-	 @go build -o omega-queue src/main.go
+	 @go build -o omega-queue ./src/*.go
 
 .PHONY: gomkxbuild
 gomkxbuild: ; $(GOX)
