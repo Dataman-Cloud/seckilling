@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -34,6 +35,22 @@ func countdown(c *echo.Context) error {
 	})
 }
 
+func Auth(c *echo.Context) error {
+	req := c.Request()
+	if req == nil {
+		return fmt.Errorf("context request is null")
+	}
+
+	cookie, err := req.Cookie(model.SkCookie)
+	if err != nil {
+		cookie = &http.Cookie{Name: model.SkCookie, Value: model.NewUUID(), MaxAge: 300}
+		http.SetCookie(c.Response(), cookie)
+	} else {
+		log.Println(cookie.Value)
+	}
+	return nil
+}
+
 func main() {
 	initConfig()
 	// Echo instance
@@ -42,6 +59,7 @@ func main() {
 	// Middleware
 	e.Use(mw.Logger())
 	e.Use(mw.Recover())
+	e.Use(Auth)
 	go kafka.StartKafkaProducer()
 	// Routes
 	e.Get("/hello", hello)
