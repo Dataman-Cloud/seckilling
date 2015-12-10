@@ -71,13 +71,13 @@
 						<dd>四核i7 / 16G内存 / 512G闪存</dd>
 					</dl>
 				</div>
-				<div class="form-button">
-					<button class="btn btn-default" disabled>即将开始</button><span class="text-danger">距离开始还有 <em>3</em> 分钟 <em>10</em> 秒</span>
+				<div class="form-button" id="btWait">
+					<button class="btn btn-default" disabled>即将开始</button><span class="text-danger" id="countdown">倒计时 00:00:00</span>
 				</div>
-				<div class="form-button">
+				<div class="form-button"id="btOver">
 					<button class="btn btn-default" disabled>本秒杀已结束</button>
 				</div>
-				<div class="form-button">
+				<div class="form-button" id="btBuy">
 					<button class="btn btn-danger">点击购买</button>
 				</div>
 			</div>
@@ -87,6 +87,7 @@
 
 <script src="/js/jquery-1.11.2.min.js"></script> 
 <script src="/js/bootstrap.min.js"></script>
-<!--<script src="/js/project.js"></script>-->
+<script src="/js/jquery.timer.js"></script>
+<script src="/js/main.js"></script>
 </body>
 </html>
