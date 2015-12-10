@@ -22,6 +22,7 @@ func main() {
 	e.Get("/hello", handler.Hello)
 
 	e.Get("/v1/events/:id", handler.Countdown)
+	e.Post("/v1/tickets", handler.Tickets)
 
 	// Start server
 	e.Run(viper.GetString("port"))

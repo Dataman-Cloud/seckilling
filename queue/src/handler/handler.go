@@ -11,6 +11,23 @@ import (
 	"github.com/spf13/viper"
 )
 
+func Auth(c *echo.Context) error {
+	req := c.Request()
+	if req == nil {
+		return fmt.Errorf("context request is null")
+	}
+
+	cookie, err := req.Cookie(model.SkCookie)
+	if err != nil {
+		cookie = &http.Cookie{Name: model.SkCookie, Value: model.NewUUID(), MaxAge: 300}
+		req.AddCookie(cookie)
+		http.SetCookie(c.Response(), cookie)
+	} else {
+		log.Println(cookie.Value)
+	}
+	return nil
+}
+
 // Handler
 func Hello(c *echo.Context) error {
 	return c.String(http.StatusOK, "Hello, World!\n")
@@ -33,18 +50,22 @@ func Countdown(c *echo.Context) error {
 	})
 }
 
-func Auth(c *echo.Context) error {
-	req := c.Request()
-	if req == nil {
-		return fmt.Errorf("context request is null")
+func checkCookie(c *echo.Context) string {
+	cookies := c.Request().Cookies()
+	for _, cookie := range cookies {
+		if cookie.Name == model.SkCookie {
+			return cookie.Value
+		}
+	}
+	return ""
+}
+
+func Tickets(c *echo.Context) error {
+	cookie := checkCookie(c)
+	if cookie == "" {
+		return c.JSON(model.CookieCheckFailed, model.TicketData{UID: cookie, Timestamp: time.Now().UTC().Unix()})
 	}
 
-	cookie, err := req.Cookie(model.SkCookie)
-	if err != nil {
-		cookie = &http.Cookie{Name: model.SkCookie, Value: model.NewUUID(), MaxAge: 300}
-		http.SetCookie(c.Response(), cookie)
-	} else {
-		log.Println(cookie.Value)
-	}
-	return nil
+	return c.JSON(http.StatusOK, model.TicketData{UID: cookie, Timestamp: time.Now().UTC().Unix()})
+
 }
