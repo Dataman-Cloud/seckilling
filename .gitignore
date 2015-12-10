@@ -37,16 +37,6 @@ queue/src/queue.json
 
 queue/src/src
 
-.idea/vcs.xml
-
-.idea/workspace.xml
-
-.idea/.name
-
-.idea/modules.xml
-
-.idea/misc.xml
-
-.idea/encodings.xml
-
-.idea/seckilling.iml
+.idea/
+bin/
+rel/
