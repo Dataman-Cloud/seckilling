@@ -1,11 +1,13 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"time"
 
+	"github.com/Dataman-Cloud/seckilling/queue/src/kafka"
 	"github.com/Dataman-Cloud/seckilling/queue/src/model"
 	"github.com/labstack/echo"
 	"github.com/spf13/viper"
@@ -66,6 +68,13 @@ func Tickets(c *echo.Context) error {
 		return c.JSON(model.CookieCheckFailed, model.TicketData{UID: cookie, Timestamp: time.Now().UTC().Unix()})
 	}
 
-	return c.JSON(http.StatusOK, model.TicketData{UID: cookie, Timestamp: time.Now().UTC().Unix()})
+	ticket := model.TicketData{UID: cookie, Timestamp: time.Now().UTC().Unix()}
+	bytes, err := json.Marshal(ticket)
+	if err != nil {
+		log.Printf("Marshal ticket has error: %s", err.Error())
+		return c.JSON(model.PushQueueError, ticket)
+	}
+	kafka.ProducerMessage <- string(bytes)
+	return c.JSON(http.StatusOK, ticket)
 
 }
