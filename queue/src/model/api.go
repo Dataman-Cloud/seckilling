@@ -11,3 +11,8 @@ type CountdownData struct {
 	UnlockOn int64
 	Locked   bool
 }
+
+type TicketData struct {
+	UID       string
+	Timestamp int64
+}
