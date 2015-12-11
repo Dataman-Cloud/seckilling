@@ -353,9 +353,9 @@ func LoadConfig(configurations configs, globalConfiguration *GlobalConfiguration
 				if cbConf != nil {
 					log.Infof("Creating circuit breaker %s", cbConf.Expression)
 					cbRedirectFallback := http.RedirectHandler(cbConf.Fallback, 301)
-					fallbackDuration := time.Duration(cbConf.FallbackDuration) * time.Millisecond
+					// fallbackDuration := time.Duration(cbConf.FallbackDuration) * time.Millisecond
 
-					negroni.Use(middlewares.NewCircuitBreaker(lb, cbConf.Expression, cbreaker.Fallback(cbRedirectFallback), cbreaker.Logger(oxyLogger), cbreaker.FallbackDuration(fallbackDuration)))
+					negroni.Use(middlewares.NewCircuitBreaker(lb, cbConf.Expression, cbreaker.Fallback(cbRedirectFallback), cbreaker.Logger(oxyLogger))) //, cbreaker.FallbackDuration(fallbackDuration)))
 				} else {
 					negroni.UseHandler(lb)
 				}
