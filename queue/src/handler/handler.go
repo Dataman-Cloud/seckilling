@@ -4,6 +4,7 @@ import (
 	// "encoding/json"
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
 	"time"
 
@@ -30,17 +31,17 @@ func Auth(c *echo.Context) error {
 	return nil
 }
 
-// func CrossDomain(c *echo.Context) error {
-// 	c.Response().Header().Set("Access-Control-Allow-Origin", "*")
-// 	c.Request().Header.Set("Access-Control-Allow-Credentials", "true")
-// 	c.Request().Header.Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-// 	c.Request().Header.Set("Access-Control-Allow-Headers", "Content-Type, Depth, User-Agent, X-File-Size, X-Requested-With, X-Requested-By, If-Modified-Since, X-File-Name, Cache-Control, X-XSRFToken, Authorization")
-// 	c.Request().Header.Set("Content-Type", "application/json")
-// 	if c.Request().Method == "OPTIONS" {
-// 		c.String(204, "")
-// 	}
-// 	return nil
-// }
+func CrossDomain(c *echo.Context) error {
+	c.Response().Header().Set("Access-Control-Allow-Origin", "*")
+	c.Request().Header.Set("Access-Control-Allow-Credentials", "true")
+	c.Request().Header.Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	c.Request().Header.Set("Access-Control-Allow-Headers", "Content-Type, Depth, User-Agent, X-File-Size, X-Requested-With, X-Requested-By, If-Modified-Since, X-File-Name, Cache-Control, X-XSRFToken, Authorization")
+	c.Request().Header.Set("Content-Type", "application/json")
+	if c.Request().Method == "OPTIONS" {
+		c.String(204, "")
+	}
+	return nil
+}
 
 // Handler
 func Hello(c *echo.Context) error {
@@ -81,6 +82,7 @@ func Tickets(c *echo.Context) error {
 	}
 
 	ticket := model.TicketData{UID: cookie, Timestamp: time.Now().UTC().Unix()}
+	model.UIDMap[cookie] = false
 	// bytes, err := json.Marshal(ticket)
 	// if err != nil {
 	// 	log.Printf("Marshal ticket has error: %s", err.Error())
@@ -98,6 +100,30 @@ func Tickets(c *echo.Context) error {
 func Over(c *echo.Context) error {
 	return c.JSON(http.StatusOK, model.CommonResponse{
 		Code:  99,
+		Data:  "Game Over",
+		Error: "",
+	})
+}
+
+func Push(c *echo.Context) error {
+	if (rand.Intn(10)) > 5 {
+		time.Sleep(time.Second * 1)
+	} else {
+		time.Sleep(time.Millisecond * 50)
+	}
+
+	cookie, err := req.Cookie(model.SkCookie)
+	if err != nil {
+		return c.JSON(http.StatusOK, model.CommonResponse{
+			Code:  99,
+			Data:  "tickets error",
+			Error: "",
+		})
+	}
+
+	model.UIDMap[cookie] = true
+	return c.JSON(http.StatusOK, model.CommonResponse{
+		Code:  0,
 		Data:  "Game Over",
 		Error: "",
 	})

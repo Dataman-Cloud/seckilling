@@ -135,6 +135,12 @@
 			"branch": "master"
 		},
 		{
+			"importpath": "github.com/fsouza/go-dockerclient",
+			"repository": "https://github.com/fsouza/go-dockerclient",
+			"revision": "7177a9e3543b0891a5d91dbf7051e0f71455c8ef",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/gambol99/go-marathon",
 			"repository": "https://github.com/gambol99/go-marathon",
 			"revision": "25f8f311161100929feabb74b1204179e3daee8c",
@@ -180,6 +186,12 @@
 			"importpath": "github.com/gorilla/mux",
 			"repository": "https://github.com/gorilla/mux",
 			"revision": "9c068cf16d982f8bd444b8c352acbeec34c4fe5b",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/gorilla/websocket",
+			"repository": "https://github.com/gorilla/websocket",
+			"revision": "844dd6d40e1a9215ef4c8a204bfc839fcf5dd5dd",
 			"branch": "master"
 		},
 		{
