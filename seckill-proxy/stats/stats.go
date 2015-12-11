@@ -1,8 +1,6 @@
 package stats
 
-import (
-	resSt "github.com/thoas/stats"
-)
+import resSt "github.com/thoas/stats"
 
 var Metrics *resSt.Stats
 

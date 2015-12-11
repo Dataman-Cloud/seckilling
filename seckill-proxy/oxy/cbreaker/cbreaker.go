@@ -1,9 +1,8 @@
-// package cbreaker implements circuit breaker similar to  https://github.com/Netflix/Hystrix/wiki/How-it-Works
+// Package cbreaker implements circuit breaker similar to  https://github.com/Netflix/Hystrix/wiki/How-it-Works
 //
 // Vulcan circuit breaker watches the error condtion to match
 // after which it activates the fallback scenario, e.g. returns the response code
 // or redirects the request to another location
-
 // Circuit breakers start in the Standby state first, observing responses and watching location metrics.
 //
 // Once the Circuit breaker condition is met, it enters the "Tripped" state, where it activates fallback scenario
@@ -38,6 +37,9 @@ import (
 
 // CircuitBreaker is http.Handler that implements circuit breaker pattern
 type CircuitBreaker struct {
+	//ResponseCounts counter
+	ResponseCount int
+
 	m       *sync.RWMutex
 	metrics *memmetrics.RTMetrics
 
@@ -68,8 +70,9 @@ type CircuitBreaker struct {
 // New creates a new CircuitBreaker middleware
 func New(next http.Handler, expression string, options ...CircuitBreakerOption) (*CircuitBreaker, error) {
 	cb := &CircuitBreaker{
-		m:    &sync.RWMutex{},
-		next: next,
+		ResponseCount: 1,
+		m:             &sync.RWMutex{},
+		next:          next,
 		// Default values. Might be overwritten by options below.
 		clock:            &timetools.RealTime{},
 		checkPeriod:      defaultCheckPeriod,
@@ -158,6 +161,9 @@ func (c *CircuitBreaker) serve(w http.ResponseWriter, req *http.Request) {
 
 	latency := c.clock.UtcNow().Sub(start)
 	c.metrics.Record(p.Code, latency)
+
+	// Response counting, must before checkAndSet()
+	c.ResponseCount++
 
 	// Note that this call is less expensive than it looks -- checkCondition only performs the real check
 	// periodically. Because of that we can afford to call it here on every single response.

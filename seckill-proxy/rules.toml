@@ -2,57 +2,55 @@
 [backends]
   [backends.backend1]
     [backends.backend1.servers.server1]
-    url = "http://localhost:5090"
-    weight = 10
+      url = "http://localhost:5090"
+      weight = 10
 
   [backends.backend2]
     [backends.backend2.circuitbreaker]
-      expression = "ResponseCount() > 24"
-      fallback = "http://localhost:5090/v1/over"
+      expression = "ResponseCount() > 1"
+      fallback = "/v1/over"
     [backends.backend2.servers.server1]
-    url = "http://localhost:5090"
-    weight = 1
+      url = "http://localhost:5090"
+      weight = 1
 
   [backends.backend3]
-  [backends.backend3.circuitbreaker]
-    expression = "LatencyAtQuantileMS(50.0) > 500"
-  [backends.backend3.servers.server1]
-  url = "http://localhost:5090"
-  weight = 1
+    [backends.backend3.circuitbreaker]
+      expression = "LatencyAtQuantileMS(50.0) > 500"
+    [backends.backend3.servers.server1]
+      url = "http://localhost:5090"
+      weight = 1
 
   [backends.backend4]
-  [backends.backend4.servers.server1]
-  url = "http://localhost:5090"
-  weight = 1
+    [backends.backend4.servers.server1]
+      url = "http://localhost:5090"
+      weight = 1
 
 [frontends]
   [frontends.frontend2]
-  backend = "backend2"
-  passHostHeader = true
+    backend = "backend2"
+    passHostHeader = true
     [frontends.frontend2.routes.test_2]
-    rule = "Path"
-    value = "/v1/tickets"
+      rule = "Path"
+      value = "/v1/tickets"
 
   [frontends.frontend3]
-  backend = "backend3"
-  passHostHeader = true
+    backend = "backend3"
+    passHostHeader = true
     [frontends.frontend3.routes.test_3]
-    rule = "Path"
-    value = "/v1/push"
+      rule = "Path"
+      value = "/v1/push"
 
   [frontends.frontend4]
-  backend = "backend4"
-  passHostHeader = true
+    backend = "backend4"
+    passHostHeader = true
     [frontends.frontend1.routes.test_4]
-    rule = "Path"
-    value = "/"
+      rule = "Path"
+      value = "/"
 
   [frontends.frontend1]
-  backend = "backend1"
-  passHostHeader = true
+    backend = "backend1"
+    passHostHeader = true
     [frontends.frontend1.routes.test_1]
-    rule = "Host"
-    value = "localhost"
-
-  
+      rule = "Host"
+      value = "localhost"
   
