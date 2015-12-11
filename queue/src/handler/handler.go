@@ -111,7 +111,10 @@ func Push(c *echo.Context) error {
 	} else {
 		time.Sleep(time.Millisecond * 50)
 	}
-
+	req := c.Request()
+	if req == nil {
+		return fmt.Errorf("context request is null")
+	}
 	cookie, err := req.Cookie(model.SkCookie)
 	if err != nil {
 		return c.JSON(http.StatusOK, model.CommonResponse{
@@ -121,7 +124,7 @@ func Push(c *echo.Context) error {
 		})
 	}
 
-	model.UIDMap[cookie] = true
+	model.UIDMap[cookie.Value] = true
 	return c.JSON(http.StatusOK, model.CommonResponse{
 		Code:  0,
 		Data:  "Game Over",
