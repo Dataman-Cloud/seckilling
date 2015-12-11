@@ -18,8 +18,33 @@ function Flush() {
             else {
                 $("#countdown").hide()
                 $("#btWait").hide()
-                $("#btOver").hide()
-                $("#btBuy").show()
+                $("#btOver").show()
+                $("#btBuy").hide()
+            }
+        }
+    });
+}
+
+
+function Buy() {
+    $.ajax({
+        type: "POST",
+        url: "/v1/tickets",
+        crossDomain: true,
+        dataType: "json",
+        data: {},
+        success: function(data) {
+            console.log(data);
+            if (data["code"] == 0) {
+                location.href = "/view/index-success.html"
+                alert("Congratulation !!! You Succeed !!!")
+            }
+            else {
+                alert("Game Over")
+                $("#countdown").hide()
+                $("#btWait").hide()
+                $("#btOver").show()
+                $("#btBuy").hide()
             }
         }
     });
@@ -46,7 +71,7 @@ function formatTime(time) {
 var timer = new (function() {
     var $countdown,
         incrementTime = 70,
-        currentTime = 3000,
+        currentTime = 300000000,
         updateTimer = function() {
             $countdown.html("倒计时: " + formatTime(currentTime));
             if (currentTime == 0) {
@@ -71,4 +96,8 @@ var timer = new (function() {
         if (newTime > 0) {currentTime = newTime;}
     };
     $(init);
+});
+
+$("#btBuy").click(function() {
+    Buy()
 });

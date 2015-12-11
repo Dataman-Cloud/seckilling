@@ -1,34 +1,28 @@
 # rules
 [backends]
   [backends.backend1]
-    [backends.backend1.circuitbreaker]
-      expression = "ResponseCount() > 3"
-      fallback = "https://www.shurenyun.com/"
     [backends.backend1.servers.server1]
-    url = "http://localhost:1323"
+    url = "http://localhost:5090"
     weight = 10
-    [backends.backend1.servers.server2]
-    url = "http://10.3.10.32:1323"
-    weight = 1
   [backends.backend2]
-    [backends.backend2.LoadBalancer]
-      method = "drr"
+    [backends.backend2.circuitbreaker]
+      expression = "ResponseCount() > 3"
+      fallback = "http://localhost:5090/v1/over"
     [backends.backend2.servers.server1]
-    url = "https://www.shurenyun.com/"
+    url = "http://localhost:5090"
     weight = 1
-    [backends.backend2.servers.server2]
-    url = "https://www.shurenyun.com/"
-    weight = 2
 
 [frontends]
-  [frontends.frontend1]
-  backend = "backend2"
-    [frontends.frontend1.routes.test_1]
-    rule = "Path"
-    value = "/fallback"
   [frontends.frontend2]
-  backend = "backend1"
+  backend = "backend2"
   passHostHeader = true
     [frontends.frontend2.routes.test_2]
     rule = "Path"
-    value = "/test"
+    value = "/v1/tickets"
+  [frontends.frontend1]
+  backend = "backend1"
+  passHostHeader = true
+    [frontends.frontend1.routes.test_1]
+    rule = "Host"
+    value = "localhost"
+  

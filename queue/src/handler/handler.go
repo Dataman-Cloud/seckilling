@@ -1,13 +1,13 @@
 package handler
 
 import (
-	"encoding/json"
+	// "encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"time"
 
-	"github.com/Dataman-Cloud/seckilling/queue/src/kafka"
+	// "github.com/Dataman-Cloud/seckilling/queue/src/kafka"
 	"github.com/Dataman-Cloud/seckilling/queue/src/model"
 	"github.com/labstack/echo"
 	"github.com/spf13/viper"
@@ -29,6 +29,18 @@ func Auth(c *echo.Context) error {
 	}
 	return nil
 }
+
+// func CrossDomain(c *echo.Context) error {
+// 	c.Response().Header().Set("Access-Control-Allow-Origin", "*")
+// 	c.Request().Header.Set("Access-Control-Allow-Credentials", "true")
+// 	c.Request().Header.Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+// 	c.Request().Header.Set("Access-Control-Allow-Headers", "Content-Type, Depth, User-Agent, X-File-Size, X-Requested-With, X-Requested-By, If-Modified-Since, X-File-Name, Cache-Control, X-XSRFToken, Authorization")
+// 	c.Request().Header.Set("Content-Type", "application/json")
+// 	if c.Request().Method == "OPTIONS" {
+// 		c.String(204, "")
+// 	}
+// 	return nil
+// }
 
 // Handler
 func Hello(c *echo.Context) error {
@@ -69,12 +81,24 @@ func Tickets(c *echo.Context) error {
 	}
 
 	ticket := model.TicketData{UID: cookie, Timestamp: time.Now().UTC().Unix()}
-	bytes, err := json.Marshal(ticket)
-	if err != nil {
-		log.Printf("Marshal ticket has error: %s", err.Error())
-		return c.JSON(model.PushQueueError, ticket)
-	}
-	kafka.ProducerMessage <- string(bytes)
-	return c.JSON(http.StatusOK, ticket)
+	// bytes, err := json.Marshal(ticket)
+	// if err != nil {
+	// 	log.Printf("Marshal ticket has error: %s", err.Error())
+	// 	return c.JSON(model.PushQueueError, ticket)
+	// }
+	// kafka.ProducerMessage <- string(bytes)
+	return c.JSON(http.StatusOK, model.CommonResponse{
+		Code:  0,
+		Data:  ticket,
+		Error: "",
+	})
 
+}
+
+func Over(c *echo.Context) error {
+	return c.JSON(http.StatusOK, model.CommonResponse{
+		Code:  99,
+		Data:  "Game Over",
+		Error: "",
+	})
 }
