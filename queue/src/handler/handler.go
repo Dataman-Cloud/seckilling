@@ -30,17 +30,17 @@ func Auth(c *echo.Context) error {
 	return nil
 }
 
-// func CrossDomain(c *echo.Context) error {
-// 	c.Response().Header().Set("Access-Control-Allow-Origin", "*")
-// 	c.Request().Header.Set("Access-Control-Allow-Credentials", "true")
-// 	c.Request().Header.Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-// 	c.Request().Header.Set("Access-Control-Allow-Headers", "Content-Type, Depth, User-Agent, X-File-Size, X-Requested-With, X-Requested-By, If-Modified-Since, X-File-Name, Cache-Control, X-XSRFToken, Authorization")
-// 	c.Request().Header.Set("Content-Type", "application/json")
-// 	if c.Request().Method == "OPTIONS" {
-// 		c.String(204, "")
-// 	}
-// 	return nil
-// }
+func CrossDomain(c *echo.Context) error {
+	c.Response().Header().Set("Access-Control-Allow-Origin", "*")
+	c.Request().Header.Set("Access-Control-Allow-Credentials", "true")
+	c.Request().Header.Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	c.Request().Header.Set("Access-Control-Allow-Headers", "Content-Type, Depth, User-Agent, X-File-Size, X-Requested-With, X-Requested-By, If-Modified-Since, X-File-Name, Cache-Control, X-XSRFToken, Authorization")
+	c.Request().Header.Set("Content-Type", "application/json")
+	if c.Request().Method == "OPTIONS" {
+		c.String(204, "")
+	}
+	return nil
+}
 
 // Handler
 func Hello(c *echo.Context) error {

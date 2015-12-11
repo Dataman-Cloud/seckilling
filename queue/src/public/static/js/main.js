@@ -42,14 +42,9 @@ function Buy() {
             console.log(data);
             if (data["code"] == 0) {
                 location.href = "/view/index-success.html"
-                alert("Congratulation !!! You Succeed !!!")
             }
             else {
-                alert("Game Over")
-                $("#countdown").hide()
-                $("#btWait").hide()
-                $("#btOver").show()
-                $("#btBuy").hide()
+                location.href = "/view/index-fail.html"
             }
         }
     });
