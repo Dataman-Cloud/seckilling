@@ -13,11 +13,12 @@ func initConfig() {
 	viper.SetDefault("logLevel", "DEBUG")
 	viper.SetDefault("watch", false)
 
-	viper.SetConfigName("queue")
+	viper.SetConfigName("queue-conf")
 	viper.SetConfigType("json")
 	viper.AddConfigPath(".") // optionally look for config in the working directory
-	viper.AddConfigPath("$HOME/.queue")
-	viper.AddConfigPath("/etc/queue/")
+	viper.AddConfigPath("$HOME/.seckilling/")
+	viper.AddConfigPath("/etc/seckilling/")
+
 	err := viper.ReadInConfig() // Find and read the config file
 	if err != nil {             // Handle errors reading the config file
 		log.Panicf("Fatal error config file: %s \n", err)
@@ -30,4 +31,5 @@ func initConfig() {
 		log.Println("Config file changed:", e.Name)
 	})
 
+	log.Printf("loading config %s \n", viper.ConfigFileUsed())
 }
