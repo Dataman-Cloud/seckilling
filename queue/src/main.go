@@ -36,6 +36,7 @@ func main() {
 	e.Get("/v1/events/:id", handler.Countdown)
 	e.Post("/v1/tickets", handler.Tickets)
 	e.Get("/v1/over", handler.Over)
+	e.Post("/v1/push", handler.Push)
 
 	// go kafka.StartKafkaProducer()
 	// Start server
