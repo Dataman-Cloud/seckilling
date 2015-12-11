@@ -31,8 +31,6 @@ queue/omega-queue
 
 seckill-proxy/seckill-proxy
 
-seckill-proxy/traefik.toml
-
 queue/src/queue.json
 
 queue/src/src
