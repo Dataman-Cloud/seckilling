@@ -98,6 +98,8 @@ var timer = new (function() {
     $(init);
 });
 
+
 $("#btBuy").click(function() {
     Buy()
 });
+
