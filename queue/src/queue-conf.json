@@ -1,0 +1,10 @@
+{
+	"host": ":5090",
+	"watch": true,
+	"logLevel": "ERROR",
+	"kafka": {
+		"serverList": ["10.3.10.32:9091", "10.3.10.42:9091"],
+		"topic": "dataman_test"
+	},
+	"seckillTime": "2015-12-11 09:15:45 +0800"
+}

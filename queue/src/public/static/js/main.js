@@ -8,13 +8,25 @@ function Flush() {
         data: {},
         success: function(data){
             console.log(data["data"])
-
+            if (data["data"]["unlockOn"] > data["data"]["curTime"]){
+                timer.resetCountdown((data["data"]["unlockOn"]- data["data"]["curTime"]) * 100)
+                $("#countdown").show()
+                $("#btWait").show()
+                $("#btOver").hide()
+                $("#btBuy").hide()
+            }
+            else {
+                $("#countdown").hide()
+                $("#btWait").hide()
+                $("#btOver").hide()
+                $("#btBuy").show()
+            }
         }
     });
 }
 
 $(document).ready(function(){
-
+    Flush()
 });
 
 // Common functions
@@ -31,16 +43,15 @@ function formatTime(time) {
     return (min > 0 ? pad(min, 2) : "00") + ":" + pad(sec, 2) + ":" + hundredths;
 }
 
-var Example2 = new (function() {
+var timer = new (function() {
     var $countdown,
         incrementTime = 70,
         currentTime = 3000,
         updateTimer = function() {
             $countdown.html("倒计时: " + formatTime(currentTime));
             if (currentTime == 0) {
-                Example2.Timer.stop();
+                timer.Timer.stop();
                 timerComplete();
-                Example2.resetCountdown();
                 return;
             }
             currentTime -= incrementTime / 10;
@@ -54,12 +65,10 @@ var Example2 = new (function() {
         },
         init = function() {
             $countdown = $('#countdown');
-            Example2.Timer = $.timer(updateTimer, incrementTime, true);
+            timer.Timer = $.timer(updateTimer, incrementTime, true);
         };
-    this.resetCountdown = function() {
-        var newTime = 30 * 100;
+    this.resetCountdown = function(newTime) {
         if (newTime > 0) {currentTime = newTime;}
-        this.Timer.stop().once();
     };
     $(init);
 });
