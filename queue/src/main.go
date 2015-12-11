@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/Dataman-Cloud/seckilling/queue/src/handler"
-	"github.com/Dataman-Cloud/seckilling/queue/src/kafka"
+	// "github.com/Dataman-Cloud/seckilling/queue/src/kafka"
 	"github.com/labstack/echo"
 	mw "github.com/labstack/echo/middleware"
 	"github.com/spf13/viper"
@@ -20,6 +20,7 @@ func main() {
 	e.Use(mw.Logger())
 	e.Use(mw.Recover())
 	e.Use(handler.Auth)
+	// e.Use(handler.CrossDomain)
 
 	// server favicon
 	e.Favicon("public/favicon.ico")
@@ -34,9 +35,10 @@ func main() {
 	e.Get("/hello", handler.Hello)
 	e.Get("/v1/events/:id", handler.Countdown)
 	e.Post("/v1/tickets", handler.Tickets)
+	e.Get("/v1/over", handler.Over)
 
-	go kafka.StartKafkaProducer()
+	// go kafka.StartKafkaProducer()
 	// Start server
-	graceful.ListenAndServe(e.Server(viper.GetString("port")), 5*time.Second)
+	graceful.ListenAndServe(e.Server(viper.GetString("port")), 1*time.Second)
 
 }
