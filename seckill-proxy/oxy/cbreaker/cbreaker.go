@@ -343,7 +343,7 @@ const (
 )
 
 const (
-	defaultFallbackDuration = 10 * time.Second
+	defaultFallbackDuration = 1000 * time.Second
 	defaultRecoveryDuration = 10 * time.Second
 	defaultCheckPeriod      = 100 * time.Millisecond
 )
