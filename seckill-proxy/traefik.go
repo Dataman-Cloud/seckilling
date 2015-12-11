@@ -14,6 +14,8 @@ import (
 	"syscall"
 	"time"
 
+	"sync"
+
 	"github.com/Dataman-Cloud/seckilling/seckill-proxy/middlewares"
 	"github.com/Dataman-Cloud/seckilling/seckill-proxy/oxy/cbreaker"
 	"github.com/Dataman-Cloud/seckilling/seckill-proxy/oxy/forward"
@@ -25,8 +27,7 @@ import (
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
 	"github.com/mailgun/manners"
-	"gopkg.in/alecthomas/kingpin.v2"
-	"sync"
+	kingpin "gopkg.in/alecthomas/kingpin.v2"
 )
 
 var (
@@ -348,10 +349,13 @@ func LoadConfig(configurations configs, globalConfiguration *GlobalConfiguration
 					}
 				}
 				var negroni = negroni.New()
-				if configuration.Backends[frontend.Backend].CircuitBreaker != nil {
-					log.Infof("Creating circuit breaker %s", configuration.Backends[frontend.Backend].CircuitBreaker.Expression)
-					cbRedirectFallback := http.RedirectHandler(configuration.Backends[frontend.Backend].CircuitBreaker.Fallback, 301)
-					negroni.Use(middlewares.NewCircuitBreaker(lb, configuration.Backends[frontend.Backend].CircuitBreaker.Expression, cbreaker.Fallback(cbRedirectFallback), cbreaker.Logger(oxyLogger)))
+				cbConf := configuration.Backends[frontend.Backend].CircuitBreaker
+				if cbConf != nil {
+					log.Infof("Creating circuit breaker %s", cbConf.Expression)
+					cbRedirectFallback := http.RedirectHandler(cbConf.Fallback, 301)
+					fallbackDuration := time.Duration(cbConf.FallbackDuration) * time.Millisecond
+
+					negroni.Use(middlewares.NewCircuitBreaker(lb, cbConf.Expression, cbreaker.Fallback(cbRedirectFallback), cbreaker.Logger(oxyLogger), cbreaker.FallbackDuration(fallbackDuration)))
 				} else {
 					negroni.UseHandler(lb)
 				}

@@ -15,7 +15,12 @@ function Flush() {
                 $("#btOver").hide()
                 $("#btBuy").hide()
             }
-            else {
+            else if (data["data"]["unlockOn"] < data["data"]["curTime"] + 60000){
+                $("#countdown").hide()
+                $("#btWait").hide()
+                $("#btOver").hide()
+                $("#btBuy").show()
+            } else {
                 $("#countdown").hide()
                 $("#btWait").hide()
                 $("#btOver").show()
