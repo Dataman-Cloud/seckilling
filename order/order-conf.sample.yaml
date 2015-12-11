@@ -1,0 +1,15 @@
+---
+logLevel: "DEBUG",
+kafka: 
+   zkURI: "192.168.99.100:2181",
+   group: "order",
+   topic: "dataman_test"
+db:     
+    user: "root"
+    password: "111111"
+    host: "192.168.1.211"
+    port: 3306
+    name: "seckilling"
+    maxIdleConns: 5
+    maxOpenConns: 50
+workers: 100
