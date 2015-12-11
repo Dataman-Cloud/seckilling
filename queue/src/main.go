@@ -20,7 +20,7 @@ func main() {
 	e.Use(mw.Logger())
 	e.Use(mw.Recover())
 	e.Use(handler.Auth)
-	// e.Use(handler.CrossDomain)
+	e.Use(handler.CrossDomain)
 
 	// server favicon
 	e.Favicon("public/favicon.ico")

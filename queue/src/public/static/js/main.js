@@ -15,7 +15,12 @@ function Flush() {
                 $("#btOver").hide()
                 $("#btBuy").hide()
             }
-            else {
+            else if (data["data"]["unlockOn"] < data["data"]["curTime"] + 60000){
+                $("#countdown").hide()
+                $("#btWait").hide()
+                $("#btOver").hide()
+                $("#btBuy").show()
+            } else {
                 $("#countdown").hide()
                 $("#btWait").hide()
                 $("#btOver").show()
@@ -37,14 +42,9 @@ function Buy() {
             console.log(data);
             if (data["code"] == 0) {
                 location.href = "/view/index-success.html"
-                alert("Congratulation !!! You Succeed !!!")
             }
             else {
-                alert("Game Over")
-                $("#countdown").hide()
-                $("#btWait").hide()
-                $("#btOver").show()
-                $("#btBuy").hide()
+                location.href = "/view/index-fail.html"
             }
         }
     });

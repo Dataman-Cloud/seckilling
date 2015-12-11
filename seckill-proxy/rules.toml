@@ -8,6 +8,7 @@
     [backends.backend2.circuitbreaker]
       expression = "ResponseCount() > 3"
       fallback = "http://localhost:5090/v1/over"
+      fallbackDuration = 100000000
     [backends.backend2.servers.server1]
     url = "http://localhost:5090"
     weight = 1
