@@ -3,8 +3,10 @@ package main
 import (
 	"log"
 
+	"github.com/Dataman-Cloud/seckilling/queue/src/handler"
+
 	"github.com/spf13/viper"
-	"gopkg.in/fsnotify.v1"
+	fsnotify "gopkg.in/fsnotify.v1"
 )
 
 func initConfig() {
@@ -29,6 +31,7 @@ func initConfig() {
 	}
 	viper.OnConfigChange(func(e fsnotify.Event) {
 		log.Println("Config file changed:", e.Name)
+		handler.ResetSeckillTime()
 	})
 
 	log.Printf("loading config %s \n", viper.ConfigFileUsed())

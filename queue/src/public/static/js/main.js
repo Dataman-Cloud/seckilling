@@ -83,10 +83,9 @@ var timer = new (function() {
             if (currentTime < 0) currentTime = 0;
         },
         timerComplete = function() {
-            $("#btWait").hide()
-            $("#btOver").hide()
-            $("#btBuy").show()
-            alert('活动开始');
+            $("#btWait").hide();
+            $("#btOver").hide();
+            $("#btBuy").show();
         },
         init = function() {
             $countdown = $('#countdown');
@@ -100,6 +99,6 @@ var timer = new (function() {
 
 
 $("#btBuy").click(function() {
-    Buy()
+    Buy();
 });
 

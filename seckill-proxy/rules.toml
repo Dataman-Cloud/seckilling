@@ -7,15 +7,13 @@
 
   [backends.backend2]
     [backends.backend2.circuitbreaker]
-      expression = "ResponseCount() > 1"
+      expression = "ResponseCount() > 3"
       fallback = "/v1/over"
     [backends.backend2.servers.server1]
       url = "http://localhost:5090"
       weight = 1
 
   [backends.backend3]
-    [backends.backend3.circuitbreaker]
-      expression = "LatencyAtQuantileMS(50.0) > 500"
     [backends.backend3.servers.server1]
       url = "http://localhost:5090"
       weight = 1

@@ -37,6 +37,9 @@ func main() {
 	e.Post("/v1/tickets", handler.Tickets)
 	e.Get("/v1/over", handler.Over)
 	e.Post("/v1/push", handler.Push)
+	e.Get("/v1/reset", handler.Reset)
+	e.Get("/v1/reset/", handler.Reset)
+	e.Get("/v1/reset/:offset", handler.Reset)
 
 	// go kafka.StartKafkaProducer()
 	// Start server

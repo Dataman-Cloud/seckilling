@@ -163,7 +163,9 @@ func (c *CircuitBreaker) serve(w http.ResponseWriter, req *http.Request) {
 	c.metrics.Record(p.Code, latency)
 
 	// Response counting, must before checkAndSet()
-	c.ResponseCount++
+	if p.StatusCode() == http.StatusOK {
+		c.ResponseCount++
+	}
 
 	// Note that this call is less expensive than it looks -- checkCondition only performs the real check
 	// periodically. Because of that we can afford to call it here on every single response.
