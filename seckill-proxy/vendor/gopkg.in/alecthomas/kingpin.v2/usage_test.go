@@ -2,10 +2,11 @@ package kingpin
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 	"testing"
 
-	"github.com/alecthomas/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFormatTwoColumns(t *testing.T) {
@@ -25,13 +26,14 @@ func TestFormatTwoColumns(t *testing.T) {
 
 func TestFormatTwoColumnsWide(t *testing.T) {
 	samples := [][2]string{
-		{strings.Repeat("x", 29), "29 chars"},
-		{strings.Repeat("x", 30), "30 chars"}}
+		{strings.Repeat("x", 19), "19 chars"},
+		{strings.Repeat("x", 20), "20 chars"}}
 	buf := bytes.NewBuffer(nil)
 	formatTwoColumns(buf, 0, 0, 200, samples)
-	expected := `xxxxxxxxxxxxxxxxxxxxxxxxxxxxx29 chars
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-                             30 chars
+	fmt.Println(buf.String())
+	expected := `xxxxxxxxxxxxxxxxxxx19 chars
+xxxxxxxxxxxxxxxxxxxx
+                   20 chars
 `
 	assert.Equal(t, expected, buf.String())
 }

@@ -200,7 +200,15 @@ func (m headerMatcher) Match(r *http.Request, match *RouteMatch) bool {
 //               "X-Requested-With", "XMLHttpRequest")
 //
 // The above route will only match if both request header values match.
-// If the value is an empty string, it will match any value if the key is set.
+// Alternatively, you can provide a regular expression and match the header as follows:
+//
+//     r.Headers("Content-Type", "application/(text|json)",
+//               "X-Requested-With", "XMLHttpRequest")
+//
+// The above route will the same as the previous example, with the addition of matching
+// application/text as well.
+//
+// It the value is an empty string, it will match any value if the key is set.
 func (r *Route) Headers(pairs ...string) *Route {
 	if r.err == nil {
 		var headers map[string]string
@@ -247,7 +255,7 @@ func (r *Route) HeadersRegexp(pairs ...string) *Route {
 // For example:
 //
 //     r := mux.NewRouter()
-//     r.Host("www.example.com")
+//     r.Host("www.domain.com")
 //     r.Host("{subdomain}.domain.com")
 //     r.Host("{subdomain:[a-z]+}.domain.com")
 //
@@ -406,7 +414,7 @@ func (r *Route) BuildVarsFunc(f BuildVarsFunc) *Route {
 // It will test the inner routes only if the parent route matched. For example:
 //
 //     r := mux.NewRouter()
-//     s := r.Host("www.example.com").Subrouter()
+//     s := r.Host("www.domain.com").Subrouter()
 //     s.HandleFunc("/products/", ProductsHandler)
 //     s.HandleFunc("/products/{key}", ProductHandler)
 //     s.HandleFunc("/articles/{category}/{id:[0-9]+}"), ArticleHandler)

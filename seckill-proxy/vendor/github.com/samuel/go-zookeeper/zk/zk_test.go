@@ -17,7 +17,7 @@ func TestCreate(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer ts.Stop()
-	zk, _, err := ts.ConnectAll()
+	zk, err := ts.ConnectAll()
 	if err != nil {
 		t.Fatalf("Connect returned error: %+v", err)
 	}
@@ -48,7 +48,7 @@ func TestMulti(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer ts.Stop()
-	zk, _, err := ts.ConnectAll()
+	zk, err := ts.ConnectAll()
 	if err != nil {
 		t.Fatalf("Connect returned error: %+v", err)
 	}
@@ -85,7 +85,7 @@ func TestGetSetACL(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer ts.Stop()
-	zk, _, err := ts.ConnectAll()
+	zk, err := ts.ConnectAll()
 	if err != nil {
 		t.Fatalf("Connect returned error: %+v", err)
 	}
@@ -139,7 +139,7 @@ func TestAuth(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer ts.Stop()
-	zk, _, err := ts.ConnectAll()
+	zk, err := ts.ConnectAll()
 	if err != nil {
 		t.Fatalf("Connect returned error: %+v", err)
 	}
@@ -189,7 +189,7 @@ func TestChildWatch(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer ts.Stop()
-	zk, _, err := ts.ConnectAll()
+	zk, err := ts.ConnectAll()
 	if err != nil {
 		t.Fatalf("Connect returned error: %+v", err)
 	}
@@ -260,7 +260,7 @@ func TestSetWatchers(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer ts.Stop()
-	zk, _, err := ts.ConnectAll()
+	zk, err := ts.ConnectAll()
 	if err != nil {
 		t.Fatalf("Connect returned error: %+v", err)
 	}
@@ -268,7 +268,7 @@ func TestSetWatchers(t *testing.T) {
 
 	zk.reconnectDelay = time.Second
 
-	zk2, _, err := ts.ConnectAll()
+	zk2, err := ts.ConnectAll()
 	if err != nil {
 		t.Fatalf("Connect returned error: %+v", err)
 	}
@@ -297,12 +297,10 @@ func TestSetWatchers(t *testing.T) {
 		t.Fatal("Children should return at least 1 child")
 	}
 
-	// Simulate network error by brutally closing the network connection.
 	zk.conn.Close()
 	if err := zk2.Delete(testPath, -1); err != nil && err != ErrNoNode {
 		t.Fatalf("Delete returned error: %+v", err)
 	}
-	// Allow some time for the `zk` session to reconnect and set watches.
 	time.Sleep(time.Millisecond * 100)
 
 	if path, err := zk2.Create("/gozk-test", []byte{1, 2, 3, 4}, 0, WorldACL(PermAll)); err != nil {
@@ -342,7 +340,7 @@ func TestExpiringWatch(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer ts.Stop()
-	zk, _, err := ts.ConnectAll()
+	zk, err := ts.ConnectAll()
 	if err != nil {
 		t.Fatalf("Connect returned error: %+v", err)
 	}
