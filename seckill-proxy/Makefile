@@ -7,7 +7,7 @@ TRAEFIK_ENVS := \
 	-e CIRCLECI
 
 BIND_DIR := "dist"
-TRAEFIK_MOUNT := -v "$(CURDIR)/$(BIND_DIR):/go/src/github.com/emilevauge/traefik/$(BIND_DIR)"
+TRAEFIK_MOUNT := -v "$(CURDIR)/$(BIND_DIR):/go/src/github.com/Dataman-Cloud/seckilling/seckill-proxy/$(BIND_DIR)"
 
 GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD 2>/dev/null)
 TRAEFIK_DEV_IMAGE := traefik-dev$(if $(GIT_BRANCH),:$(GIT_BRANCH))
