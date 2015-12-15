@@ -21,7 +21,7 @@ else
 fi
 
 if [ -z "$VERSION" ]; then
-    VERSION=$(git rev-parse HEAD)
+    VERSION=$(date -u '+%Y%m%d%H%M%S')
 fi
 
 if [ -z "$DATE" ]; then
