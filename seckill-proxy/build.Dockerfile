@@ -1,10 +1,10 @@
 FROM golang:1.5
 
-RUN go get github.com/Masterminds/glide
+#RUN go get github.com/Masterminds/glide
 RUN go get github.com/mitchellh/gox
-RUN go get github.com/tcnksm/ghr
+#RUN go get github.com/tcnksm/ghr
 RUN go get github.com/jteeuwen/go-bindata/...
-RUN go get github.com/golang/lint/golint
+#RUN go get github.com/golang/lint/golint
 
 # Which docker version to test on
 ENV DOCKER_VERSION 1.6.2
@@ -20,9 +20,9 @@ RUN set -ex; \
 # Set the default Docker to be run
 RUN ln -s /usr/local/bin/docker-${DOCKER_VERSION} /usr/local/bin/docker
 
-WORKDIR /go/src/github.com/emilevauge/traefik
+WORKDIR /go/src/github.com/Dataman-Cloud/seckilling/seckill-proxy
 
-COPY glide.yaml glide.yaml
-RUN glide up
+#COPY glide.yaml glide.yaml
+#RUN glide up
 
-COPY . /go/src/github.com/emilevauge/traefik
+COPY . /go/src/github.com/Dataman-Cloud/seckilling/seckill-proxy

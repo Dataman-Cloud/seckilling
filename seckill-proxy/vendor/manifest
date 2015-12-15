@@ -233,9 +233,27 @@
 			"branch": "master"
 		},
 		{
+			"importpath": "github.com/mailgun/minheap",
+			"repository": "https://github.com/mailgun/minheap",
+			"revision": "7c28d80e2ada649fc8ab1a37b86d30a2633bd47c",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/mailgun/multibuf",
+			"repository": "https://github.com/mailgun/multibuf",
+			"revision": "565402cd71fbd9c12aa7e295324ea357e970a61e",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/mailgun/timetools",
 			"repository": "https://github.com/mailgun/timetools",
 			"revision": "fd192d755b00c968d312d23f521eb0cdc6f66bd0",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/mailgun/ttlmap",
+			"repository": "https://github.com/mailgun/ttlmap",
+			"revision": "16b258d86efc53ac5cf3e550604f566c32624fab",
 			"branch": "master"
 		},
 		{
@@ -297,6 +315,12 @@
 			"branch": "v1"
 		},
 		{
+			"importpath": "github.com/vulcand/oxy",
+			"repository": "https://github.com/vulcand/oxy",
+			"revision": "5725fecc9a4f3aa6fdc3ffd29cef771241809add",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/vulcand/oxy/memmetrics",
 			"repository": "https://github.com/vulcand/oxy",
 			"revision": "8d49f51577f79f0ffd7607ec9fab42b300002851",
@@ -340,6 +364,12 @@
 			"repository": "https://gopkg.in/alecthomas/kingpin.v2",
 			"revision": "8852570bd3865e9c4d4cb7cf5001c4295b07cad5",
 			"branch": "master"
+		},
+		{
+			"importpath": "gopkg.in/check.v1",
+			"repository": "https://gopkg.in/check.v1",
+			"revision": "11d3bc7aa68e238947792f30573146a3231fc0f1",
+			"branch": "v1"
 		},
 		{
 			"importpath": "gopkg.in/fsnotify.v1",
