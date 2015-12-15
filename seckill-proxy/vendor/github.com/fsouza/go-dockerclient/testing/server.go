@@ -376,7 +376,7 @@ func (s *DockerServer) createContainer(w http.ResponseWriter, r *http.Request) {
 	for port := range config.ExposedPorts {
 		ports[port] = []docker.PortBinding{{
 			HostIP:   "0.0.0.0",
-			HostPort: strconv.Itoa(mathrand.Int() % 65536),
+			HostPort: strconv.Itoa(mathrand.Int() % 0xffff),
 		}}
 	}
 
@@ -532,6 +532,27 @@ func (s *DockerServer) startContainer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	container.HostConfig = &hostConfig
+	if len(hostConfig.PortBindings) > 0 {
+		ports := map[docker.Port][]docker.PortBinding{}
+		for key, items := range hostConfig.PortBindings {
+			bindings := make([]docker.PortBinding, len(items))
+			for i := range items {
+				binding := docker.PortBinding{
+					HostIP:   items[i].HostIP,
+					HostPort: items[i].HostPort,
+				}
+				if binding.HostIP == "" {
+					binding.HostIP = "0.0.0.0"
+				}
+				if binding.HostPort == "" {
+					binding.HostPort = strconv.Itoa(mathrand.Int() % 0xffff)
+				}
+				bindings[i] = binding
+			}
+			ports[key] = bindings
+		}
+		container.NetworkSettings.Ports = ports
+	}
 	if container.State.Running {
 		http.Error(w, "", http.StatusNotModified)
 		return
@@ -665,12 +686,12 @@ func (s *DockerServer) waitContainer(w http.ResponseWriter, r *http.Request) {
 func (s *DockerServer) removeContainer(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 	force := r.URL.Query().Get("force")
-	_, index, err := s.findContainer(id)
+	container, index, err := s.findContainer(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
-	if s.containers[index].State.Running && force != "1" {
+	if container.State.Running && force != "1" {
 		msg := "Error: API error (406): Impossible to remove a running container, please stop it first"
 		http.Error(w, msg, http.StatusInternalServerError)
 		return
@@ -678,8 +699,10 @@ func (s *DockerServer) removeContainer(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 	s.cMut.Lock()
 	defer s.cMut.Unlock()
-	s.containers[index] = s.containers[len(s.containers)-1]
-	s.containers = s.containers[:len(s.containers)-1]
+	if s.containers[index].ID == id || s.containers[index].Name == id {
+		s.containers[index] = s.containers[len(s.containers)-1]
+		s.containers = s.containers[:len(s.containers)-1]
+	}
 }
 
 func (s *DockerServer) commitContainer(w http.ResponseWriter, r *http.Request) {
@@ -931,10 +954,15 @@ func (s *DockerServer) createExecContainer(w http.ResponseWriter, r *http.Reques
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
+
+	execID := s.generateID()
+	container.ExecIDs = append(container.ExecIDs, execID)
+
 	exec := docker.ExecInspect{
-		ID:        s.generateID(),
+		ID:        execID,
 		Container: *container,
 	}
+
 	var params docker.CreateExecOptions
 	err = json.NewDecoder(r.Body).Decode(&params)
 	if err != nil {
@@ -947,6 +975,10 @@ func (s *DockerServer) createExecContainer(w http.ResponseWriter, r *http.Reques
 			exec.ProcessConfig.Arguments = params.Cmd[1:]
 		}
 	}
+
+	exec.ProcessConfig.User = params.User
+	exec.ProcessConfig.Tty = params.Tty
+
 	s.execMut.Lock()
 	s.execs = append(s.execs, &exec)
 	s.execMut.Unlock()
@@ -1074,9 +1106,9 @@ func (s *DockerServer) createNetwork(w http.ResponseWriter, r *http.Request) {
 
 	generatedID := s.generateID()
 	network := docker.Network{
-		Name: config.Name,
-		ID:   generatedID,
-		Type: config.NetworkType,
+		Name:   config.Name,
+		ID:     generatedID,
+		Driver: config.Driver,
 	}
 	s.netMut.Lock()
 	s.networks = append(s.networks, &network)
