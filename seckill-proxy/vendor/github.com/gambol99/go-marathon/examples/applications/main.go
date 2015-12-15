@@ -18,10 +18,11 @@ package main
 
 import (
 	"flag"
-	"log"
 	"time"
 
 	marathon "github.com/gambol99/go-marathon"
+
+	"github.com/golang/glog"
 )
 
 var marathonURL string
@@ -32,7 +33,7 @@ func init() {
 
 func assert(err error) {
 	if err != nil {
-		log.Fatalf("Failed, error: %s", err)
+		glog.Fatalf("Failed, error: %s", err)
 	}
 }
 
@@ -49,18 +50,18 @@ func main() {
 	applications, err := client.Applications(nil)
 	assert(err)
 
-	log.Printf("Found %d application running", len(applications.Apps))
+	glog.Infof("Found %d application running", len(applications.Apps))
 	for _, application := range applications.Apps {
-		log.Printf("Application: %v", application)
+		glog.Infof("Application: %s", application)
 		details, err := client.Application(application.ID)
 		assert(err)
 		if details.Tasks != nil && len(details.Tasks) > 0 {
 			for _, task := range details.Tasks {
-				log.Printf("task: %s", task)
+				glog.Infof("task: %s", task)
 			}
 			health, err := client.ApplicationOK(details.ID)
 			assert(err)
-			log.Printf("Application: %s, healthy: %t", details.ID, health)
+			glog.Infof("Application: %s, healthy: %t", details.ID, health)
 		}
 	}
 
@@ -72,7 +73,7 @@ func main() {
 		waitOnDeployment(client, deployID)
 	}
 
-	log.Printf("Deploying a new application")
+	glog.Infof("Deploying a new application")
 	application := marathon.NewDockerApplication()
 	application.Name(applicationName)
 	application.CPU(0.1).Memory(64).Storage(0.0).Count(2)
@@ -84,24 +85,24 @@ func main() {
 	_, err = client.CreateApplication(application)
 	assert(err)
 
-	log.Printf("Scaling the application to 4 instances")
+	glog.Infof("Scaling the application to 4 instances")
 	deployID, err := client.ScaleApplicationInstances(application.ID, 4, false)
 	assert(err)
 	client.WaitOnApplication(application.ID, 30*time.Second)
-	log.Printf("Successfully scaled the application, deployID: %s", deployID.DeploymentID)
+	glog.Infof("Successfully scaled the application, deployID: %s", deployID.DeploymentID)
 
-	log.Printf("Deleting the application: %s", applicationName)
+	glog.Infof("Deleting the application: %s", applicationName)
 	deployID, err = client.DeleteApplication(application.ID)
 	assert(err)
 	time.Sleep(time.Duration(10) * time.Second)
-	log.Printf("Successfully deleted the application")
+	glog.Infof("Successfully deleted the application")
 
-	log.Printf("Starting the application again")
+	glog.Infof("Starting the application again")
 	_, err = client.CreateApplication(application)
 	assert(err)
-	log.Printf("Created the application: %s", application.ID)
+	glog.Infof("Created the application: %s", application.ID)
 
-	log.Printf("Delete all the tasks")
+	glog.Infof("Delete all the tasks")
 	_, err = client.KillApplicationTasks(application.ID, "", false)
 	assert(err)
 }

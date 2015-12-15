@@ -3,18 +3,14 @@ package kingpin
 import (
 	"io/ioutil"
 
-	"github.com/alecthomas/assert"
+	"github.com/stretchr/testify/assert"
 
 	"testing"
 	"time"
 )
 
-func newTestApp() *Application {
-	return New("test", "").Terminate(nil)
-}
-
 func TestCommander(t *testing.T) {
-	c := newTestApp()
+	c := New("test", "test")
 	ping := c.Command("ping", "Ping an IP address.")
 	pingTTL := ping.Flag("ttl", "TTL for ICMP packets").Short('t').Default("5s").Duration()
 
@@ -30,7 +26,7 @@ func TestCommander(t *testing.T) {
 }
 
 func TestRequiredFlags(t *testing.T) {
-	c := newTestApp()
+	c := New("test", "test")
 	c.Flag("a", "a").String()
 	c.Flag("b", "b").Required().String()
 
@@ -41,14 +37,14 @@ func TestRequiredFlags(t *testing.T) {
 }
 
 func TestInvalidDefaultFlagValueErrors(t *testing.T) {
-	c := newTestApp()
+	c := New("test", "test")
 	c.Flag("foo", "foo").Default("a").Int()
 	_, err := c.Parse([]string{})
 	assert.Error(t, err)
 }
 
 func TestInvalidDefaultArgValueErrors(t *testing.T) {
-	c := newTestApp()
+	c := New("test", "test")
 	cmd := c.Command("cmd", "cmd")
 	cmd.Arg("arg", "arg").Default("one").Int()
 	_, err := c.Parse([]string{"cmd"})
@@ -56,7 +52,7 @@ func TestInvalidDefaultArgValueErrors(t *testing.T) {
 }
 
 func TestArgsRequiredAfterNonRequiredErrors(t *testing.T) {
-	c := newTestApp()
+	c := New("test", "test")
 	cmd := c.Command("cmd", "")
 	cmd.Arg("a", "a").String()
 	cmd.Arg("b", "b").Required().String()
@@ -65,7 +61,7 @@ func TestArgsRequiredAfterNonRequiredErrors(t *testing.T) {
 }
 
 func TestArgsMultipleRequiredThenNonRequired(t *testing.T) {
-	c := newTestApp().Writer(ioutil.Discard)
+	c := New("test", "test").Terminate(nil).Writer(ioutil.Discard)
 	cmd := c.Command("cmd", "")
 	cmd.Arg("a", "a").Required().String()
 	cmd.Arg("b", "b").Required().String()
@@ -91,7 +87,7 @@ func TestDispatchCallbackIsCalled(t *testing.T) {
 }
 
 func TestTopLevelArgWorks(t *testing.T) {
-	c := newTestApp()
+	c := New("test", "test")
 	s := c.Arg("arg", "help").String()
 	_, err := c.Parse([]string{"foo"})
 	assert.NoError(t, err)
@@ -99,7 +95,7 @@ func TestTopLevelArgWorks(t *testing.T) {
 }
 
 func TestTopLevelArgCantBeUsedWithCommands(t *testing.T) {
-	c := newTestApp()
+	c := New("test", "test")
 	c.Arg("arg", "help").String()
 	c.Command("cmd", "help")
 	_, err := c.Parse([]string{})
@@ -107,14 +103,14 @@ func TestTopLevelArgCantBeUsedWithCommands(t *testing.T) {
 }
 
 func TestTooManyArgs(t *testing.T) {
-	a := newTestApp()
+	a := New("test", "test")
 	a.Arg("a", "").String()
 	_, err := a.Parse([]string{"a", "b"})
 	assert.Error(t, err)
 }
 
 func TestTooManyArgsAfterCommand(t *testing.T) {
-	a := newTestApp()
+	a := New("test", "test")
 	a.Command("a", "")
 	assert.NoError(t, a.init())
 	_, err := a.Parse([]string{"a", "b"})
@@ -198,16 +194,4 @@ func TestInterspersedTrue(t *testing.T) {
 		assert.Equal(t, "", *a2)
 		assert.Equal(t, "flag", *f1)
 	}
-}
-
-func TestDefaultEnvars(t *testing.T) {
-	a := New("some-app", "").DefaultEnvars()
-	f0 := a.Flag("some-flag", "")
-	f0.Bool()
-	f1 := a.Flag("some-other-flag", "").NoEnvar()
-	f1.Bool()
-	_, err := a.Parse([]string{})
-	assert.NoError(t, err)
-	assert.Equal(t, "SOME_APP_SOME_FLAG", f0.envar)
-	assert.Equal(t, "", f1.envar)
 }

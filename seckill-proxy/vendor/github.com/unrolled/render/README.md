@@ -59,7 +59,7 @@ func main() {
     mux.HandleFunc("/html", func(w http.ResponseWriter, req *http.Request) {
         // Assumes you have a template in ./templates called "example.tmpl"
         // $ mkdir -p templates && echo "<h1>Hello {{.}}.</h1>" > templates/example.tmpl
-        r.HTML(w, http.StatusOK, "example", "World")
+        r.HTML(w, http.StatusOK, "example", nil)
     })
 
     http.ListenAndServe("127.0.0.1:3000", mux)
@@ -97,8 +97,6 @@ r := render.New(render.Options{
     IsDevelopment: true, // Render will now recompile the templates on every HTML response.
     UnEscapeHTML: true, // Replace ensure '&<>' are output correctly (JSON only).
     StreamingJSON: true, // Streams the JSON response via json.Encoder.
-    RequireBlocks: true, // Return an error if a template is missing a block used in a layout.
-    DisableHTTPErrorRendering: true, // Disables automatic rendering of http.StatusInternalServerError when an error occurs.
 })
 // ...
 ~~~
@@ -128,8 +126,6 @@ r := render.New(render.Options{
     IsDevelopment: false,
     UnEscapeHTML: false,
     StreamingJSON: false,
-    RequireBlocks: false,
-    DisableHTTPErrorRendering: false,
 })
 ~~~
 
@@ -205,23 +201,6 @@ r := render.New(render.Options{
 </html>
 ~~~
 
-Blocks are defined by individual templates as seen below. The block template's
-name needs to be defined as "{block name}-{template name}".
-~~~ html
-<!-- templates/home.tmpl -->
-{{ define "header-home" }}
-<h1>Home</h1>
-{{ end }}
-
-{{ define "footer-home"}}
-<p>The End</p>
-{{ end }}
-~~~
-
-By default, the template is not required to define all blocks referenced in the
-layout. If you want an error to be returned when a template does not define a
-block, set `Options.RequireBlocks = true`.
-
 ### Character Encodings
 Render will automatically set the proper Content-Type header based on which function you call. See below for an example of what the default settings would output (note that UTF-8 is the default, and binary data does not output the charset):
 ~~~ go
@@ -270,7 +249,7 @@ func main() {
     mux.HandleFunc("/html", func(w http.ResponseWriter, req *http.Request) {
         // Assumes you have a template in ./templates called "example.tmpl"
         // $ mkdir -p templates && echo "<h1>Hello {{.}}.</h1>" > templates/example.tmpl
-        r.HTML(w, http.StatusOK, "example", "World")
+        r.HTML(w, http.StatusOK, "example", nil)
     })
 
     http.ListenAndServe("127.0.0.1:3000", mux)
@@ -326,30 +305,10 @@ func main() {
     mux.HandleFunc("/html", func(w http.ResponseWriter, req *http.Request) {
         // Assumes you have a template in ./templates called "example.tmpl"
         // $ mkdir -p templates && echo "<h1>Hello {{.}}.</h1>" > templates/example.tmpl
-        r.HTML(w, http.StatusOK, "example", "World")
+        r.HTML(w, http.StatusOK, "example", nil)
     })
 
     http.ListenAndServe("127.0.0.1:3000", mux)
-}
-~~~
-
-### Error Handling
-
-The rendering functions return any errors from the rendering engine.
-By default, they will also write the error to the HTTP response and set the status code to 500. You can disable
-this behavior so that you can handle errors yourself by setting
-`Options.DisableHTTPErrorRendering: true`.
-
-~~~go
-r := render.New(render.Options{
-  DisableHTTPErrorRendering: true,
-})
-
-//...
-
-err := r.HTML(w, http.StatusOK, "example", "World")
-if err != nil{
-  http.Redirect(w, r, "/my-custom-500", http.StatusFound)
 }
 ~~~
 
@@ -464,7 +423,7 @@ func main() {
 }
 ~~~
 
-### [Traffic](https://github.com/pilu/traffic)
+### [Traffic](https://github.com/pilu/traffic/)
 ~~~ go
 // main.go
 package main
@@ -514,4 +473,3 @@ func main() {
     web.Run(":3000")
 }
 ~~~
-

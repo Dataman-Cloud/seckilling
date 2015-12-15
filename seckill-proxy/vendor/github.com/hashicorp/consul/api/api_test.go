@@ -127,7 +127,6 @@ func TestSetQueryOptions(t *testing.T) {
 		WaitIndex:         1000,
 		WaitTime:          100 * time.Second,
 		Token:             "12345",
-		Near:              "nodex",
 	}
 	r.setQueryOptions(q)
 
@@ -147,9 +146,6 @@ func TestSetQueryOptions(t *testing.T) {
 		t.Fatalf("bad: %v", r.params)
 	}
 	if r.params.Get("token") != "12345" {
-		t.Fatalf("bad: %v", r.params)
-	}
-	if r.params.Get("near") != "nodex" {
 		t.Fatalf("bad: %v", r.params)
 	}
 }

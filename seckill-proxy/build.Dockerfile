@@ -20,9 +20,9 @@ RUN set -ex; \
 # Set the default Docker to be run
 RUN ln -s /usr/local/bin/docker-${DOCKER_VERSION} /usr/local/bin/docker
 
-WORKDIR /go/src/github.com/emilevauge/traefik
+WORKDIR /go/src/github.com/Dataman-Cloud/seckilling/seckill-proxy
 
 COPY glide.yaml glide.yaml
 RUN glide up
 
-COPY . /go/src/github.com/emilevauge/traefik
+COPY . /go/src/github.com/Dataman-Cloud/seckilling/seckill-proxy

@@ -26,6 +26,7 @@ import (
 	"time"
 
 	"github.com/donovanhide/eventsource"
+	"github.com/golang/glog"
 )
 
 // Subscriptions is a collection to urls that marathon is implementing a callback on
@@ -56,6 +57,7 @@ func (r *marathonClient) AddEventsListener(channel EventsChannel, filter int) er
 	}
 
 	if _, found := r.listeners[channel]; !found {
+		glog.V(debugLevel).Infof("adding a watch for events: %d, channel: %v", filter, channel)
 		r.listeners[channel] = filter
 	}
 	return nil
@@ -158,30 +160,35 @@ func (r *marathonClient) registerSSESubscription() error {
 		return nil
 	}
 
-	// Get a member from the cluster
-	marathon, err := r.cluster.GetMember()
-	if err != nil {
-		return err
-	}
-	url := fmt.Sprintf("%s/%s", marathon, marathonAPIEventStream)
+	var stream *eventsource.Stream
 
-	// Try to connect to stream
-	stream, err := eventsource.Subscribe(url, "")
-	if err != nil {
-		return err
+	// Try to connect to Marathon until succeed or
+	// the whole custer is down
+	for {
+		// Get a member from the cluster
+		marathon, err := r.cluster.GetMember()
+		if err != nil {
+			return err
+		}
+		url := fmt.Sprintf("%s/%s", marathon, marathonAPIEventStream)
+
+		// Try to connect to stream
+		stream, err = eventsource.Subscribe(url, "")
+		if err == nil {
+			break
+		}
+
+		glog.V(debugLevel).Infof("failed to connect to Marathon event stream, error: %s", err)
+		r.cluster.MarkDown()
 	}
 
 	go func() {
 		for {
 			select {
 			case ev := <-stream.Events:
-				if err := r.handleEvent(ev.Data()); err != nil {
-					// TODO let the user handle this error instead of logging it here
-					r.debugLog.Printf("registerSSESubscription(): failed to handle event: %v\n", err)
-				}
+				r.handleEvent(ev.Data())
 			case err := <-stream.Errors:
-				// TODO let the user handle this error instead of logging it here
-				r.debugLog.Printf("registerSSESubscription(): failed to receive event: %v\n", err)
+				glog.V(debugLevel).Infof("failed to receive event, error: %s", err)
 			}
 		}
 	}()
@@ -215,24 +222,27 @@ func (r *marathonClient) HasSubscription(callback string) (bool, error) {
 	return false, nil
 }
 
-func (r *marathonClient) handleEvent(content string) error {
+func (r *marathonClient) handleEvent(content string) {
 	// step: process and decode the event
 	eventType := new(EventType)
 	err := json.NewDecoder(strings.NewReader(content)).Decode(eventType)
 	if err != nil {
-		return fmt.Errorf("failed to decode the event type, content: %s, error: %s", content, err)
+		glog.V(debugLevel).Infof("failed to decode the event type, content: %s, error: %s", content, err)
+		return
 	}
 
 	// step: check whether event type is handled
 	event, err := GetEvent(eventType.EventType)
 	if err != nil {
-		return fmt.Errorf("unable to handle event, type: %s, error: %s", eventType.EventType, err)
+		glog.V(debugLevel).Infof("unable to handle event, type: %s, error: %s", eventType.EventType, err)
+		return
 	}
 
 	// step: let's decode message
 	err = json.NewDecoder(strings.NewReader(content)).Decode(event.Event)
 	if err != nil {
-		return fmt.Errorf("failed to decode the event, id: %d, error: %s", event.ID, err)
+		glog.V(debugLevel).Infof("failed to decode the event, id: %d, error: %s", event.ID, err)
+		return
 	}
 
 	r.RLock()
@@ -247,20 +257,14 @@ func (r *marathonClient) handleEvent(content string) error {
 			}(channel, event)
 		}
 	}
-
-	return nil
 }
 
 func (r *marathonClient) handleCallbackEvent(writer http.ResponseWriter, request *http.Request) {
 	body, err := ioutil.ReadAll(request.Body)
 	if err != nil {
-		// TODO should this return a 500?
-		r.debugLog.Printf("handleCallbackEvent(): failed to read request body, error: %s\n", err)
+		glog.V(debugLevel).Infof("failed to read request body, error: %s", err)
 		return
 	}
 
-	if err := r.handleEvent(string(body[:])); err != nil {
-		// TODO should this return a 500?
-		r.debugLog.Printf("handleCallbackEvent(): failed to handle event: %v\n", err)
-	}
+	r.handleEvent(string(body[:]))
 }
