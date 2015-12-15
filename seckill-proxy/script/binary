@@ -9,7 +9,7 @@ fi
 rm -f dist/traefik
 
 if [ -z "$VERSION" ]; then
-    VERSION=$(date -u '+%Y%m%d%H%M%S')
+    VERSION=$(git rev-parse HEAD)
 fi
 
 if [ -z "$DATE" ]; then
