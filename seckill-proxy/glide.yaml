@@ -1,9 +1,5 @@
 package: main
 import:
-  - package: github.com/coreos/go-etcd
-    ref:     cc90c7b091275e606ad0ca7102a23fb2072f3f5e
-    subpackages:
-      - etcd
   - package: github.com/docker/distribution
     ref:     9038e48c3b982f8e82281ea486f078a73731ac4e
   - package: github.com/mailgun/log
@@ -26,8 +22,6 @@ import:
       - zk
   - package: github.com/docker/libtrust
     ref:     9cbd2a1374f46905c68a4eb3694a130610adc62a
-  - package: gopkg.in/check.v1
-    ref:     11d3bc7aa68e238947792f30573146a3231fc0f1
   - package: golang.org/x/net
     ref:     d9558e5c97f85372afee28cf2b6059d7d3818919
     subpackages:
@@ -147,3 +141,21 @@ import:
   - package: github.com/golang/glog
     ref:     fca8c8854093a154ff1eb580aae10276ad6b1b5f
   - package: github.com/vulcand/oxy
+  - package: golang.org/x/oauth2
+  - package: github.com/vulcand/predicate
+  - package: github.com/coreos/go-etcd
+    subpackages:
+      - /etcd
+  - package: github.com/ugorji/go
+    subpackages:
+      - /codec
+  - package: gopkg.in/check.v1
+  - package: github.com/Masterminds/glide
+  - package: github.com/mitchellh/gox
+  - package: github.com/tcnksm/ghr
+  - package: github.com/jteeuwen/go-bindata
+    subpackages:
+      - /...
+  - package: github.com/golang/lint
+    subpackages:
+      - /golint
