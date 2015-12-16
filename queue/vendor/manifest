@@ -90,6 +90,20 @@
 			"branch": "master"
 		},
 		{
+			"importpath": "github.com/garyburd/redigo/internal",
+			"repository": "https://github.com/garyburd/redigo",
+			"revision": "6ece6e0a09f28cc399b21550cbf37ab39ba63cce",
+			"branch": "master",
+			"path": "/internal"
+		},
+		{
+			"importpath": "github.com/garyburd/redigo/redis",
+			"repository": "https://github.com/garyburd/redigo",
+			"revision": "6ece6e0a09f28cc399b21550cbf37ab39ba63cce",
+			"branch": "master",
+			"path": "/redis"
+		},
+		{
 			"importpath": "github.com/golang/snappy",
 			"repository": "https://github.com/golang/snappy",
 			"revision": "723cc1e459b8eea2dea4583200fd60757d40097a",
