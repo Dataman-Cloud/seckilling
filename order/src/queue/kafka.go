@@ -2,72 +2,89 @@ package queue
 
 import (
 	"log"
+	"time"
 
-	kafka "github.com/Shopify/sarama"
+	"github.com/Shopify/sarama"
 	"github.com/spf13/viper"
+	csgroup "github.com/wvanbergen/kafka/consumergroup"
+	kazoo "github.com/wvanbergen/kazoo-go"
 )
 
 var (
-	client kafka.Client
-	topic  string
+	zkURI   string
+	group   string
+	topic   string
+	zkNodes []string
+	config  *csgroup.Config
 )
 
 //InitClient initialize client
 func InitClient() {
-	serverList := viper.GetStringSlice("kafka.serverList")
-	log.Printf("kafka server list: %s \n", serverList)
-	config := kafka.NewConfig()
-	var err error
-	client, err = kafka.NewClient(serverList, config)
-	if err != nil {
-		log.Panicln("can't create client")
-	}
+	zkURI = viper.GetString("kafka.zkURI")
+	log.Printf("zk nodes: %s \n", zkURI)
+
+	group = viper.GetString("kafka.group")
+	log.Println("group", group)
 
 	topic = viper.GetString("kafka.topic")
 	log.Printf("kafka topic name %s \n", topic)
+
+	//sarama.Logger = log.New(os.Stdout, "[Sarama] ", log.LstdFlags)
+
+	config = csgroup.NewConfig()
+	config.Offsets.Initial = sarama.OffsetNewest
+	config.Offsets.ProcessingTimeout = 10 * time.Second
+
+	zkNodes, config.Zookeeper.Chroot = kazoo.ParseConnectionString(zkURI)
 }
 
 //Start start consumers
 func Start() {
 	workers := viper.GetInt("workers")
 	log.Printf("workers: %d\n", workers)
-	for i := 100; i < workers; i++ {
-		log.Println(i)
-		go startConsumer()
-	}
+	startConsumer()
 }
 
 func startConsumer() {
 	log.Println("starting consumer...")
-	consumer, err := kafka.NewConsumerFromClient(client)
-	if err != nil {
-		log.Panicln("can't create consumer")
-	}
-
-	defer func() {
-		if err = consumer.Close(); err != nil {
-			log.Fatalln(err)
-		}
-	}()
-
-	partitionConsumer, err := consumer.ConsumePartition(topic, 0, kafka.OffsetNewest)
+	csGroup, err := csgroup.JoinConsumerGroup(group, []string{topic}, zkNodes, config)
 	if err != nil {
 		log.Panicln(err)
 	}
 
 	defer func() {
-		if err := partitionConsumer.Close(); err != nil {
+		if err = csGroup.Close(); err != nil {
 			log.Fatalln(err)
 		}
 	}()
 
-	consumed := 0
+	go handleErrors(csGroup)
+	handleMessages(csGroup)
+}
 
-	for {
-		select {
-		case msg := <-partitionConsumer.Messages():
-			log.Printf("Consumed message offset %d\n", msg.Offset)
-			consumed++
-		}
+func handleErrors(csGroup *csgroup.ConsumerGroup) {
+	for err := range csGroup.Errors() {
+		log.Println(err)
 	}
+}
+
+func handleMessages(csGroup *csgroup.ConsumerGroup) {
+	consumed := 0
+	for message := range csGroup.Messages() {
+		log.Println("received message#", consumed)
+		logMessage(message)
+
+		consumed++
+		csGroup.CommitUpto(message)
+	}
+}
+
+func logMessage(message *sarama.ConsumerMessage) {
+	log.Println("================================")
+	log.Println("key:", message.Key)
+	log.Println("value:", string(message.Value))
+	log.Println("topic:", message.Topic)
+	log.Println("partition:", message.Partition)
+	log.Println("offset:", message.Offset)
+	log.Println("--------------------------------")
 }
