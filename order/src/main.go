@@ -25,7 +25,7 @@ func upgradeDB() {
 	name := viper.GetString("db.name")
 	driver := fmt.Sprintf("mysql://%s:%s@tcp(%s:%d)/%s", user, password, host, port, name)
 
-	log.Panicln("upgrading DB", driver)
+	log.Println("upgrading DB", driver)
 	errors, ok := migrate.UpSync(driver, "./sql")
 	if errors != nil && len(errors) > 0 {
 		for _, err := range errors {
@@ -36,6 +36,6 @@ func upgradeDB() {
 	if !ok {
 		log.Panicln("can't upgrade db")
 	}
-	log.Panicln("DB upgraded")
+	log.Println("DB upgraded")
 
 }
