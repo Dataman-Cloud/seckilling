@@ -6,6 +6,7 @@ import (
 
 	"github.com/Dataman-Cloud/seckilling/order/src/config"
 	"github.com/Dataman-Cloud/seckilling/order/src/queue"
+	_ "github.com/mattes/migrate/driver/mysql"
 	migrate "github.com/mattes/migrate/migrate"
 	"github.com/spf13/viper"
 )
