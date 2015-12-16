@@ -48,8 +48,8 @@ type toFloat64 func(c *CircuitBreaker) float64
 
 func responseCount() toInt {
 	return func(c *CircuitBreaker) int {
-		fmt.Println("cb reps count:", c.ResponseCount)
-		return c.ResponseCount
+		fmt.Println("cb reps count:", c.responseCount)
+		return c.responseCount
 	}
 }
 
