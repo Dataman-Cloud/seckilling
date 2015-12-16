@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/Dataman-Cloud/seckilling/queue/src/cache"
 	"github.com/Dataman-Cloud/seckilling/queue/src/kafka"
 	"github.com/Dataman-Cloud/seckilling/queue/src/model"
 	"github.com/labstack/echo"
@@ -131,6 +132,12 @@ func Tickets(c *echo.Context) error {
 		return c.JSON(model.PushQueueError, ticket)
 	}
 	kafka.ProducerMessage <- string(bytes)
+	err = cache.WriteHashToRedis(cookie, "status", "0", -1)
+	if err != nil {
+		log.Printf("write ticket to redis has error %s", err.Error())
+		return c.JSON(model.PushQueueError, ticket)
+	}
+
 	return c.JSON(http.StatusOK, model.CommonResponse{
 		Code:  0,
 		Data:  ticket,
