@@ -38,7 +38,7 @@ import (
 // CircuitBreaker is http.Handler that implements circuit breaker pattern
 type CircuitBreaker struct {
 	//ResponseCounts counter
-	ResponseCount int
+	responseCount int
 
 	m       *sync.RWMutex
 	metrics *memmetrics.RTMetrics
@@ -70,7 +70,7 @@ type CircuitBreaker struct {
 // New creates a new CircuitBreaker middleware
 func New(next http.Handler, expression string, options ...CircuitBreakerOption) (*CircuitBreaker, error) {
 	cb := &CircuitBreaker{
-		ResponseCount: 1,
+		responseCount: 1,
 		m:             &sync.RWMutex{},
 		next:          next,
 		// Default values. Might be overwritten by options below.
@@ -164,7 +164,7 @@ func (c *CircuitBreaker) serve(w http.ResponseWriter, req *http.Request) {
 
 	// Response counting, must before checkAndSet()
 	if p.StatusCode() == http.StatusOK {
-		c.ResponseCount++
+		c.responseCount++
 	}
 
 	// Note that this call is less expensive than it looks -- checkCondition only performs the real check
