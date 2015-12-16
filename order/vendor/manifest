@@ -46,6 +46,20 @@
 			"branch": "master"
 		},
 		{
+			"importpath": "github.com/garyburd/redigo/internal",
+			"repository": "https://github.com/garyburd/redigo",
+			"revision": "6ece6e0a09f28cc399b21550cbf37ab39ba63cce",
+			"branch": "master",
+			"path": "/internal"
+		},
+		{
+			"importpath": "github.com/garyburd/redigo/redis",
+			"repository": "https://github.com/garyburd/redigo",
+			"revision": "6ece6e0a09f28cc399b21550cbf37ab39ba63cce",
+			"branch": "master",
+			"path": "/redis"
+		},
+		{
 			"importpath": "github.com/go-sql-driver/mysql",
 			"repository": "https://github.com/go-sql-driver/mysql",
 			"revision": "d512f204a577a4ab037a1816604c48c9c13210be",

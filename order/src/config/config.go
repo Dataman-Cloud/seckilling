@@ -20,6 +20,7 @@ type DbConfig struct {
 func InitConfig() {
 	viper.SetDefault("logLevel", "DEBUG")
 	viper.SetDefault("workers", 10)
+	viper.SetDefault("cache.poolSize", 100)
 
 	viper.SetConfigName("order-conf")
 	viper.SetConfigType("yaml")
