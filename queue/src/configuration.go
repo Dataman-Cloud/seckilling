@@ -14,6 +14,7 @@ func initConfig() {
 	viper.SetDefault("port", ":5090")
 	viper.SetDefault("logLevel", "DEBUG")
 	viper.SetDefault("watch", false)
+	viper.SetDefault("cache.poolSize", 100)
 
 	viper.SetConfigName("queue-conf")
 	viper.SetConfigType("json")
