@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/Dataman-Cloud/seckilling/seckill-proxy/oxy/cbreaker"
@@ -13,7 +14,10 @@ type CircuitBreaker struct {
 
 // NewCircuitBreaker returns a new CircuitBreaker.
 func NewCircuitBreaker(next http.Handler, expression string, options ...cbreaker.CircuitBreakerOption) *CircuitBreaker {
-	circuitBreaker, _ := cbreaker.New(next, expression, options...)
+	circuitBreaker, err := cbreaker.New(next, expression, options...)
+	if err != nil {
+		log.Panicln("shit happened", err)
+	}
 	return &CircuitBreaker{circuitBreaker}
 }
 
