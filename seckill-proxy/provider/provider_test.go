@@ -74,7 +74,7 @@ func TestConfigurationErrors(t *testing.T) {
 					Filename: templateInvalidTOMLFile.Name(),
 				},
 			},
-			expectedError: "Near line 1, key 'Hello': Near line 1: Expected key separator '=', but got '<' instead",
+			expectedError: "Near line 1 (last key parsed 'Hello'): Expected key separator '=', but got '<' instead",
 			funcMap: template.FuncMap{
 				"Foo": func() string {
 					return "bar"
@@ -87,6 +87,9 @@ func TestConfigurationErrors(t *testing.T) {
 	for _, invalid := range invalids {
 		configuration, err := invalid.provider.getConfiguration(invalid.defaultTemplate, invalid.funcMap, nil)
 		if err == nil || !strings.Contains(err.Error(), invalid.expectedError) {
+			t.Logf("====================")
+			t.Logf("===========err:  %v", err.Error())
+			t.Logf("====================")
 			t.Fatalf("should have generate an error with %q, got %v", invalid.expectedError, err)
 		}
 		if configuration != nil {
