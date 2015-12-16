@@ -154,6 +154,7 @@ func (c *CircuitBreaker) activateFallback(w http.ResponseWriter, req *http.Reque
 }
 
 func (c *CircuitBreaker) serve(w http.ResponseWriter, req *http.Request) {
+
 	start := c.clock.UtcNow()
 	p := &utils.ProxyWriter{W: w}
 
@@ -162,14 +163,21 @@ func (c *CircuitBreaker) serve(w http.ResponseWriter, req *http.Request) {
 	latency := c.clock.UtcNow().Sub(start)
 	c.metrics.Record(p.Code, latency)
 
-	// Response counting, must before checkAndSet()
-	if p.StatusCode() == http.StatusOK {
-		c.responseCount++
-	}
+	c.incrementCount(p)
 
 	// Note that this call is less expensive than it looks -- checkCondition only performs the real check
 	// periodically. Because of that we can afford to call it here on every single response.
 	c.checkAndSet()
+}
+
+func (c *CircuitBreaker) incrementCount(p *utils.ProxyWriter) {
+	// Response counting, must before checkAndSet()
+	if p.StatusCode() == http.StatusOK {
+		c.m.Lock()
+		defer c.m.Unlock()
+		c.responseCount++
+	}
+
 }
 
 func (c *CircuitBreaker) isStandby() bool {
@@ -351,7 +359,7 @@ const (
 )
 
 const (
-	defaultFallbackDuration = 1000 * time.Second
+	defaultFallbackDuration = 10 * time.Second
 	defaultRecoveryDuration = 10 * time.Second
 	defaultCheckPeriod      = 100 * time.Millisecond
 )
