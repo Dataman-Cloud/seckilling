@@ -73,6 +73,7 @@ func handleMessages(csGroup *csgroup.ConsumerGroup) {
 	for message := range csGroup.Messages() {
 		log.Println("received message#", consumed)
 		logMessage(message)
+		checkUerTicket(message)
 
 		consumed++
 		csGroup.CommitUpto(message)
@@ -87,4 +88,25 @@ func logMessage(message *sarama.ConsumerMessage) {
 	log.Println("partition:", message.Partition)
 	log.Println("offset:", message.Offset)
 	log.Println("--------------------------------")
+}
+
+func checkUerTicket(message *sarama.ConsumerMessage) {
+	updateStockInfo()
+	//stock := 1
+	value := string(message.Value)
+	log.Println(value)
+	writeTicketToCache()
+	writeTicketToDb()
+}
+
+func writeTicketToCache() error {
+	return nil
+}
+
+func writeTicketToDb() error {
+	return nil
+}
+
+func updateStockInfo() {
+
 }
