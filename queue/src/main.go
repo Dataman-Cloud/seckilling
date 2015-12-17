@@ -11,8 +11,14 @@ import (
 	"github.com/tylerb/graceful"
 )
 
-func main() {
+func componentInit() {
 	initConfig()
+}
+
+func main() {
+	// inti config and component
+	componentInit()
+
 	// Echo instance
 	e := echo.New()
 

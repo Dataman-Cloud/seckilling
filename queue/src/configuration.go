@@ -17,7 +17,7 @@ func initConfig() {
 	viper.SetDefault("cache.poolSize", 100)
 
 	viper.SetConfigName("queue-conf")
-	viper.SetConfigType("json")
+	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".") // optionally look for config in the working directory
 	viper.AddConfigPath("$HOME/.seckilling/")
 	viper.AddConfigPath("/etc/seckilling/")
