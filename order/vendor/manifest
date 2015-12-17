@@ -84,6 +84,12 @@
 			"branch": "master"
 		},
 		{
+			"importpath": "github.com/jmoiron/sqlx",
+			"repository": "https://github.com/jmoiron/sqlx",
+			"revision": "54aec3fd91a2b2129ffaca0d652b8a9223ee2d9e",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/klauspost/crc32",
 			"repository": "https://github.com/klauspost/crc32",
 			"revision": "0aff1ea9c20474c3901672b5b6ead0ac611156de",

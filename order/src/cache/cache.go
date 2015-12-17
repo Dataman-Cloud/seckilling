@@ -55,3 +55,19 @@ func DestroyCache() {
 		log.Println("cache was closed")
 	}
 }
+
+func WriteHashToRedis(key, field, value string, timeout int) error {
+	conn := Open()
+	defer conn.Close()
+	var err error
+	log.Printf("redis HSET: %s, field: %s, value: %s", key, field, value)
+	if _, err = conn.Do("HSET", key, field, value); err != nil {
+		return err
+	}
+
+	if timeout != -1 {
+		_, err = conn.Do("EXPIRE", key, timeout)
+		return err
+	}
+	return nil
+}

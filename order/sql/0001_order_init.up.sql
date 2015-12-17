@@ -8,6 +8,7 @@ create table if not exists order (
     id bigint unsigned primary key auto_increment,
     uid varchar(64) not null,
     status tinyint(1) not null,
+    stock bigint(64),
     json text,
     created timestamp,
     updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

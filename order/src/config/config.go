@@ -21,6 +21,8 @@ func InitConfig() {
 	viper.SetDefault("logLevel", "DEBUG")
 	viper.SetDefault("workers", 10)
 	viper.SetDefault("cache.poolSize", 100)
+	viper.SetDefault("db.maxIdleConns", 5)
+	viper.SetDefault("db.maxOpenConns", 50)
 
 	viper.SetConfigName("order-conf")
 	viper.SetConfigType("yaml")
