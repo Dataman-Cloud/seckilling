@@ -12,3 +12,5 @@ create table if not exists order (
     created timestamp,
     updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     ) character set utf8 collate utf8_general_ci;
+
+ALTER TABLE ORDER ADD INDEX UID ; 

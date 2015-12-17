@@ -38,5 +38,4 @@ func upgradeDB() {
 		log.Panicln("can't upgrade db")
 	}
 	log.Println("DB upgraded")
-
 }
