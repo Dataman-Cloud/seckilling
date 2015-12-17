@@ -7,6 +7,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/mattes/migrate/driver/mysql"
 	migrate "github.com/mattes/migrate/migrate"
 	"github.com/spf13/viper"
 )

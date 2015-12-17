@@ -30,6 +30,7 @@ create table if not exists prod_inst (
     updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     ) character set utf8 collate utf8_general_ci;
 alter table prod_inst add index unique uni_eid_seq (eid, seq);
+alter table prod_inst add unique (eid, seq);
 
 create table if not exists order (
     id bigint unsigned primary key auto_increment,
