@@ -104,12 +104,6 @@
 			"path": "/redis"
 		},
 		{
-			"importpath": "github.com/go-sql-driver/mysql",
-			"repository": "https://github.com/go-sql-driver/mysql",
-			"revision": "d512f204a577a4ab037a1816604c48c9c13210be",
-			"branch": "master"
-		},
-		{
 			"importpath": "github.com/golang/snappy",
 			"repository": "https://github.com/golang/snappy",
 			"revision": "723cc1e459b8eea2dea4583200fd60757d40097a",
@@ -173,25 +167,11 @@
 			"path": "/driver"
 		},
 		{
-			"importpath": "github.com/mattes/migrate/driver/mysql",
-			"repository": "https://github.com/mattes/migrate",
-			"revision": "602888252929b4290c98a89956877e4f9bb033cc",
-			"branch": "master",
-			"path": "/driver/mysql"
-		},
-		{
 			"importpath": "github.com/mattes/migrate/file",
 			"repository": "https://github.com/mattes/migrate",
 			"revision": "602888252929b4290c98a89956877e4f9bb033cc",
 			"branch": "master",
 			"path": "/file"
-		},
-		{
-			"importpath": "github.com/mattes/migrate/migrate",
-			"repository": "https://github.com/mattes/migrate",
-			"revision": "602888252929b4290c98a89956877e4f9bb033cc",
-			"branch": "master",
-			"path": "/migrate"
 		},
 		{
 			"importpath": "github.com/mattes/migrate/pipe",
