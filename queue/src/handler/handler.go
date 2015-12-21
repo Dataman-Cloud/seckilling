@@ -132,7 +132,7 @@ func Tickets(c *echo.Context) error {
 		return c.JSON(model.PushQueueError, ticket)
 	}
 	kafka.ProducerMessage <- string(bytes)
-	err = cache.WriteHashToRedis(cookie, "status", "0", -1)
+	err = cache.WriteHashToRedis(cookie, "Status", "0", -1)
 	if err != nil {
 		log.Printf("write ticket to redis has error %s", err.Error())
 		return c.JSON(model.PushQueueError, ticket)

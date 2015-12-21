@@ -37,7 +37,6 @@ create table if not exists order (
     eid bigint unsigned not null,
     uid varchar(64) not null, -- user token
     status tinyint(1) not null,
-    eid bigint not null,
     seq int unsigned not null,
     ext text, -- json for extension, eg. headers
     created timestamp,
