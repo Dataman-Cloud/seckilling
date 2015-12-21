@@ -2,8 +2,13 @@ package queue
 
 import (
 	"log"
+	"reflect"
+	"strconv"
 	"time"
 
+	"github.com/Dataman-Cloud/seckilling/order/src/cache"
+	"github.com/Dataman-Cloud/seckilling/order/src/db"
+	"github.com/Dataman-Cloud/seckilling/order/src/model"
 	"github.com/Shopify/sarama"
 	"github.com/spf13/viper"
 	csgroup "github.com/wvanbergen/kafka/consumergroup"
@@ -91,22 +96,67 @@ func logMessage(message *sarama.ConsumerMessage) {
 }
 
 func checkUerTicket(message *sarama.ConsumerMessage) {
-	updateStockInfo()
-	//stock := 1
-	value := string(message.Value)
-	log.Println(value)
-	writeTicketToCache()
-	writeTicketToDb()
+	eid, err := db.GetEId()
+	if err != err {
+		log.Println("Get EId has error do nothing")
+		return
+	}
+
+	seq, err := updateStockInfo(eid)
+	if err != nil {
+		log.Println("Get merchandise inventory has error do nothing")
+		return
+	}
+
+	order := model.Order{
+		EId:    eid,
+		UId:    string(message.Key),
+		Seq:    seq,
+		Status: 1,
+		Ext:    "",
+		Create: time.Now().UTC(),
+	}
+
+	//TODO if has error or panic must rollback
+	err = writeOrderToDb(order)
+	if err != nil {
+		log.Println("Insert order to db has error: ", err)
+		return
+	}
+
+	err = writeOrderToCache(order)
+	if err != nil {
+		log.Println("Insert order to cache has error: ", err)
+		return
+	}
+
 }
 
-func writeTicketToCache() error {
-	return nil
+func writeOrderToCache(order model.Order) error {
+	val := reflect.ValueOf(order).Elem()
+	conn := cache.Open()
+	defer conn.Close()
+	for i := 0; i < val.NumField(); i++ {
+		valueField := val.Field(i)
+		typeField := val.Type().Field(i)
+		conn.Send("HSET", order.UId, typeField.Name, valueField.Interface())
+	}
+
+	_, err := conn.Do("EXEC")
+	return err
 }
 
-func writeTicketToDb() error {
-	return nil
+func writeOrderToDb(order model.Order) error {
+	return db.InsertOrder(order)
 }
 
-func updateStockInfo() {
-
+func updateStockInfo(eid int64) (int64, error) {
+	eidStr := strconv.FormatInt(eid, 10)
+	countId := "dataman-" + eidStr
+	seq, err := cache.Decr(countId)
+	if err != nil {
+		log.Println("get merchandise inventory has error: ", err)
+		return -1, err
+	}
+	return seq, nil
 }

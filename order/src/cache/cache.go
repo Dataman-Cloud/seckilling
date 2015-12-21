@@ -3,6 +3,7 @@ package cache
 import (
 	"fmt"
 	"log"
+	"strconv"
 	"sync"
 
 	redis "github.com/garyburd/redigo/redis"
@@ -70,4 +71,20 @@ func WriteHashToRedis(key, field, value string, timeout int) error {
 		return err
 	}
 	return nil
+}
+
+func Decr(key string) (int64, error) {
+	conn := Open()
+	defer conn.Close()
+	result, err := conn.Do("DECR", key)
+	if err != nil {
+		return -1, err
+	}
+
+	sku, err := strconv.ParseInt(fmt.Sprint(result), 10, 64)
+	if err != nil {
+		return -1, err
+	}
+
+	return sku, nil
 }
