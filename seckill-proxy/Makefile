@@ -12,7 +12,7 @@ TRAEFIK_MOUNT := -v "$(CURDIR)/$(BIND_DIR):/go/src/github.com/Dataman-Cloud/seck
 GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD 2>/dev/null)
 TRAEFIK_DEV_IMAGE := traefik-dev$(if $(GIT_BRANCH),:$(GIT_BRANCH))
 REPONAME := $(shell echo $(REPO) | tr '[:upper:]' '[:lower:]')
-TRAEFIK_IMAGE := $(if $(REPONAME),$(REPONAME),"emilevauge/traefik")
+TRAEFIK_IMAGE := $(if $(REPONAME),$(REPONAME),"seckilling/proxy")
 INTEGRATION_OPTS := $(if $(MAKE_DOCKER_HOST),-e "DOCKER_HOST=$(MAKE_DOCKER_HOST)", -v "/var/run/docker.sock:/var/run/docker.sock")
 
 DOCKER_RUN_TRAEFIK := docker run $(if $(CIRCLECI),,--rm) $(INTEGRATION_OPTS) -it $(TRAEFIK_ENVS) $(TRAEFIK_MOUNT) "$(TRAEFIK_DEV_IMAGE)"
