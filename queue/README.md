@@ -5,5 +5,11 @@
  * 3. cp ./queue-conf.sample.yaml ~/.seckilling/queue-conf.yaml
  * 4. make run
 
+### build docker images
+
+```
+# make image
+```
+
 #### 配置文件参考 [viper](https://github.com/spf13/viper)</br>
 #### web框架使用 [echo](https://github.com/labstack/echo)
