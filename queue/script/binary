@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+rm -f dist/queue
+
+if [ -z "$VERSION" ]; then
+  VERSION=$(date -u '+%Y%m%d%H%M%S')
+fi
+
+if [ -z "$DATE" ]; then
+  DATE=$(date -u '+%Y-%m-%d_%I:%M:%S%p')
+fi
+
+# Build binaries
+CGO_ENABLED=0 go build -ldflags "-X main.Version=$VERSION -X main.BuildDate=$DATE" -a -installsuffix nocgo -o dist/omega-queue ./src/*.go
