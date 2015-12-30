@@ -140,7 +140,7 @@ func staticEditorconfig() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/.editorconfig", size: 429, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/.editorconfig", size: 429, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -160,7 +160,7 @@ func staticGitignore() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/.gitignore", size: 32, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/.gitignore", size: 32, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -180,7 +180,7 @@ func staticJshintignore() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/.jshintignore", size: 30, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/.jshintignore", size: 30, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -200,7 +200,7 @@ func staticJshintrc() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/.jshintrc", size: 7336, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/.jshintrc", size: 7336, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -220,7 +220,7 @@ func staticAppCoreHealthResourceJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/app/core/health.resource.js", size: 203, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/app/core/health.resource.js", size: 203, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -240,7 +240,7 @@ func staticAppCoreProvidersResourceJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/app/core/providers.resource.js", size: 215, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/app/core/providers.resource.js", size: 215, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -260,7 +260,7 @@ func staticAppSectionsHealthHealthControllerJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/app/sections/health/health.controller.js", size: 5189, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/app/sections/health/health.controller.js", size: 5189, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -280,7 +280,7 @@ func staticAppSectionsHealthHealthHtml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/app/sections/health/health.html", size: 1479, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/app/sections/health/health.html", size: 1479, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -300,7 +300,7 @@ func staticAppSectionsHealthHealthModuleJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/app/sections/health/health.module.js", size: 381, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/app/sections/health/health.module.js", size: 381, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -320,7 +320,7 @@ func staticAppSectionsProvidersBackendMonitorBackendMonitorControllerJs() (*asse
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/app/sections/providers/backend-monitor/backend-monitor.controller.js", size: 173, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/app/sections/providers/backend-monitor/backend-monitor.controller.js", size: 173, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -340,7 +340,7 @@ func staticAppSectionsProvidersBackendMonitorBackendMonitorDirectiveJs() (*asset
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/app/sections/providers/backend-monitor/backend-monitor.directive.js", size: 486, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/app/sections/providers/backend-monitor/backend-monitor.directive.js", size: 486, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -360,7 +360,7 @@ func staticAppSectionsProvidersBackendMonitorBackendMonitorHtml() (*asset, error
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/app/sections/providers/backend-monitor/backend-monitor.html", size: 1110, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/app/sections/providers/backend-monitor/backend-monitor.html", size: 1110, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -380,7 +380,7 @@ func staticAppSectionsProvidersBackendMonitorBackendMonitorModuleJs() (*asset, e
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/app/sections/providers/backend-monitor/backend-monitor.module.js", size: 111, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/app/sections/providers/backend-monitor/backend-monitor.module.js", size: 111, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -400,7 +400,7 @@ func staticAppSectionsProvidersFrontendMonitorFrontendMonitorControllerJs() (*as
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/app/sections/providers/frontend-monitor/frontend-monitor.controller.js", size: 175, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/app/sections/providers/frontend-monitor/frontend-monitor.controller.js", size: 175, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -420,7 +420,7 @@ func staticAppSectionsProvidersFrontendMonitorFrontendMonitorDirectiveJs() (*ass
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/app/sections/providers/frontend-monitor/frontend-monitor.directive.js", size: 494, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/app/sections/providers/frontend-monitor/frontend-monitor.directive.js", size: 494, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -440,7 +440,7 @@ func staticAppSectionsProvidersFrontendMonitorFrontendMonitorHtml() (*asset, err
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/app/sections/providers/frontend-monitor/frontend-monitor.html", size: 1008, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/app/sections/providers/frontend-monitor/frontend-monitor.html", size: 1008, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -460,7 +460,7 @@ func staticAppSectionsProvidersFrontendMonitorFrontendMonitorModuleJs() (*asset,
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/app/sections/providers/frontend-monitor/frontend-monitor.module.js", size: 107, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/app/sections/providers/frontend-monitor/frontend-monitor.module.js", size: 107, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -480,7 +480,7 @@ func staticAppSectionsProvidersProvidersControllerJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/app/sections/providers/providers.controller.js", size: 630, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/app/sections/providers/providers.controller.js", size: 630, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -500,7 +500,7 @@ func staticAppSectionsProvidersProvidersHtml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/app/sections/providers/providers.html", size: 753, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/app/sections/providers/providers.html", size: 753, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -520,7 +520,7 @@ func staticAppSectionsProvidersProvidersModuleJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/app/sections/providers/providers.module.js", size: 514, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/app/sections/providers/providers.module.js", size: 514, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -540,7 +540,7 @@ func staticAppSectionsSectionsConfigJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/app/sections/sections.config.js", size: 199, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/app/sections/sections.config.js", size: 199, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -560,7 +560,7 @@ func staticAppSectionsSectionsModuleJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/app/sections/sections.module.js", size: 212, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/app/sections/sections.module.js", size: 212, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -580,7 +580,7 @@ func staticAppTraefikJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/app/traefik.js", size: 89, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/app/traefik.js", size: 89, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -600,7 +600,7 @@ func staticBowerJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower.json", size: 565, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower.json", size: 565, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -620,7 +620,7 @@ func staticBower_componentsAngularAngularCspCss() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/angular/angular-csp.css", size: 343, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/angular/angular-csp.css", size: 343, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -640,7 +640,7 @@ func staticBower_componentsAngularAngularMinJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/angular/angular.min.js", size: 147735, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/angular/angular.min.js", size: 147735, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -660,7 +660,7 @@ func staticBower_componentsAngularAngularMinJsMap() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/angular/angular.min.js.map", size: 397609, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/angular/angular.min.js.map", size: 397609, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -680,7 +680,7 @@ func staticBower_componentsAngularBootstrapUiBootstrapCspCss() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/angular-bootstrap/ui-bootstrap-csp.css", size: 189, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/angular-bootstrap/ui-bootstrap-csp.css", size: 189, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -700,7 +700,7 @@ func staticBower_componentsAngularBootstrapUiBootstrapTplsMinJs() (*asset, error
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js", size: 89681, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js", size: 89681, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -720,7 +720,7 @@ func staticBower_componentsAngularNvd3DistAngularNvd3MinJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/angular-nvd3/dist/angular-nvd3.min.js", size: 7002, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/angular-nvd3/dist/angular-nvd3.min.js", size: 7002, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -740,7 +740,7 @@ func staticBower_componentsAngularResourceAngularResourceMinJs() (*asset, error)
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/angular-resource/angular-resource.min.js", size: 3678, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/angular-resource/angular-resource.min.js", size: 3678, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -760,7 +760,7 @@ func staticBower_componentsAngularResourceAngularResourceMinJsMap() (*asset, err
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/angular-resource/angular-resource.min.js.map", size: 9614, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/angular-resource/angular-resource.min.js.map", size: 9614, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -780,7 +780,7 @@ func staticBower_componentsAngularUiRouterReleaseAngularUiRouterMinJs() (*asset,
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/angular-ui-router/release/angular-ui-router.min.js", size: 30439, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/angular-ui-router/release/angular-ui-router.min.js", size: 30439, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -800,7 +800,7 @@ func staticBower_componentsBootstrapDistCssBootstrapThemeCssMap() (*asset, error
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/bootstrap/dist/css/bootstrap-theme.css.map", size: 47721, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/bootstrap/dist/css/bootstrap-theme.css.map", size: 47721, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -820,7 +820,7 @@ func staticBower_componentsBootstrapDistCssBootstrapThemeMinCss() (*asset, error
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/bootstrap/dist/css/bootstrap-theme.min.css", size: 23357, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/bootstrap/dist/css/bootstrap-theme.min.css", size: 23357, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -840,7 +840,7 @@ func staticBower_componentsBootstrapDistCssBootstrapCssMap() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/bootstrap/dist/css/bootstrap.css.map", size: 390518, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/bootstrap/dist/css/bootstrap.css.map", size: 390518, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -860,7 +860,7 @@ func staticBower_componentsBootstrapDistCssBootstrapMinCss() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/bootstrap/dist/css/bootstrap.min.css", size: 122540, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/bootstrap/dist/css/bootstrap.min.css", size: 122540, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -880,7 +880,7 @@ func staticBower_componentsBootstrapDistFontsGlyphiconsHalflingsRegularEot() (*a
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.eot", size: 20127, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.eot", size: 20127, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -900,7 +900,7 @@ func staticBower_componentsBootstrapDistFontsGlyphiconsHalflingsRegularSvg() (*a
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.svg", size: 108738, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.svg", size: 108738, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -920,7 +920,7 @@ func staticBower_componentsBootstrapDistFontsGlyphiconsHalflingsRegularTtf() (*a
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.ttf", size: 45404, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.ttf", size: 45404, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -940,7 +940,7 @@ func staticBower_componentsBootstrapDistFontsGlyphiconsHalflingsRegularWoff() (*
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.woff", size: 23424, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.woff", size: 23424, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -960,7 +960,7 @@ func staticBower_componentsBootstrapDistFontsGlyphiconsHalflingsRegularWoff2() (
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2", size: 18028, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2", size: 18028, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -980,7 +980,7 @@ func staticBower_componentsBootstrapDistJsBootstrapMinJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/bootstrap/dist/js/bootstrap.min.js", size: 36816, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/bootstrap/dist/js/bootstrap.min.js", size: 36816, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1000,7 +1000,7 @@ func staticBower_componentsD3D3MinJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/d3/d3.min.js", size: 151145, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/d3/d3.min.js", size: 151145, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1020,7 +1020,7 @@ func staticBower_componentsJqueryDistJqueryMinJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/jquery/dist/jquery.min.js", size: 84380, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/jquery/dist/jquery.min.js", size: 84380, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1040,7 +1040,7 @@ func staticBower_componentsNvd3BuildNvD3MinCss() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/nvd3/build/nv.d3.min.css", size: 9560, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/nvd3/build/nv.d3.min.css", size: 9560, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1060,7 +1060,7 @@ func staticBower_componentsNvd3BuildNvD3MinJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/bower_components/nvd3/build/nv.d3.min.js", size: 217818, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/bower_components/nvd3/build/nv.d3.min.js", size: 217818, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1080,7 +1080,7 @@ func staticFontsCharter_regularWebfontEot() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/fonts/charter_regular-webfont.eot", size: 51896, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/fonts/charter_regular-webfont.eot", size: 51896, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1100,7 +1100,7 @@ func staticFontsCharter_regularWebfontTtf() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/fonts/charter_regular-webfont.ttf", size: 51716, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/fonts/charter_regular-webfont.ttf", size: 51716, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1120,7 +1120,7 @@ func staticFontsCharter_regularWebfontWoff() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/fonts/charter_regular-webfont.woff", size: 27904, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/fonts/charter_regular-webfont.woff", size: 27904, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1140,7 +1140,7 @@ func staticIndexHtml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/index.html", size: 3648, mode: os.FileMode(420), modTime: time.Unix(1449124734, 0)}
+	info := bindataFileInfo{name: "static/index.html", size: 3648, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1160,7 +1160,7 @@ func staticPackageJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/package.json", size: 279, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/package.json", size: 279, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1180,7 +1180,7 @@ func staticReadmeMd() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/readme.md", size: 879, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/readme.md", size: 879, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1200,7 +1200,7 @@ func staticStyleCss() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/style.css", size: 554, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "static/style.css", size: 554, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1220,7 +1220,7 @@ func templatesDockerTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/docker.tmpl", size: 658, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "templates/docker.tmpl", size: 658, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1240,7 +1240,7 @@ func templatesKvTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/kv.tmpl", size: 1050, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "templates/kv.tmpl", size: 1050, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1260,7 +1260,7 @@ func templatesMarathonTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/marathon.tmpl", size: 597, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "templates/marathon.tmpl", size: 597, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -1280,7 +1280,7 @@ func templatesNotfoundTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/notFound.tmpl", size: 117, mode: os.FileMode(420), modTime: time.Unix(1449123543, 0)}
+	info := bindataFileInfo{name: "templates/notFound.tmpl", size: 117, mode: os.FileMode(420), modTime: time.Unix(1450177594, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
