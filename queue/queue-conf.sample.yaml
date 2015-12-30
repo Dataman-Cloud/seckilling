@@ -12,4 +12,4 @@ cache:
     poolsize: 100
 workers: 100
 seckillTime: "2015-12-09 20:06:45 +0800"
-proxyTrigger: "/Users/leon/ws/go/src/github.com/Dataman-Cloud/seckilling/seckill-proxy/rules.toml"
+proxyTrigger: "/data/seckilling/rules.toml"
