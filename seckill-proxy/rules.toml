@@ -2,7 +2,7 @@
 [backends]
   [backends.backend1]
     [backends.backend1.servers.server1]
-      url = "http://localhost:8090"
+      url = "http://localhost:5090"
       weight = 10
 
   [backends.backend2]
@@ -10,17 +10,17 @@
       expression = "ResponseCount() > 3"
       fallback = "/v1/over"
     [backends.backend2.servers.server1]
-      url = "http://localhost:8090"
+      url = "http://localhost:5090"
       weight = 1
 
   [backends.backend3]
     [backends.backend3.servers.server1]
-      url = "http://localhost:8090"
+      url = "http://localhost:5090"
       weight = 1
 
   [backends.backend4]
     [backends.backend4.servers.server1]
-      url = "http://localhost:8090"
+      url = "http://localhost:5090"
       weight = 1
 
 [frontends]
