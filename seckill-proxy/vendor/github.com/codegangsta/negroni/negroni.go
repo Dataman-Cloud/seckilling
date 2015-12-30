@@ -4,8 +4,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"reflect"
-	"runtime"
 )
 
 // Handler handler is an interface that objects can implement to be registered to serve as middleware
@@ -32,8 +30,6 @@ type middleware struct {
 }
 
 func (m middleware) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	name := runtime.FuncForPC(reflect.ValueOf(m).Pointer()).Name()
-	log.Println("middleware name", name)
 	m.handler.ServeHTTP(rw, r, m.next.ServeHTTP)
 }
 
