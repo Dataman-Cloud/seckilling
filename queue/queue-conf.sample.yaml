@@ -1,11 +1,11 @@
 ---
 logLevel: "DEBUG"
-host: ":8090"
-kafka: 
-   serverList: ["10.3.10.32:9091", "10.3.10.42:9091"]
+port: ":8090"
+kafka:
+   serverList: ["10.3.10.61:9091"]
    topic: "dataman_test"
 cache:
-    host: "localhost"
+    host: "10.3.10.43"
     port: 6379
     password: ""
     db: 0
@@ -13,4 +13,3 @@ cache:
 workers: 100
 seckillTime: "2015-12-09 20:06:45 +0800"
 proxyTrigger: "/Users/leon/ws/go/src/github.com/Dataman-Cloud/seckilling/seckill-proxy/rules.toml"
-
