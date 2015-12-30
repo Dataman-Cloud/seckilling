@@ -1,7 +1,7 @@
 ---
 logLevel: "DEBUG"
-host: ":8090"
-kafka: 
+port: ":8090"
+kafka:
    serverList: ["10.3.10.32:9091", "10.3.10.42:9091"]
    topic: "dataman_test"
 cache:
