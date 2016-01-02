@@ -7,4 +7,3 @@ cache:
     password: ""
     db: 0
     poolsize: 100
-workers: 100
