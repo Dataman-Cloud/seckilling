@@ -2,8 +2,9 @@ from django.conf.urls import url
 
 from . import views
 
+
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
-    url(r'^gendata$', views.gendata, name='gendata'),
+    # url(r'^$', views.index, name='index'),
+    url(r'^gendata$', views.gen_data, name='gendata'),
 ]
 
