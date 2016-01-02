@@ -1,5 +1,0 @@
-logLevel = "DEBUG"
-
-[web]
-
-address = ":8080"
