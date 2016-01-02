@@ -11,8 +11,6 @@ from django.contrib.auth.decorators import login_required
 
 from .models import Prizes, Brand
 
-from .daos import prizedao
-
 class UserForm(forms.Form):
     username = forms.CharField(label='用户名',max_length=100)
     password = forms.CharField(label='密码',widget=forms.PasswordInput())
@@ -45,7 +43,7 @@ def gen_data(request):
 
 @login_required
 def dashboard(request):
-    prizes_total = prizedao.getallprizes()
+    prizes_total = Prizes.objects.all().count()
     username = request.session.get('username')
     print(username)
     context = {'prizes_total': prizes_total, 'username': username}
