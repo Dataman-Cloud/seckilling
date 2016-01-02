@@ -1,36 +1,16 @@
 package handler
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
-	"os/exec"
-	"strconv"
 	"time"
 
-	"github.com/Dataman-Cloud/seckilling/queue/src/cache"
-	"github.com/Dataman-Cloud/seckilling/queue/src/kafka"
-	"github.com/Dataman-Cloud/seckilling/queue/src/model"
+	"github.com/Dataman-Cloud/seckilling/gate/src/cache"
+	"github.com/Dataman-Cloud/seckilling/gate/src/model"
 	"github.com/labstack/echo"
-	"github.com/spf13/viper"
 )
-
-var seckillTime *time.Time
-
-func SeckillTime() *time.Time {
-	if seckillTime == nil {
-		time := viper.GetTime("seckillTime")
-		seckillTime = &time
-	}
-
-	return seckillTime
-}
-
-func ResetSeckillTime() {
-	seckillTime = nil
-}
 
 func Auth(c *echo.Context) error {
 	req := c.Request()
@@ -66,43 +46,6 @@ func Hello(c *echo.Context) error {
 	return c.String(http.StatusOK, "Hello, World!\n")
 }
 
-func Countdown(c *echo.Context) error {
-	seckillTime := SeckillTime()
-	log.Println(*seckillTime)
-	curTime := time.Now().UTC()
-	data := model.CountdownData{
-		CurTime:  curTime.Unix(),
-		UnlockOn: seckillTime.Unix(),
-		Locked:   curTime.Before(*seckillTime),
-	}
-
-	return c.JSON(http.StatusOK, model.CommonResponse{
-		Code:  0,
-		Data:  data,
-		Error: "",
-	})
-}
-
-func Reset(c *echo.Context) error {
-	offsetParam := c.Param("offset")
-	offset := int64(10)
-	if offsetSec, err := strconv.ParseFloat(offsetParam, 64); err == nil {
-		offset = int64(offsetSec)
-	}
-	curTime := time.Now().UTC()
-	newTime := curTime.Add(time.Second * time.Duration(offset))
-	seckillTime = &newTime
-
-	cmd := exec.Command("touch", viper.GetString("proxyTrigger"))
-	err := cmd.Run()
-	if err != nil {
-		log.Fatalln("can't touch proxyTrigger")
-	}
-	log.Println("reset done")
-
-	return c.Redirect(http.StatusFound, "/")
-}
-
 func checkCookie(c *echo.Context) string {
 	cookies := c.Request().Cookies()
 	for _, cookie := range cookies {
@@ -114,11 +57,6 @@ func checkCookie(c *echo.Context) string {
 }
 
 func Tickets(c *echo.Context) error {
-	curTime := time.Now().UTC()
-	if curTime.Before(*seckillTime) {
-		return c.Redirect(http.StatusFound, "/")
-	}
-
 	cookie := checkCookie(c)
 	if cookie == "" {
 		return c.JSON(model.CookieCheckFailed, model.TicketData{UID: cookie, Timestamp: time.Now().UTC().Unix()})
@@ -126,13 +64,7 @@ func Tickets(c *echo.Context) error {
 
 	ticket := model.TicketData{UID: cookie, Timestamp: time.Now().UTC().Unix()}
 	model.UIDMap[cookie] = false
-	bytes, err := json.Marshal(ticket)
-	if err != nil {
-		log.Printf("Marshal ticket has error: %s", err.Error())
-		return c.JSON(model.PushQueueError, ticket)
-	}
-	kafka.ProducerMessage <- string(bytes)
-	err = cache.WriteHashToRedis(cookie, "Status", "0", -1)
+	err := cache.WriteHashToRedis(cookie, "Status", "0", -1)
 	if err != nil {
 		log.Printf("write ticket to redis has error %s", err.Error())
 		return c.JSON(model.PushQueueError, ticket)

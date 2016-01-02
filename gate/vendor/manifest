@@ -14,12 +14,6 @@
 			"branch": "master"
 		},
 		{
-			"importpath": "github.com/Shopify/sarama",
-			"repository": "https://github.com/Shopify/sarama",
-			"revision": "159e9990b0796511607dd0d7aaa3eb37d1829d16",
-			"branch": "master"
-		},
-		{
 			"importpath": "github.com/armon/consul-api",
 			"repository": "https://github.com/armon/consul-api",
 			"revision": "dcfedd50ed5334f96adee43fc88518a4f095e15c",
