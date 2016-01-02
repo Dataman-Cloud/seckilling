@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <h1>登录页面</h1>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    用户名: {{form.username}}<br>
+    密码: {{form.password}}<br>
+    <p class="form-actions">
+      <input type="submit" value="登录" />
+    </p>
+  </form>
+</body>
+</html>
