@@ -1,0 +1,10 @@
+---
+logLevel: "DEBUG"
+port: ":8090"
+cache:
+    host: "10.3.10.43"
+    port: 6379
+    password: ""
+    db: 0
+    poolsize: 100
+workers: 100
