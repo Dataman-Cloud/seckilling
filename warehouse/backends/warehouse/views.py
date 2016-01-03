@@ -8,8 +8,9 @@ from django.template import RequestContext, loader
 from django import forms
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
 
-from .models import Prizes, Brand
+from .models import Prizes, Brand, Activities
 
 class UserForm(forms.Form):
     username = forms.CharField(label='用户名',max_length=100)
