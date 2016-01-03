@@ -6,7 +6,7 @@ from django.shortcuts import render, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext, loader
 from django import forms
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 from .models import Prizes, Brand
@@ -44,12 +44,10 @@ def gen_data(request):
 @login_required
 def dashboard(request):
     prizes_total = Prizes.objects.all().count()
-    username = request.session.get('username')
-    print(username)
-    context = {'prizes_total': prizes_total, 'username': username}
+    context = {'prizes_total': prizes_total}
     return render(request, 'dashboard.html', context)
 
-def auth(request):
+def login_view(request):
     if request.method == "GET":
         form = UserForm()
         return render_to_response('login.html', RequestContext(request, {'form':form}))
@@ -62,8 +60,11 @@ def auth(request):
             print(user)
             if user is not None and user.is_active:
                 login(request, user)
-                request.session['username'] = user.username
                 return HttpResponseRedirect('/warehouse/dashboard')
             else:
                 return HttpResponse("This use can not login")
     return render_to_response('login.html', RequestContext(request, {'form':form}))
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect('/warehouse/login')

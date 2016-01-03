@@ -106,4 +106,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-LOGIN_URL = '/warehouse/auth'
+LOGIN_URL = '/warehouse/login'

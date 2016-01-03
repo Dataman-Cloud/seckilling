@@ -7,8 +7,9 @@
 <body>
 
   <p>奖品总数: {{prizes_total}}</p>
+  <p>{% if request.user.is_authenticated %}登陆用户: '{{ request.user.username }}'
+  {% else %}<a href="/warehouse/login">Login</a>{% endif %}</p>
 
-  <p>登陆用户: {{username}}</p>
-
+  <p><a href="/warehouse/logout">登出</a></p>
 </body>
 </html>
