@@ -1,0 +1,10 @@
+PWD=$(pwd)
+NG_PREFIX=/opt/openresty/nginx
+docker run \
+-v $PWD/conf/nginx.conf:$NG_PREFIX/conf/nginx.conf \
+-v $PWD/lua:$NG_PREFIX/sk_lua \
+-v $PWD/lib:$NG_PREFIX/sk_lib \
+-p 9200:80 \
+-d \
+--name resty \
+testregistry.dataman.io/nginx-proxy-1.9.7.1:1.0

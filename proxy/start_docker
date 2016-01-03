@@ -1,1 +1,0 @@
-docker run -v /Users/leon/ws/go/src/github.com/Dataman-Cloud/seckilling/nginx-proxy/conf/:/opt/openresty/nginx/sandbox/ -p 9200:80 -d --name resty testregistry.dataman.io/nginx-proxy-1.9.7.1:1.0
