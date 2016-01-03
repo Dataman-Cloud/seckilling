@@ -39,11 +39,11 @@ def gen_data(request):
         else:
             return HttpResponse("生成测试数据", status=201)
     else:
-        return HttpResponse("生成测试数据完毕")
+        return HttpResponse("测试数据已足够，不需要生成新的数据")
 
 @login_required
 def dashboard(request):
-    prizes_total = Prizes.objects.all().count()
+    prizes_total = Prizes.objects.count()
     context = {'prizes_total': prizes_total}
     return render(request, 'dashboard.html', context)
 
