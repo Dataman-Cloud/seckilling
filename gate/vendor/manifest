@@ -205,12 +205,6 @@
 			"branch": "master"
 		},
 		{
-			"importpath": "github.com/satori/go.uuid",
-			"repository": "https://github.com/satori/go.uuid",
-			"revision": "d41af8bb6a7704f00bc3b7cba9355ae6a5a80048",
-			"branch": "master"
-		},
-		{
 			"importpath": "github.com/spf13/cast",
 			"repository": "https://github.com/spf13/cast",
 			"revision": "ee815aaf958c707ad07547cd62150d973710f747",

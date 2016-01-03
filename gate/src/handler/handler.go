@@ -1,10 +1,9 @@
 package handler
 
 import (
-	"fmt"
 	"log"
-	"math/rand"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/Dataman-Cloud/seckilling/gate/src/cache"
@@ -12,22 +11,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-func Auth(c *echo.Context) error {
-	req := c.Request()
-	if req == nil {
-		return fmt.Errorf("context request is null")
-	}
-
-	cookie, err := req.Cookie(model.SkCookie)
-	if err != nil {
-		cookie = &http.Cookie{Name: model.SkCookie, Value: model.NewUUID(), MaxAge: 300}
-		req.AddCookie(cookie)
-		http.SetCookie(c.Response(), cookie)
-	} else {
-		log.Println(cookie.Value)
-	}
-	return nil
-}
+var CountKey = "Stock:1"
 
 func CrossDomain(c *echo.Context) error {
 	c.Response().Header().Set("Access-Control-Allow-Origin", "*")
@@ -59,56 +43,59 @@ func checkCookie(c *echo.Context) string {
 func Tickets(c *echo.Context) error {
 	cookie := checkCookie(c)
 	if cookie == "" {
-		return c.JSON(model.CookieCheckFailed, model.TicketData{UID: cookie, Timestamp: time.Now().UTC().Unix()})
+		return c.JSON(model.CookieCheckFailed, model.UserInfo{Timestamp: time.Now().UTC().Unix()})
 	}
 
-	ticket := model.TicketData{UID: cookie, Timestamp: time.Now().UTC().Unix()}
-	model.UIDMap[cookie] = false
-	err := cache.WriteHashToRedis(cookie, "Status", "0", -1)
+	// Get user info by cookie(UUID)
+	// if cookie is not exit in redis return error
+	// if status is null or status not 1 return StatusNotOne/StatusNull
+	// if phone is null return UserPhoneNumNull
+	// if event is null or event is not match current event return EventNull/EventNotMatch
+	user, code := cache.GetUserInfo(cookie)
+	if code != 0 {
+		return c.JSON(code, model.UserInfo{Timestamp: time.Now().UTC().Unix()})
+	}
+
+	if user == nil {
+		return c.JSON(model.UnknownError, model.UserInfo{Timestamp: time.Now().UTC().Unix()})
+	}
+
+	// check phone number and event id make sure one phone number only have once chance in one activity
+	repeat, err := cache.CheckPhoneNum(user.Phone)
 	if err != nil {
-		log.Printf("write ticket to redis has error %s", err.Error())
-		return c.JSON(model.PushQueueError, ticket)
+		log.Println("check user phone number hs error: ", err)
 	}
 
-	return c.JSON(http.StatusOK, model.CommonResponse{
-		Code:  0,
-		Data:  ticket,
-		Error: "",
-	})
+	if !repeat {
+		return c.JSON(model.PhoneRepaet, user)
+	}
 
+	code = ProduceOrder(user)
+	if code == 0 {
+		return c.JSON(http.StatusOK, user)
+	}
+
+	return c.JSON(code, user)
 }
 
-func Over(c *echo.Context) error {
-	return c.JSON(http.StatusOK, model.CommonResponse{
-		Code:  99,
-		Data:  "Game Over",
-		Error: "",
-	})
-}
-
-func Push(c *echo.Context) error {
-	if (rand.Intn(10)) > 5 {
-		time.Sleep(time.Second * 1)
-	} else {
-		time.Sleep(time.Millisecond * 50)
-	}
-	req := c.Request()
-	if req == nil {
-		return fmt.Errorf("context request is null")
-	}
-	cookie, err := req.Cookie(model.SkCookie)
+func ProduceOrder(user *model.UserInfo) int {
+	// TODO use MultiBulk
+	stock, err := cache.Decr(CountKey)
 	if err != nil {
-		return c.JSON(http.StatusOK, model.CommonResponse{
-			Code:  99,
-			Data:  "tickets error",
-			Error: "",
-		})
+		log.Println("get stock has error err", err)
+		return model.RedisError
+	} else if stock <= 0 {
+		log.Println("short of stock!! stock is ", stock)
+		return model.ShortageStock
+	}
+	stockStr := strconv.FormatInt(stock, 10)
+	serialNum, err := cache.GetSerialNum(user.EventId, stockStr)
+	if err != nil {
+		log.Println("Get serial number has error: ", err)
+		return model.RedisError
 	}
 
-	model.UIDMap[cookie.Value] = true
-	return c.JSON(http.StatusOK, model.CommonResponse{
-		Code:  0,
-		Data:  "Game Over",
-		Error: "",
-	})
+	user.Index = stock
+	user.SerialNum = serialNum
+	return 0
 }

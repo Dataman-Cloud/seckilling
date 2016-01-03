@@ -24,14 +24,11 @@ func main() {
 	// Middleware
 	e.Use(mw.Logger())
 	e.Use(mw.Recover())
-	e.Use(handler.Auth)
-	e.Use(handler.CrossDomain)
+	// e.Use(handler.CrossDomain)
 
 	// Routes
 	e.Get("/hello", handler.Hello)
 	e.Post("/v1/tickets", handler.Tickets)
-	e.Get("/v1/over", handler.Over)
-	e.Post("/v1/push", handler.Push)
 
 	// go kafka.StartKafkaProducer()
 	// Start server
