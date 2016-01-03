@@ -1,0 +1,5 @@
+django==1.8.6
+mysqlclient
+djangorestframework
+markdown
+django-filter
