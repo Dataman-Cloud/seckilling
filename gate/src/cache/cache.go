@@ -201,3 +201,11 @@ func GetSerialNum(key, field string) (string, error) {
 	defer conn.Close()
 	return redis.String(conn.Do("HGET", key, field))
 }
+
+func UpdateCurEventId(curEid string) error {
+	conn := Open()
+	defer conn.Close()
+
+	_, err := conn.Do("SET", model.CurrentEventKey, curEid)
+	return err
+}

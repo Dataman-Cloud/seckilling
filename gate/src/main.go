@@ -3,6 +3,7 @@ package main
 import (
 	"time"
 
+	"github.com/Dataman-Cloud/seckilling/gate/src/cache"
 	"github.com/Dataman-Cloud/seckilling/gate/src/handler"
 	"github.com/labstack/echo"
 	mw "github.com/labstack/echo/middleware"
@@ -29,6 +30,8 @@ func main() {
 	// Routes
 	e.Get("/hello", handler.Hello)
 	e.Post("/v1/tickets", handler.Tickets)
+
+	go cache.StartUpdateEventStatus()
 
 	// go kafka.StartKafkaProducer()
 	// Start server
