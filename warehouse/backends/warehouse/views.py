@@ -16,7 +16,7 @@ class UserForm(forms.Form):
     password = forms.CharField(label='密码',widget=forms.PasswordInput())
 
 def index(request):
-    return HttpResponse("Hello")
+    return HttpResponseRedirect('/warehouse/login')
 
 def gen_data(request):
     """
@@ -37,9 +37,9 @@ def gen_data(request):
         except Exception as e:
             return HttpResponse(e, status=500)
         else:
-            return HttpResponse("Gen data", status=201)
+            return HttpResponse("生成测试数据", status=201)
     else:
-        return HttpResponse("Already have enough data.")
+        return HttpResponse("生成测试数据完毕")
 
 @login_required
 def dashboard(request):
@@ -62,7 +62,7 @@ def login_view(request):
                 login(request, user)
                 return HttpResponseRedirect('/warehouse/dashboard')
             else:
-                return HttpResponse("This use can not login")
+                return HttpResponse("账户异常，请联系管理员")
     return render_to_response('login.html', RequestContext(request, {'form':form}))
 
 def logout_view(request):
