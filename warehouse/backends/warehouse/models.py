@@ -38,6 +38,12 @@ class Prizes(models.Model):
 
 
 class Activities(models.Model):
+    STATUS = [
+        ("waiting", 'waiting'),
+        ("running", 'running'),
+        ("end", 'end')
+    ]
+
     class Meta:
         ordering = ["start_at"]
 
@@ -46,21 +52,38 @@ class Activities(models.Model):
     brand = models.ForeignKey(Brand)
     level = models.IntegerField(choices=PRIZE_LEVEL, default=0)
     count = models.PositiveIntegerField(default=0, null=False)
+    status = models.CharField(max_length=255, choices=STATUS, default='waiting')
 
     def __str__(self):
-        return ','.join([self.brand.name, str(self.count)])
+        return ';'.join([str(self.id), self.brand.name, str(self.count), self.status])
 
     def clean(self):
-        if not hasattr(self, 'brand')
+        if not hasattr(self, 'brand'):
             raise ValidationError('Need choose the Brand!')
 
-        activates = Activities.objects.filter(brand=self.brand).count()
-        if activates:
-            prizes_taken = Activities.objects.filter(brand=self.brand).aggregate(Sum('count'))['count__sum']
-            prizes_total = Prizes.objects.filter(brand=self.brand).count()
-            prizes_avaliable = prizes_total - prizes_taken
+        prizes = Prizes.objects.filter(brand=self.brand).filter(level=self.level)
+        activates = Activities.objects.filter(brand=self.brand).filter(level=self.level)
+
+        if prizes:
+            prizes_total = prizes.count()
+
+            if activates:
+                prizes_taken = activates.aggregate(Sum('count'))['count__sum']
+            else:
+                prizes_taken = 0
+
+            if self.id:
+                this_activate = Activities.objects.get(id = self.id)
+                prizes_taken = prizes_taken - this_activate.count
+                prizes_avaliable = prizes_total - prizes_taken
+            else:
+                prizes_avaliable = prizes_total - prizes_taken
+
             count_sum = prizes_taken + self.count
+
             if self.start_at > self.end_at:
                 raise ValidationError('the end time should be later than the start time')
             elif count_sum > prizes_total:
-                raise ValidationError('There is not enough prizes, only %d avaliable' % prizes_avaliable)
+                raise ValidationError('There is not enough prizes, only %d avaliable in %d/%d' % (prizes_avaliable, prizes_taken, prizes_total))
+        else:
+            raise ValidationError('wrong conditions, brand: %s, level: %s' % (self.brand.name, str(self.level)))
