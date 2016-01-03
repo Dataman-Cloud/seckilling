@@ -5,6 +5,7 @@ from rest_framework import viewsets
 from .serializer import BrandStatsSerializer, PrizeSerializer
 from .models import Brand, Prizes
 
+
 class BrandStatsViewSet(viewsets.ReadOnlyModelViewSet):
     """
     """
@@ -14,8 +15,12 @@ class BrandStatsViewSet(viewsets.ReadOnlyModelViewSet):
     # def retrieve(self, request, *args, **kwargs):
     #     pass
 
-    queryset = Brand.objects.all().prefetch_related('prizes')
+    def get_queryset(self):
+        return Brand.objects.annotate(total_prize_count=Count('prizes'))
+
+    queryset = Brand.objects.all()
     serializer_class = BrandStatsSerializer
+
 
 class PrizeViewSet(viewsets.ReadOnlyModelViewSet):
     """

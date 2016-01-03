@@ -4,11 +4,8 @@ from .models import Prizes, Brand
 
 
 class BrandStatsSerializer(serializers.ModelSerializer):
-    total_prize_count = serializers.SerializerMethodField()
+    total_prize_count = serializers.IntegerField()
     delivered_prize_count = serializers.SerializerMethodField()
-
-    def get_total_prize_count(self, obj):
-        return obj.prizes.count()
 
     def get_delivered_prize_count(self, obj):
         return obj.prizes.filter(is_taken=True).count()

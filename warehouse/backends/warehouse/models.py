@@ -7,6 +7,10 @@ from django.utils import timezone
 class Brand(models.Model):
     name = models.CharField(max_length=128)
 
+    @property
+    def delivered_prizes(self):
+        return self.prizes.filter(is_taken=True)
+
 
 class Prizes(models.Model):
 
