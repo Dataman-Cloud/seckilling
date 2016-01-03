@@ -46,9 +46,6 @@ def gen_data(request):
 def dashboard(request):
     prizes_total = Prizes.objects.count()
     context = {'prizes_total': prizes_total}
-    brand = "meituan"
-    count_sum = Activities.objects.filter(brand=brand).aggregate(Sum('count'))
-    print(count_sum)
     return render(request, 'dashboard.html', context)
 
 def login_view(request):
