@@ -6,6 +6,7 @@ seckilling platform
 
 # API
 /v1/api
+
 1. GET /:cid/events  H5加载后第一次请求，通过不同的营销活动ID获取即将进行的活动列表(Cached in Nginx)，其中包含ID、开始时间、描述和资源图片<br/>
 [{id, effectOn, time, description, resources}]
 
