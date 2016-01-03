@@ -16,7 +16,11 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
+from .rest_router import router
+
 urlpatterns = [
     url(r'^warehouse/', include('warehouse.urls')),
     url(r'^admin/', include(admin.site.urls)),
+
+    url(r'^rest/v1/', include(router.urls)),
 ]
