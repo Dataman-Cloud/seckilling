@@ -1,9 +1,7 @@
 -- init worker
 -- events, counter
 
-function getEvents(redis)
-    return redis:get("events")
-end
+local config = require "config"
 
 function setEvents(redis)
     local testData = require "test_data"
@@ -48,11 +46,41 @@ function initEvents()
     end
 end
 
+function initCounter()
+    local counter = require "sk_counter"
+    counter.reset() 
+    counter.enable()
+
+    local redisc = require "redisc"
+    local redis = redisc:new()
+
+    local val, err = redis:set("counter", 0)
+    if not val then
+        ngx.log(ngx.CRIT, "can't reset redis counter ", err)
+    end
+
+    val, err = redis:set("max_count", config.maxCount)
+    if not val then
+        ngx.log(ngx.CRIT, "can't reset redis max_count ", err)
+    end
+    ngx.log(ngx.INFO, "counter reset")
+end
+
 function init()
     local cache = ngx.shared.scache
     cache:flush_all()
+
     ngx.log(ngx.INFO, "initializing server state...")
+
     local ok, err = ngx.timer.at(0,initEvents)
+    if not ok then
+        ngx.log(ngx.CRIT, "can't init events ", err)
+    end
+    ok, err = ngx.timer.at(0,initCounter)
+    if not ok then
+        ngx.log(ngx.CRIT, "can't init counter ", err)
+    end
+
     ngx.log(ngx.INFO, "server state was initialized.")
 end
 

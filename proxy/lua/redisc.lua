@@ -112,9 +112,9 @@ end
 -- change connect address as you need
 function _M.connect_mod( self, redis )    
     redis:set_timeout(self.timeout)
-    ngx.log(ngx.INFO, "redis connecting...")
+    --ngx.log(ngx.INFO, "redis connecting...")
     local ok, err = redis:connect(config.redis.host, config.redis.port)
-    ngx.log(ngx.INFO, "redis auth...")
+    --ngx.log(ngx.INFO, "redis auth...")
     if config.redis.password and config.redis.password ~= "" then
         local authOk, authErr = redis:auth(config.redis.password)
         if not authOk then
