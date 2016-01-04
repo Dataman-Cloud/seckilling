@@ -10,7 +10,7 @@ ENV VAR_PREFIX /var/nginx
 
 RUN echo "==> Installing dependencies..." \
  && apk update \
- && apk add make gcc musl-dev \
+ && apk add make gcc musl-dev util-linux-dev\
     pcre-dev openssl-dev zlib-dev ncurses-dev readline-dev \
     curl perl \
  && mkdir -p /root/ngx_openresty \
@@ -63,5 +63,6 @@ ONBUILD COPY nginx $NGINX_PREFIX/
 ADD conf/nginx.conf $NGINX_PREFIX/nginx/conf/nginx.conf
 ADD lua $NGINX_PREFIX/lua
 ADD lib $NGINX_PREFIX/lib
+ADD resty $NGINX_PREFIX/resty
 
 CMD ["nginx", "-g", "daemon off; error_log /dev/stderr info;"]

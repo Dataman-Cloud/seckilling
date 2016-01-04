@@ -2,8 +2,8 @@ local _M = {}
 
 -- redis connection
 local redis = {} 
-redis.host = "192.168.99.100"
-redis.port = 6379
+redis.host = "123.59.58.58"
+redis.port = 5506
 redis.password = "UQPqcj7nUyii38cpYcr9OnTbIJ3dHXvJ"
 _M.redis = redis
 
