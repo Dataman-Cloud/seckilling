@@ -1,5 +1,9 @@
 package model
 
+import (
+	"errors"
+)
+
 const (
 	CookieCheckFailed = 210
 
@@ -19,4 +23,8 @@ const (
 	RedisError = 295
 
 	UnknownError = 299
+)
+
+var (
+	ShortageStockError = errors.New("award have sold out")
 )

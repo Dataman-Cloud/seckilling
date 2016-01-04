@@ -149,25 +149,36 @@ func CheckPhoneNum(phone string) (bool, error) {
 	return ctEventId == eventId, nil
 }
 
-func GetPhoneNum(cookie string) (string, error) {
-	conn := Open()
-	defer conn.Close()
-
-	phoneNum, err := redis.String(conn.Do("HGET", cookie, "phone"))
-	if err == redis.ErrNil {
-		return "", nil
+func GetSerialNum() (string, int64, error) {
+	index, err := GetSeriaIndex()
+	if err != nil {
+		return "", -1, err
 	}
 
-	return phoneNum, err
-}
-
-func GetSerialNum(eid string, index int64) (string, error) {
 	conn := Open()
 	defer conn.Close()
-
+	eid, _ := GetCurrentEventId()
 	eidKey := fmt.Sprintf(model.EventIdKey, eid)
+	indexKey := fmt.Sprintf(model.WorkOffIndexKey, eid)
+	conn.Send("MULTI")
+	conn.Send("ZRANGE", eidKey, index, index)
+	conn.Send("INCR", indexKey)
+	r, err := redis.Values(conn.Do("EXEC"))
+	if err != nil {
+		log.Println("get seria num has error: ", err)
+		return "", index, err
+	}
 
-	return redis.String(conn.Do("ZRANGE", eidKey, index, index))
+	if r[0] == redis.ErrNil {
+		return "", index, model.ShortageStockError
+	}
+	var seriaNum string
+	if bytes, ok := r[0].([]byte); ok {
+		seriaNum = string(bytes)
+		return seriaNum, index, nil
+	}
+
+	return seriaNum, index, fmt.Errorf("unknown result")
 }
 
 func UpdateCurEventId(curEid string) error {
@@ -176,4 +187,19 @@ func UpdateCurEventId(curEid string) error {
 
 	_, err := conn.Do("SET", model.CurrentEventKey, curEid)
 	return err
+}
+
+func GetSeriaIndex() (int64, error) {
+	conn := Open()
+	defer conn.Close()
+	id, _ := GetCurrentEventId()
+	indexKey := fmt.Sprintf(model.WorkOffIndexKey, id)
+	index, err := redis.Int64(conn.Do("GET", indexKey))
+	if err != redis.ErrNil {
+		return 0, nil
+	} else if err != nil {
+		return -1, err
+	}
+
+	return index, nil
 }
