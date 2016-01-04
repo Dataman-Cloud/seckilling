@@ -120,16 +120,15 @@ class Prizes(models.Model):
     def __str__(self):
         return '{0}: {1}'.format(self.brand.name, self.serial_number)
 
-
 @receiver(post_save, sender=Activities)
 def update_prize_activity(sender, instance, **kwargs):
     # FIXME(xychu): need to support update
-    id_list = Prizes.objects.filter(brand=instance.brand,
-                                    level=instance.level,
-                                    activity__isnull=True).values_list('id')[:instance.count]
+    id_qs = Prizes.objects.filter(brand=instance.brand,
+                                  level=instance.level,
+                                  activity__isnull=True).values_list('id', flat=True)
+    id_list = list(id_qs)[:instance.count]
     qs = Prizes.objects.filter(id__in=id_list)
     qs.update(activity=instance)
-
 
 @receiver(post_save, sender=Activities)
 def load_to_redis(sender, instance, **kwargs):
