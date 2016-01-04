@@ -63,5 +63,6 @@ ONBUILD COPY nginx $NGINX_PREFIX/
 ADD conf/nginx.conf $NGINX_PREFIX/nginx/conf/nginx.conf
 ADD lua $NGINX_PREFIX/lua
 ADD lib $NGINX_PREFIX/lib
+ADD resty $NGINX_PREFIX/resty
 
 CMD ["nginx", "-g", "daemon off; error_log /dev/stderr info;"]

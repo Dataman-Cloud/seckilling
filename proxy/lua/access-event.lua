@@ -1,16 +1,11 @@
 local uri = ngx.re.sub(ngx.var.uri, "^/v1/api/events/(.*)", "$1", "o")
+local cjson = require "cjson";
 --redis
-local redis = require "redis"
+local redis = require "redisc"
 local red = redis:new()
-red:set_timeout(1000) -- 1 sec
-local ok, err = red:connect(addr, port)
-if not ok then
-    ngx.say("failed to connect: ", err)
-    return
-end
 
 -- cookie
-local ck = require "cookie"
+local ck = require "resty.cookie"
 local cookie, err = ck:new()
 if not cookie then
     ngx.log(ngx.ERR, err)
@@ -36,19 +31,4 @@ tab1 = {}
 tab1["time"] = time
 tab1["effectOn"] = effectOn
 tab1["serverTime"] = os.date("%Y-%m-%d %H:%M:%S", os.time())
---tab1["serverTime"] = os.time()
 ngx.say(cjson.encode(tab1))
---[[if res == nil then
-    ngx.say("not found event ID: ", uri, err, res)
-    return
-end]]
-
---[[local pattern = "(%d+)-(%d+)-(%d+)T(%d+):(%d+):(%d+)"
-local runyear, runmonth, runday, runhour, runminute, runseconds = res:match(pattern)
-local convertedTimestamp = os.time({year = runyear, month = runmonth, day = runday, hour = runhour - 8, min = runminute, sec = runseconds})
-local ts = os.time() + 1000 * 60
-if ts > convertedTimestamp then
-    ngx.say("alreay start")
-end
-ngx.say(convertedTimestamp)]]
--- ngx.say(ngx.re.sub(ngx.var.uri, "^/v1/api/events/(.*)",, os.time() "$1", "o"))

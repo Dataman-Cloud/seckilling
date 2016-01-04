@@ -1,17 +1,13 @@
 --local uri = ngx.re.sub(ngx.var.uri, "^/v1/api/(.*)/events", "$1", "o")
+local cjson = require "cjson";
 local uri = "events"
+
 --redis
-local redis = require "redis"
+local redis = require "redisc"
 local red = redis:new()
-red:set_timeout(1000) -- 1 sec
-local ok, err = red:connect(addr, port)
-if not ok then
-    ngx.say("failed to connect: ", err)
-    return
-end
 
 -- cookie
-local ck = require "cookie"
+local ck = require "resty.cookie"
 local cookie, err = ck:new()
 if not cookie then
     ngx.log(ngx.ERR, err)
@@ -20,7 +16,7 @@ end
 local field, err = cookie:get("DM_SK_UID")
 if not field then
     -- uuid
-    local uuid = require("uuid")
+    local uuid = require("resty.uuid")
     local uuidstr = uuid.generate_random()
     local ok, err = cookie:set({
         key = "DM_SK_UID", value = uuidstr
@@ -34,8 +30,8 @@ end
 
 -- get events
 local civities, err = red:lrange(uri, 0, -1)
-if not ctivities == ngx.null then
-    ngx.say("can't get events list", err)
+if not civities then
+    ngx.say("can't found events list ", err)
     return
 end
 tab1 = {}
@@ -55,4 +51,3 @@ for i, res in ipairs(civities) do
     tab1[i] = tab2
 end
 ngx.say(cjson.encode(tab1))
---ngx.say(tab1)
