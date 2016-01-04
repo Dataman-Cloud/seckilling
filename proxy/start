@@ -1,0 +1,14 @@
+PWD=$(pwd)
+NG_PREFIX=/opt/openresty/nginx
+MODE=prod
+docker run \
+-v $PWD/conf/nginx.conf:$NG_PREFIX/conf/nginx.conf \
+-v $PWD/lua:$NG_PREFIX/lua \
+-p 9200:80 \
+-e PROXY_MODE=$MODE \
+-d \
+--name resty \
+testregistry.dataman.io/nginx-proxy-1.9.7.1:1.0 && docker logs -f resty
+
+
+# -v $PWD/lib:$NG_PREFIX/sk_lib \
