@@ -46,6 +46,11 @@ func Tickets(c *echo.Context) error {
 		return c.JSON(model.CookieCheckFailed, model.OrderInfo{Timestamp: time.Now().UTC().Unix()})
 	}
 
+	phoneNum := c.Param("phone")
+	if phoneNum == "" {
+		return c.JSON(model.UserPhoneNumNull, model.OrderInfo{Timestamp: time.Now().UTC().Unix(), UID: cookie})
+	}
+
 	// Get user info by cookie(UUID)
 	// if cookie is not exit in redis return error
 	// if status is null or status not 1 return StatusNotOne/StatusNull
@@ -101,6 +106,6 @@ func ProduceOrder(user *model.OrderInfo) int {
 }
 
 func SaveOrder(user *model.OrderInfo) {
-	key := fmt.Sprintf(model.OrderKey, user.Eid, user.SerialNum)
+	key := fmt.Sprintf(model.OrderKey, user.EventId, user.SerialNum)
 	cache.WriteStructToRedis(user, key)
 }

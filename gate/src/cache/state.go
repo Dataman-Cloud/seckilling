@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -46,8 +47,9 @@ func LoadEventData() ([]*model.EventInfo, error) {
 
 	var eventInfoList = make([]*model.EventInfo, len(eventIds))
 	for _, eventId := range eventIds {
+		eventInfoKey := fmt.Sprintf(model.EventInfoKey, eventId)
 		evenInfo := &model.EventInfo{}
-		ReadStructFromRedis(evenInfo, eventId)
+		ReadStructFromRedis(evenInfo, eventInfoKey)
 		eventInfoList = append(eventInfoList, evenInfo)
 	}
 
