@@ -100,13 +100,6 @@ func GetOrderInfo(cookie string) (*model.OrderInfo, int) {
 		return nil, model.StatusNotOne
 	}
 
-	phoneNum, err := redis.String(conn.Do("HGET", cookie, "phone"))
-	if err == redis.ErrNil {
-		return nil, model.UserPhoneNumNull
-	} else if err != nil {
-		return nil, model.GetPhoneNumFailed
-	}
-
 	eventId, err := redis.String(conn.Do("HGET", cookie, "event"))
 	if err == redis.ErrNil {
 		return nil, model.EventNull
@@ -125,7 +118,6 @@ func GetOrderInfo(cookie string) (*model.OrderInfo, int) {
 
 	return &model.OrderInfo{
 		UID:       cookie,
-		Phone:     phoneNum,
 		EventId:   eventId,
 		Timestamp: time.Now().UTC().Unix(),
 	}, 0
@@ -133,35 +125,8 @@ func GetOrderInfo(cookie string) (*model.OrderInfo, int) {
 }
 
 func GetCurrentEventId() (string, error) {
-
-	if time.Now().UTC().Unix() < ValidityTime && CtEventId != "" {
-		return CtEventId, nil
-	}
-
-	conn := Open()
-	defer conn.Close()
-
-	eventId, err := redis.String(conn.Do("HGET", "CurrentEvent", "ID"))
-	if err != nil {
-		log.Println("get current event id has error: ", err)
-		return "", err
-	}
-
-	CtEventId = eventId
-	start, err := redis.Int64(conn.Do("HGET", "CurrentEvent", "start"))
-	if err != nil {
-		log.Println("get current event start time has error: ", err)
-		return "", err
-	}
-
-	duration, err := redis.Int64(conn.Do("HGET", "CurrentEvent", "duration"))
-	if err != nil {
-		log.Println("get current event duration time has error: ", err)
-		return "", err
-	}
-
-	ValidityTime = start + duration
-	return CtEventId, err
+	// TODO check again
+	return model.CurrentEventId, nil
 }
 
 func CheckPhoneNum(phone string) (bool, error) {

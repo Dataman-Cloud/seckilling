@@ -10,6 +10,8 @@ const (
 	EventIdKey = "SN:%s"
 
 	OrderKey = "TR:%s:%s" //(eid, sn)
+
+	EventInfoKey = "event:%s"
 )
 
 var (
