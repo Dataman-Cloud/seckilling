@@ -10,7 +10,7 @@ ENV VAR_PREFIX /var/nginx
 
 RUN echo "==> Installing dependencies..." \
  && apk update \
- && apk add make gcc musl-dev \
+ && apk add make gcc musl-dev util-linux-dev\
     pcre-dev openssl-dev zlib-dev ncurses-dev readline-dev \
     curl perl \
  && mkdir -p /root/ngx_openresty \
