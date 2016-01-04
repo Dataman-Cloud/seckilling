@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"log"
 	"reflect"
 
 	redis "github.com/garyburd/redigo/redis"
@@ -36,25 +37,22 @@ func ReadStructFromRedis(v interface{}, key string) {
 	}
 }
 
-// func WriteStructToRedis(v interface{}, key string) error {
-// 	conn := Open()
-// 	defer conn.Close()
-// 	val := reflect.ValueOf(v).Elem()
-// 	for i := 0; i < val.NumField(); i++ {
-// 		valueField := val.Field(i)
-// 		typeField := val.Type().Field(i)
-// 		tag := typeField.Tag
-// 		switch typeField.Type.Kind() {
-// 		case reflect.String:
-// 			str, err := redis.String(conn.Do("HSET", key, tag.Get("json"), valueField.Interface()))
-// 			if err != nil {
-// 				return err
-// 			}
-// 		case reflect.Int:
-// 			integer, err := redis.Int(conn.Do("HSET", key, tag.Get("json"), valueField.Interface()))
-// 			if err != nil {
-// 				return err
-// 			}
-// 		}
-// 	}
-// }
+func WriteStructToRedis(v interface{}, key string) error {
+	conn := Open()
+	defer conn.Close()
+	val := reflect.ValueOf(v).Elem()
+	for i := 0; i < val.NumField(); i++ {
+		valueField := val.Field(i)
+		typeField := val.Type().Field(i)
+		tag := typeField.Tag
+		// TODO USED MULTI
+		_, err := conn.Do("HSET", key, tag.Get("json"), valueField.Interface())
+		if err != nil {
+			log.Println("witre key %s field %s value %+v to redis failed. error: %s",
+				key, tag.Get("json"), valueField.Interface(), err.Error())
+			return err
+		}
+	}
+
+	return nil
+}

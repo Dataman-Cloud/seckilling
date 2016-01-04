@@ -85,7 +85,7 @@ func WriteHashToRedis(key, field, value string, timeout int) error {
 	return nil
 }
 
-func GetUserInfo(cookie string) (*model.UserInfo, int) {
+func GetOrderInfo(cookie string) (*model.OrderInfo, int) {
 	conn := Open()
 	defer conn.Close()
 
@@ -123,7 +123,7 @@ func GetUserInfo(cookie string) (*model.UserInfo, int) {
 		return nil, model.EventNotMatch
 	}
 
-	return &model.UserInfo{
+	return &model.OrderInfo{
 		UID:       cookie,
 		Phone:     phoneNum,
 		EventId:   eventId,
@@ -196,10 +196,13 @@ func GetPhoneNum(cookie string) (string, error) {
 	return phoneNum, err
 }
 
-func GetSerialNum(key, field string) (string, error) {
+func GetSerialNum(eid string, index int64) (string, error) {
 	conn := Open()
 	defer conn.Close()
-	return redis.String(conn.Do("HGET", key, field))
+
+	eidKey := fmt.Sprintf(model.EventIdKey, eid)
+
+	return redis.String(conn.Do("ZRANGE", eidKey, index, index))
 }
 
 func UpdateCurEventId(curEid string) error {
