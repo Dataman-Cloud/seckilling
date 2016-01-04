@@ -18,6 +18,7 @@ from django.contrib import admin
 
 from .rest_router import router
 
+
 urlpatterns = [
     url(r'^warehouse/', include('warehouse.urls')),
     url(r'^admin/', include(admin.site.urls)),

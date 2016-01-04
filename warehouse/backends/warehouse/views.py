@@ -23,7 +23,7 @@ def gen_data(request):
     """
     Test only.
     """
-    target_count = 300000
+    target_count = 3000
     current_count = Prizes.objects.count()
     if current_count < target_count:
         for brand in ["meituan", "baidu", "tmall"]:
@@ -38,7 +38,7 @@ def gen_data(request):
         except Exception as e:
             return HttpResponse(e, status=500)
         else:
-            return HttpResponse("生成测试数据", status=201)
+            return HttpResponse("测试数据生成完毕", status=201)
     else:
         return HttpResponse("测试数据已足够，不需要生成新的数据")
 

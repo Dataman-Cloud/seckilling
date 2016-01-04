@@ -94,6 +94,16 @@ DATABASES = {
     }
 }
 
+REDIS = {
+    # 'host': '192.168.99.102',
+    # 'port': 6379,
+    'host': '123.59.58.58',
+    'port': 5506,
+    'db': 0,
+
+    # key related
+    'current_eid': 'current_eid',
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
