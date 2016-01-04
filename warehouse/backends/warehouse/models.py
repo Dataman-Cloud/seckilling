@@ -120,18 +120,28 @@ class Prizes(models.Model):
     def __str__(self):
         return '{0}: {1}'.format(self.brand.name, self.serial_number)
 
-@receiver(post_save, sender=Activities)
-def update_prize_activity(sender, instance, **kwargs):
-    # FIXME(xychu): need to support update
-    id_qs = Prizes.objects.filter(brand=instance.brand,
-                                  level=instance.level,
-                                  activity__isnull=True).values_list('id', flat=True)
-    id_list = list(id_qs)[:instance.count]
-    qs = Prizes.objects.filter(id__in=id_list)
-    qs.update(activity=instance)
 
 @receiver(post_save, sender=Activities)
-def load_to_redis(sender, instance, **kwargs):
+def update_prize_and_load_to_redis(sender, instance, created, **kwargs):
+    old_prize_count = Prizes.objects.filter(activity=instance).count()
+    if not created and instance.count != old_prize_count:
+        instance.prizes.update(activity=None)
+    if created or instance.count != old_prize_count:
+        id_qs = Prizes.objects.filter(brand=instance.brand,
+                                      level=instance.level,
+                                      activity__isnull=True).values_list('id', flat=True)
+        id_list = list(id_qs)[:instance.count]
+        qs = Prizes.objects.filter(id__in=id_list)
+        qs.update(activity=instance)
+
+        # load SNs for this event
+        sn_key = 'SN:' + str(instance.id)
+        redis_inst.delete(sn_key)
+        source_list = list(itertools.chain.from_iterable(
+                [[item.serial_number, item.id] for item in instance.prizes.all()]))
+        redis_inst.zadd(sn_key, *source_list)
+
+    # Load data to redis
     # set event hash with key: event:<e_id>
     event_key = 'event:' + str(instance.id)
     redis_inst.delete(event_key)
@@ -143,12 +153,8 @@ def load_to_redis(sender, instance, **kwargs):
     }
     redis_inst.hmset(event_key, mapping=mapping)
 
-    # load SNs for this event
-    sn_key = 'SN:' + str(instance.id)
-    redis_inst.delete(sn_key)
-    source_list = list(itertools.chain.from_iterable(
-            [[item.serial_number, item.id] for item in instance.prizes.all()]))
-    redis_inst.zadd(sn_key, *source_list)
+    # update events list
+    load_events()
 
 
 def pull_result_back(key):
