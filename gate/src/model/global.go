@@ -12,6 +12,8 @@ const (
 	OrderKey = "TR:%s:%s" //(eid, sn)
 
 	EventInfoKey = "event:%s"
+
+	WorkOffIndexKey = "WF:%s"
 )
 
 var (

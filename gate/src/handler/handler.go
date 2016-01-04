@@ -86,15 +86,7 @@ func Tickets(c *echo.Context) error {
 
 func ProduceOrder(user *model.OrderInfo) int {
 	// TODO use MultiBulk
-	stock, err := cache.Decr(CountKey)
-	if err != nil {
-		log.Println("get stock has error err", err)
-		return model.RedisError
-	} else if stock <= 0 {
-		log.Println("short of stock!! stock is ", stock)
-		return model.ShortageStock
-	}
-	serialNum, err := cache.GetSerialNum(user.EventId, stock)
+	serialNum, stock, err := cache.GetSerialNum()
 	if err != nil {
 		log.Println("Get serial number has error: ", err)
 		return model.RedisError
