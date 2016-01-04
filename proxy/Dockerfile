@@ -61,7 +61,7 @@ ONBUILD RUN rm -rf conf/* html/*
 ONBUILD COPY nginx $NGINX_PREFIX/
 
 ADD conf/nginx.conf $NGINX_PREFIX/nginx/conf/nginx.conf
-ADD lua $NGINX_PREFIX/sk_lua
-ADD lib $NGINX_PREFIX/sk_lib
+ADD lua $NGINX_PREFIX/lua
+ADD lib $NGINX_PREFIX/lib
 
 CMD ["nginx", "-g", "daemon off; error_log /dev/stderr info;"]

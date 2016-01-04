@@ -1,0 +1,1 @@
+docker cp lua/ resty:/opt/openresty/nginx/
