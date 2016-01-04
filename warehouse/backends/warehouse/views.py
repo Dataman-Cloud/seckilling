@@ -42,12 +42,6 @@ def gen_data(request):
     else:
         return HttpResponse("测试数据已足够，不需要生成新的数据")
 
-@login_required
-def dashboard(request):
-    prizes_total = Prizes.objects.count()
-    context = {'prizes_total': prizes_total}
-    return render(request, 'dashboard.html', context)
-
 def login_view(request):
     if request.method == "GET":
         form = UserForm()
@@ -69,3 +63,10 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect('/warehouse/login')
+
+
+@login_required
+def dashboard(request):
+    prizes_total = Prizes.objects.count()
+    context = {'prizes_total': prizes_total}
+    return render(request, 'dashboard.html', context)

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Prizes, Brand
+from .models import Prizes, Brand, Activities
 
 
 class BrandStatsSerializer(serializers.ModelSerializer):
@@ -21,3 +21,10 @@ class PrizeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Prizes
         fields = ('serial_number', 'brand', 'level', 'winner_cell', 'created_at')
+
+class ActivitiesSerializer(serializers.ModelSerializer):
+    brand = serializers.CharField(source='brand.name')
+
+    class Meta:
+        model = Activities
+        fields = ('id', 'start_at', 'end_at', 'brand', 'level', 'count', 'status')

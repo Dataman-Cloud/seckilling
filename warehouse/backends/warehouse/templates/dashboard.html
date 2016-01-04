@@ -6,10 +6,72 @@
 </head>
 <body>
 
-  <p>奖品总数: {{prizes_total}}</p>
-  <p>{% if request.user.is_authenticated %}登陆用户: '{{ request.user.username }}'
-  {% else %}<a href="/warehouse/login">Login</a>{% endif %}</p>
+<div id="container" style="width:1000px">
 
-  <p><a href="/warehouse/logout">登出</a></p>
+    <div id="header" style="background-color:#FFA500;">
+        <h1 style="margin-bottom:0;">发红包活动</h1>
+    </div>
+
+    <div id="menu" style="background-color:#FFD700;height:600px;width:200px;float:left;">
+        <p>奖品总数: {{prizes_total}}</p>
+        <p>{% if request.user.is_authenticated %}登陆用户: '{{ request.user.username }}'
+           {% else %}<a href="/warehouse/login">Login</a>{% endif %}
+        </p>
+        <p><a href="/warehouse/logout">登出</a></p>
+    </div>
+
+
+    <div id="content" style="background-color:white;height:600px;width:800px;float:left;">
+        <p>活动列表</p>
+        <table id="list" boarder="2">
+         <tr>
+           <th>id</th><th>开始时间</th><th>结束时间</th><th>厂商</th><th>奖品级别</th><th>红包数量</th><th>活动状态</th>
+         </tr>
+        </table>
+
+        <script>
+          var xhr = new XMLHttpRequest();
+          var url = "/rest/v1/activities";
+
+          xhr.onload = function(event){
+            if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304){
+              var activates = JSON.parse(xhr.responseText);
+              var count = activates["count"]
+              var activates_all = activates["results"]
+              for (var i=0, len=activates_all.length; i < len; i++){
+                activate = document.getElementsByName(activates_all[i]);
+                var table = document.getElementById("list").insertRow(-1);
+                var id = table.insertCell(0);
+                var start_at = table.insertCell(1);
+                var end_at = table.insertCell(2);
+                var brand = table.insertCell(3);
+                var level = table.insertCell(4);
+                var count = table.insertCell(5);
+                var status = table.insertCell(6);
+                id.innerHTML = activates_all[i].id;
+                start_at.innerHTML =activates_all[i].start_at;
+                end_at.innerHTML = activates_all[i].end_at;
+                brand.innerHTML = activates_all[i].brand;
+                level.innerHTML = activates_all[i].level;
+                count.innerHTML = activates_all[i].count;
+                status.innerHTML = activates_all[i].status;
+              }
+            } else {
+              alert("不能获取到活动列表: " + xhr.status);
+            }
+          };
+
+          xhr.open("get", url, true);
+          xhr.send(null);
+        </script>
+
+    </div>
+
+    <div id="footer" style="background-color:#FFA500;clear:both;text-align:center;">
+        Copyright © Dataman.inc
+    </div>
+
+</div>
+
 </body>
 </html>
