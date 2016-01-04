@@ -22,7 +22,6 @@ func LoadEventList() ([]string, error) {
 		log.Println("Get event list length has error: ", err)
 		return nil, err
 	}
-
 	var eventIdList = make([]string, eventNum)
 
 	for i := 0; i < eventNum; i++ {
@@ -32,9 +31,8 @@ func LoadEventList() ([]string, error) {
 			continue
 		}
 
-		eventIdList = append(eventIdList, eventId)
+		eventIdList[i] = eventId
 	}
-
 	return eventIdList, nil
 
 }
@@ -44,15 +42,13 @@ func LoadEventData() ([]*model.EventInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	var eventInfoList = make([]*model.EventInfo, len(eventIds))
-	for _, eventId := range eventIds {
+	for i, eventId := range eventIds {
 		eventInfoKey := fmt.Sprintf(model.EventInfoKey, eventId)
 		evenInfo := &model.EventInfo{}
 		ReadStructFromRedis(evenInfo, eventInfoKey)
-		eventInfoList = append(eventInfoList, evenInfo)
+		eventInfoList[i] = evenInfo
 	}
-
 	return eventInfoList, nil
 }
 
@@ -72,8 +68,12 @@ func UpdateEvent() error {
 		if event == nil {
 			continue
 		}
+		eventKey := fmt.Sprintf(model.EventInfoKey, event.Id)
+		// log.Println("timestamp: ", timestamp)
+		// log.Println("EffectOn: ", event.EffectOn)
+		// log.Println("Duration: ", event.Duration)
 		if event.EffectOn <= timestamp && timestamp <= event.EffectOn+event.Duration {
-			err = WriteHashToRedis(event.Id, "status", "1", -1)
+			err = WriteHashToRedis(eventKey, "status", "1", -1)
 			if err != nil {
 				log.Println("write event status to redis has error: ", err)
 				continue
@@ -86,13 +86,13 @@ func UpdateEvent() error {
 			}
 			log.Println("update current id success id ", model.CurrentEventId)
 		} else if event.EffectOn > timestamp {
-			err = WriteHashToRedis(event.Id, "status", "2", -1)
+			err = WriteHashToRedis(eventKey, "status", "2", -1)
 			if err != nil {
 				log.Println("write event status to redis has error: ", err)
 				continue
 			}
 		} else if timestamp > event.EffectOn+event.Duration {
-			err = WriteHashToRedis(event.Id, "status", "3", -1)
+			err = WriteHashToRedis(eventKey, "status", "3", -1)
 			if err != nil {
 				log.Println("write event status to redis has error: ", err)
 				continue
@@ -105,7 +105,7 @@ func UpdateEvent() error {
 func StartUpdateEventStatus() {
 	updateTicker := time.NewTicker(eventUpdateInterval)
 	defer updateTicker.Stop()
-
+	UpdateEvent()
 	for {
 		select {
 		case <-updateTicker.C:
