@@ -20,14 +20,16 @@ func ReadStructFromRedis(v interface{}, key string) {
 		}
 		switch typeField.Type.Kind() {
 		case reflect.String:
+			// log.Printf("redis HGET: %s, field: %s", key, tag.Get("json"))
 			str, err := redis.String(conn.Do("HGET", key, tag.Get("json")))
 			if err != nil {
 				continue
 			}
 
 			valueField.SetString(str)
-		case reflect.Int:
+		case reflect.Int64:
 			integer, err := redis.Int64(conn.Do("HGET", key, tag.Get("json")))
+			// log.Printf("redis HGET: %s, field: %s", key, tag.Get("json"))
 			if err != nil {
 				continue
 			}
