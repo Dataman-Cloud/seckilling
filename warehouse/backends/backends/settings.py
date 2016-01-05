@@ -100,6 +100,7 @@ REDIS = {
     # 'host': '123.59.58.58',
     # 'port': 5506,
     'db': 0,
+    'decode_responses': True,
 
     # key related
     'key_fmts': {
