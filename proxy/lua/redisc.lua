@@ -84,7 +84,7 @@ local commands = {
     "zrem",              "zremrangebyrank",   "zremrangebyscore",
     "zrevrange",         "zrevrangebyscore",  "zrevrank",
     "zscan",
-    "zscore",            "zunionstore",       "evalsha"
+    "zscore",            "zunionstore",       "evalsha", 
 }
 
 
@@ -112,9 +112,7 @@ end
 -- change connect address as you need
 function _M.connect_mod( self, redis )    
     redis:set_timeout(self.timeout)
-    --ngx.log(ngx.INFO, "redis connecting...")
     local ok, err = redis:connect(config.redis.host, config.redis.port)
-    --ngx.log(ngx.INFO, "redis auth...")
     if config.redis.password and config.redis.password ~= "" then
         local authOk, authErr = redis:auth(config.redis.password)
         if not authOk then
@@ -246,6 +244,15 @@ local function do_command(self, cmd, ... )
     return result, err
 end
 
+function _M.array_to_hash(self, t)
+    local n = #t
+    -- print("n = ", n)
+    local h = new_tab(0, n / 2)
+    for i = 1, n, 2 do
+        h[t[i]] = t[i + 1]
+    end
+    return h
+end
 
 function _M.new(self, opts)
     opts = opts or {}
@@ -259,11 +266,11 @@ function _M.new(self, opts)
                     return do_command(self, cmd, ...)
                 end
     end
-
+    self.__index = redis_c
     return setmetatable({ 
             timeout = timeout, 
             db_index = db_index, 
-            _reqs = nil }, mt)
+            _reqs = nil}, mt)
 end
 
 

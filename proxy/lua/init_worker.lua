@@ -1,11 +1,13 @@
 -- init worker
 -- events, counter
 
+local redisc = require "redisc"
+local cjson = require "cjson"
 local config = require "config"
 
 function setEvents(redis)
     local testData = require "test_data"
-    events = testData.events
+    local events = testData.events
     return redis:set("events", events)
 end
 
@@ -17,32 +19,49 @@ function loadEvents()
     ngx.log(ngx.INFO, "running in mode: ", mode)
     if mode == "dev" or mode == "DEV" then
         local testData = require "test_data"
-        events = testData.events
+        return testData.events
     else
-        local redisc = require "redisc"
         local redis = redisc:new()
-        local events, err = redis:get("events")
-        if not events then
+        local eids, err = redis:lrange("events", 0, -1)
+        if not eids then
             ngx.log(ngx.WARN, "can't retreive events from redis ", err)
         end
+        return assambleEvents(redis, eids)
     end
+end
 
-    local cjson = require "cjson"
-    local json = cjson.encode(events)
-
-    ngx.log(ngx.INFO, "generated events json:\n\t", json)
-
-    return json
+function assambleEvents(redis, ids)
+    local events = {}
+    for i, id in ipairs(ids) do
+        local res, err = redis:hgetall("event:" .. id)
+        if not res then
+            ngx.log(ngx.CRIT, "can't get event from redis id: ", id, " err: ", err)
+        else 
+            local redis = redisc:new()
+            events[i] = redis:array_to_hash(res)
+        end
+    end
+    return events
 end
 
 function initEvents()
     local cache = ngx.shared.scache
-
     local val, err = cache:get("events")
     if not val then
-        local json = loadEvents()
+        local events = loadEvents()
+        local json = cjson.encode(events)
+        ngx.log(ngx.INFO, "generated events json:\n\t", json)
         cache:set("events", json)
+        setEventCache(cache, events)
         ngx.log(ngx.INFO, "set events successfully")
+    end
+end
+
+function setEventCache(cache, events)
+    for i = 1, #events do
+        local event = events[i]
+        cache:set("eeo:"..event.id, event.effectOn)
+        cache:set("ed:"..event.id, event.duration)
     end
 end
 
@@ -51,7 +70,6 @@ function initCounter()
     counter.reset() 
     counter.enable()
 
-    local redisc = require "redisc"
     local redis = redisc:new()
 
     local val, err = redis:set("counter", 0)
