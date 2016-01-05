@@ -95,14 +95,20 @@ DATABASES = {
 }
 
 REDIS = {
-    # 'host': '192.168.99.102',
-    # 'port': 6379,
-    'host': '123.59.58.58',
-    'port': 5506,
+    'host': '127.0.0.1',
+    'port': 6379,
+    # 'host': '123.59.58.58',
+    # 'port': 5506,
     'db': 0,
 
     # key related
-    'current_eid': 'current_eid',
+    'key_fmts': {
+        'events_list': 'events',       # events list
+        'event_hash': 'event:%s',      # event info hash, arg: event_id
+        'sn_set': 'SN:%s',             # Serial Numbers in the given event, SortedSet, arg: event_id
+        'current_eid': 'cur_eid',      # current event id
+        'delivered_count': 'COUNT:%s'  # Delivered SN count in the given event, arg: event_id
+    }
 }
 
 # Internationalization
