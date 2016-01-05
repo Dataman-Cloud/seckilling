@@ -1,10 +1,14 @@
 from django.db.models import Count
 
+from django.conf import settings
 from rest_framework import viewsets
+from rest_framework.decorators import detail_route, list_route
+from rest_framework.response import Response
 
 from .serializer import BrandStatsSerializer, PrizeSerializer, ActivitiesSerializer
 from .models import Brand, Prizes, Activities
 
+from . import redis_inst
 
 class BrandStatsViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -42,6 +46,19 @@ class ActivitiesViewSet(viewsets.ReadOnlyModelViewSet):
     #
     # def retrieve(self, request, *args, **kwargs):
     #     pass
+
+    @detail_route(methods=['get'], url_path='delivered-count')
+    def delivered_count(self, request, pk, **kwages):
+        event_key = settings.REDIS['key_fmts']['delivered_count'] % str(pk)
+        count = redis_inst.get(event_key)
+        return Response({'count': int(count)})
+
+    @list_route(methods=['get'], url_path='current-activity')
+    def current_activity(self, request, **kwages):
+        event_key = settings.REDIS['key_fmts']['current_eid']
+        current_eid = redis_inst.get(event_key)
+        return Response({'current_eid': int(current_eid)})
+
 
     queryset = Activities.objects.all()
     serializer_class = ActivitiesSerializer
