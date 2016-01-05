@@ -5,7 +5,7 @@ local redis = require "redisc"
 local red = redis:new()
 
 -- cookie
-local ck = require "resty.cookie"
+local ck = require "cookie"
 local cookie, err = ck:new()
 if not cookie then
     ngx.log(ngx.ERR, err)

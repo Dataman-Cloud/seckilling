@@ -7,7 +7,7 @@ local redis = require "redisc"
 local red = redis:new()
 
 -- cookie
-local ck = require "resty.cookie"
+local ck = require "cookie"
 local cookie, err = ck:new()
 if not cookie then
     ngx.log(ngx.ERR, err)
@@ -16,7 +16,7 @@ end
 local field, err = cookie:get("DM_SK_UID")
 if not field then
     -- uuid
-    local uuid = require("resty.uuid")
+    local uuid = require("uuid")
     local uuidstr = uuid.generate_random()
     local ok, err = cookie:set({
         key = "DM_SK_UID", value = uuidstr
