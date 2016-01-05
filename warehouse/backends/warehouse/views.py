@@ -1,20 +1,77 @@
 import uuid
 import random
 
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.template import RequestContext, loader
+from django import forms
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
 
-from .models import Prizes
-# Create your views here.
+from .models import Prizes, Brand, Activities
+
+
+class UserForm(forms.Form):
+    username = forms.CharField(label='用户名',max_length=100)
+    password = forms.CharField(label='密码',widget=forms.PasswordInput())
+
 
 def index(request):
-    return HttpResponse("Hello")
+    return HttpResponseRedirect('/warehouse/login')
 
-def gendata(request):
-    for i in range(1, 2):
-        prize_code = uuid.uuid4().hex
-        prize_brand = random.choice(("meituan", "baidu", "koubei"))
-        prize = Prizes.objects.create(prize_code=prize_code, prize_brand=prize_brand)
-    return HttpResponse("Gen data")
-    
+
+def gen_data(request):
+    """
+    Test only.
+    """
+    target_count = 3000
+    current_count = Prizes.objects.count()
+    if current_count < target_count:
+        for brand in ["meituan", "baidu", "tmall"]:
+            Brand.objects.get_or_create(name=brand)
+        prizes = []
+        for i in range(target_count - current_count):
+            sn = uuid.uuid4().hex
+            brand = random.choice(list(Brand.objects.all()))
+            prizes.append(Prizes(serial_number=sn, brand=brand))
+            if len(prizes) > 1000:
+                Prizes.objects.bulk_create(prizes)
+                prizes = []
+        if prizes:
+            Prizes.objects.bulk_create(prizes)
+        return HttpResponse("测试数据生成完毕", status=201)
+    else:
+        return HttpResponse("测试数据已足够，不需要生成新的数据")
+
+
+def login_view(request):
+    if request.method == "GET":
+        form = UserForm()
+        return render_to_response('login.html', RequestContext(request, {'form':form}))
+    elif request.method == "POST":
+        form = UserForm(request.POST)
+        if form.is_valid():
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username, password=password)
+            print(user)
+            if user is not None and user.is_active:
+                login(request, user)
+                return HttpResponseRedirect('/warehouse/dashboard')
+            else:
+                return HttpResponse("账户异常，请联系管理员")
+    return render_to_response('login.html', RequestContext(request, {'form':form}))
+
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect('/warehouse/login')
+
+
+@login_required
+def dashboard(request):
+    prizes_total = Prizes.objects.count()
+    context = {'prizes_total': prizes_total}
+    return render(request, 'dashboard.html', context)
