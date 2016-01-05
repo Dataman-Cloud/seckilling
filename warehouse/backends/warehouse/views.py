@@ -12,12 +12,15 @@ from django.db.models import Sum
 
 from .models import Prizes, Brand, Activities
 
+
 class UserForm(forms.Form):
     username = forms.CharField(label='用户名',max_length=100)
     password = forms.CharField(label='密码',widget=forms.PasswordInput())
 
+
 def index(request):
     return HttpResponseRedirect('/warehouse/login')
+
 
 def gen_data(request):
     """
@@ -33,14 +36,15 @@ def gen_data(request):
             sn = uuid.uuid4().hex
             brand = random.choice(list(Brand.objects.all()))
             prizes.append(Prizes(serial_number=sn, brand=brand))
-        try:
+            if len(prizes) > 1000:
+                Prizes.objects.bulk_create(prizes)
+                prizes = []
+        if prizes:
             Prizes.objects.bulk_create(prizes)
-        except Exception as e:
-            return HttpResponse(e, status=500)
-        else:
-            return HttpResponse("测试数据生成完毕", status=201)
+        return HttpResponse("测试数据生成完毕", status=201)
     else:
         return HttpResponse("测试数据已足够，不需要生成新的数据")
+
 
 def login_view(request):
     if request.method == "GET":
@@ -59,6 +63,7 @@ def login_view(request):
             else:
                 return HttpResponse("账户异常，请联系管理员")
     return render_to_response('login.html', RequestContext(request, {'form':form}))
+
 
 def logout_view(request):
     logout(request)
