@@ -1,6 +1,4 @@
+local counter = require "sk_counter"
+local cnt = counter.get()
 
-local cache = ngx.shared.scache
-local events = cache:get("events")
-print(events)
-
-ngx.say(events)
+ngx.say(cnt)
