@@ -3,7 +3,7 @@ import itertools
 from django.conf import settings
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from django.db import models
+from django.db import models, transaction
 from django.utils import timezone
 from django.db.models import Sum
 from django.core.exceptions import ValidationError
@@ -107,11 +107,13 @@ class Prizes(models.Model):
 def update_prize_and_load_to_redis(sender, instance, created, **kwargs):
     if kwargs['update_fields'] and 'status' in kwargs['update_fields'] and instance.status == 'end':
         # updating activity status, we should pull the results back *only if* it's ended.
-        for prize in instance.prizes.all():
-            winner_cell = redis_inst.hget(settings.REDIS['key_fmts']['result_hash'],
-                                          settings.REDIS['key_fmts']['cell_key'])
-            prize.winner_cell = winner_cell and winner_cell or ''
-            prize.save()
+        with transaction.atomic():
+            for prize_id, sn in instance.prizes.values_list('id', 'serial_number'):
+                winner_cell = redis_inst.hget(settings.REDIS['key_fmts']['result_hash'] % (instance.id, sn),
+                                              settings.REDIS['key_fmts']['cell_key'])
+                winner_cell = winner_cell and winner_cell or ''
+                instance.prizes.filter(id=prize_id).update(winner_cell=winner_cell)
+
     else:
         # create/update activity before starting, we need to reload data into redis
         old_prize_count = Prizes.objects.filter(activity=instance).count()
