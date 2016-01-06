@@ -174,4 +174,5 @@ def load_events():
     events = Activities.objects.values_list('id', flat=True)
     events_key = settings.REDIS['key_fmts']['events_list']
     redis_inst.delete(events_key)
-    redis_inst.rpush(events_key, *events)
+    if events:
+        redis_inst.rpush(events_key, *events)
