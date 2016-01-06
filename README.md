@@ -31,12 +31,12 @@ seckilling platform
     - `duration`: Lifetime in seconds for this events
     - `desc`: Description for this event
     - ...
-* `SN:<eid>`: Serial Numbers in this event, Sorted Sets
+* `sn:<eid>`: Serial Numbers in this event, Sorted Sets
     - `score`: DB index for this Serial Number
     - `element`: Serial Number
 * `cur_eid`: Current Event ID
-* `COUNT:<eid>`: Delivered Count for this event
-* `TR:<eid>:<sn>`: Order result hash for `sn` in event `eid`
+* `count:<eid>`: Delivered Count for this event
+* `tr:<eid>:<sn>`: Order result hash for `sn` in event `eid`
     - `phone_number`: user cell phone number
     - ...
 
