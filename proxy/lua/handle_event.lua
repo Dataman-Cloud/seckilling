@@ -19,8 +19,8 @@ else
             salt = uuid.getUUID()
             cache:set("salt:"..id, salt)
         end
-        ngx.say(string.format('{"e":%d, "t":%d, "s": "%s"}', effectOn, now, salt))
+        ngx.say(string.format('{"effectOn":%d, "time":%d, "salt": "%s"}', effectOn, now, salt))
     else
-        ngx.say(string.format('{"e":%d, "t":%d}', effectOn, now))
+        ngx.say(string.format('{"effectOn":%d, "time":%d}', effectOn, now))
     end
 end
