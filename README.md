@@ -12,7 +12,7 @@ seckilling platform
 }
 ```
 
-1. `GET /api/v1/events`  H5加载后第一次请求，通过不同的营销活动ID获取即将进行的活动列表(Cached in Nginx)，其中包含ID、开始时间、描述和资源图片；非200返回显示`无活动`页面<br/>
+- `GET /api/v1/events`  H5加载后第一次请求，通过不同的营销活动ID获取即将进行的活动列表(Cached in Nginx)，其中包含ID、开始时间、描述和资源图片；非200返回显示`无活动`页面<br/>
 ```json
 {
   "time": 1452071210514,
@@ -38,8 +38,7 @@ seckilling platform
   ]
 }
 ```
-
-2. `GET /api/v1/event?id=xxx` 活动页刷新，返回生效时间和服务器时间，客户端进行倒计时，活动开始前xxxm会附加本次秒杀按钮的唯一salt，如果客户端没有salt，需要在进入倒计时xxxm区间是自动刷新获取salt；非200返回显示`活动已结束`页面<br/>
+- `GET /api/v1/event?id=xxx` 活动页刷新，返回生效时间和服务器时间，客户端进行倒计时，活动开始前xxxm会附加本次秒杀按钮的唯一salt，如果客户端没有salt，需要在进入倒计时xxxm区间是自动刷新获取salt；非200返回显示`活动已结束`页面<br/>
 ```json
 {
   "effectOn": 1451893345000,
@@ -48,14 +47,14 @@ seckilling platform
 }
 ```
 
-3. `GET /api/v1/seckill?id=xxx&phone=xxx&salt=xxx` 秒杀api，进行计数，先来先得，多于限额的用户判断为失败，命中的请求服务器会同时设置cookie DM_SK_UID作为token, 并记录到redis；非200返回显示`秒杀失败`页面<br/>
+- `GET /api/v1/seckill?id=xxx&phone=xxx&salt=xxx` 秒杀api，进行计数，先来先得，多于限额的用户判断为失败，命中的请求服务器会同时设置cookie DM_SK_UID作为token, 并记录到redis；非200返回显示`秒杀失败`页面<br/>
 ```json
 {
   "coupon": "69221910-C1C2",
 }
 ```
 
-4. `GET /api/v1/coupon?phone=xxx` 发送优惠码到手机；非200返回显示`活动已结束`页面<br/>
+- `GET /api/v1/coupon?phone=xxx` 发送优惠码到手机；非200返回显示`活动已结束`页面<br/>
 ```json
 {
   "coupon": "69221910-C1C2",
