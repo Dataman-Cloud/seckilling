@@ -12,6 +12,7 @@ from django.db.models import Sum
 
 from .models import Prizes, Brand, Activities
 
+from datetime import datetime, timedelta
 
 class UserForm(forms.Form):
     username = forms.CharField(label='用户名',max_length=100)
@@ -21,30 +22,49 @@ class UserForm(forms.Form):
 def index(request):
     return HttpResponseRedirect('/warehouse/login')
 
-
 def gen_data(request):
     """
     Test only.
     """
-    target_count = 3000
-    current_count = Prizes.objects.count()
-    if current_count < target_count:
-        for brand in ["meituan", "baidu", "tmall"]:
-            Brand.objects.get_or_create(name=brand)
-        prizes = []
-        for i in range(target_count - current_count):
-            sn = uuid.uuid4().hex
-            brand = random.choice(list(Brand.objects.all()))
-            prizes.append(Prizes(serial_number=sn, brand=brand))
-            if len(prizes) > 1000:
-                Prizes.objects.bulk_create(prizes)
-                prizes = []
-        if prizes:
-            Prizes.objects.bulk_create(prizes)
-        return HttpResponse("测试数据生成完毕", status=201)
-    else:
-        return HttpResponse("测试数据已足够，不需要生成新的数据")
+    target_count = 300000
+    rounds = 15
+    brands = ["meituan", "baidu", "tmall"]
+    duration = timedelta(seconds=15*60)
 
+    Prizes.objects.all().delete()
+    Brand.objects.all().delete()
+    Activities.objects.all().delete()
+    current_count = 0
+    prizes = []
+
+    if current_count < target_count:
+
+        for brand in brands:
+            brand, _ = Brand.objects.get_or_create(name=brand)
+            brand_rounds = int(rounds / len(brands))
+            count_round = int(target_count/rounds)
+            for brand_round in range(0, brand_rounds):
+                prizes = []
+                for i in range(0, count_round):
+                    # gen prizes
+                    sn = uuid.uuid4().hex
+                    brand = brand
+                    prizes.append(Prizes(serial_number=sn, brand=brand))
+                    if len(prizes) > 1000:
+                        Prizes.objects.bulk_create(prizes)
+                        prizes = []
+
+                if prizes:
+                    Prizes.objects.bulk_create(prizes)
+
+                # gen activity
+                start_at = datetime.now()
+                end_at = start_at + duration
+                activity = Activities(start_at=start_at,
+                        end_at=end_at, brand=brand, count=count_round)
+                activity.save()
+
+    return HttpResponse("测试数据生成完毕", status=201)
 
 def login_view(request):
     if request.method == "GET":
