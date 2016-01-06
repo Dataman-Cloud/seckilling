@@ -1,4 +1,5 @@
 import itertools
+import logging
 
 from django.conf import settings
 from django.db.models.signals import post_save, post_delete
@@ -10,6 +11,8 @@ from django.core.exceptions import ValidationError
 
 from . import redis_inst
 
+
+logger = logging.getLogger(__name__)
 
 # Create your models here.
 PRIZE_LEVEL = [
@@ -105,21 +108,35 @@ class Prizes(models.Model):
 
 @receiver(post_save, sender=Activities)
 def update_prize_and_load_to_redis(sender, instance, created, **kwargs):
+
+    logger.info("Post save signal on event[%s] received." % instance)
+
     if kwargs['update_fields'] and 'status' in kwargs['update_fields'] and instance.status == 'end':
+        logger.info("Event[%s] is ended. Start pulling results back...")
         # updating activity status, we should pull the results back *only if* it's ended.
         with transaction.atomic():
+            valid_count = 0
             for prize_id, sn in instance.prizes.values_list('id', 'serial_number'):
                 winner_cell = redis_inst.hget(settings.REDIS['key_fmts']['result_hash'] % (instance.id, sn),
                                               settings.REDIS['key_fmts']['cell_key'])
-                winner_cell = winner_cell and winner_cell or ''
-                instance.prizes.filter(id=prize_id).update(winner_cell=winner_cell)
-
+                if not winner_cell:
+                    logger.warn("No result[%s] found in redis [%s]." %
+                                (settings.REDIS['key_fmts']['cell_key'],
+                                 settings.REDIS['key_fmts']['result_hash'] % (instance.id, sn)))
+                else:
+                    winner_cell = winner_cell
+                    instance.prizes.filter(id=prize_id).update(winner_cell=winner_cell)
+                    valid_count += 1
+            logger.info("%s results pulled back for event[%s]." % (valid_count, instance))
     else:
         # create/update activity before starting, we need to reload data into redis
         old_prize_count = Prizes.objects.filter(activity=instance).count()
         if not created and instance.count != old_prize_count:
+            logger.info('Event count changed[%s -> %s], rearranging...' % (old_prize_count, instance.count))
             instance.prizes.update(activity=None)
         if created or instance.count != old_prize_count:
+            if created:
+                logger.info('Event[%s] created, arranging...' % instance)
             id_qs = Prizes.objects.filter(brand=instance.brand,
                                           level=instance.level,
                                           activity__isnull=True).values_list('id', flat=True)
@@ -127,12 +144,16 @@ def update_prize_and_load_to_redis(sender, instance, created, **kwargs):
             qs = Prizes.objects.filter(id__in=id_list)
             qs.update(activity=instance)
 
+            logger.info("Assign %s SNs for event[%s] done." % (instance.count, instance))
+
             # load SNs for this event
             sn_key = settings.REDIS['key_fmts']['sn_set'] % str(instance.id)
             redis_inst.delete(sn_key)
             source_list = list(itertools.chain.from_iterable(
                     [[item.serial_number, item.id] for item in instance.prizes.all()]))
             redis_inst.zadd(sn_key, *source_list)
+
+            logger.info("Load %s SNs into redis %s done." % (instance.prizes.count(), sn_key))
 
         # Load data to redis
         # set event hash with key: event:<e_id>
@@ -146,35 +167,43 @@ def update_prize_and_load_to_redis(sender, instance, created, **kwargs):
         }
         redis_inst.hmset(event_key, mapping=mapping)
 
+        logger.info('Adding event hash[%s]: %s' % (event_key, mapping))
+
         # update events list
         load_events()
+
+        if not created:
+            logger.info('Event[%s] rearranging done.' % instance)
+        else:
+            logger.info('Event[%s] arranging done.' % instance)
 
 
 @receiver(post_delete, sender=Activities)
 def clean_up_redis(sender, instance, **kwargs):
+    logger.info("Post delete signal on event[%s] received." % instance)
     # delete event hash
     event_key = settings.REDIS['key_fmts']['event_hash'] % str(instance.id)
     redis_inst.delete(event_key)
+    logger.info("Event hash[%s] deleted." % event_key)
 
     # delete SNs for this event
     sn_key = settings.REDIS['key_fmts']['sn_set'] % str(instance.id)
     redis_inst.delete(sn_key)
+    logger.info("SNs Sorted Sets[%s] deleted." % sn_key)
 
     # update events list
     load_events()
 
 
-def pull_result_back(key):
-    raise NotImplementedError
-
-
-def get_current_activity():
-    return redis_inst.get(settings.REDIS['key_fmts']['current_eid'])
-
-
 def load_events():
     events = Activities.objects.values_list('id', flat=True)
     events_key = settings.REDIS['key_fmts']['events_list']
+
+    if not events:
+        logger.info("No events left, reload will delete the events list in redis.")
+
     redis_inst.delete(events_key)
     if events:
+        logger.info("Need to reload events list %s in redis %s. Reloading..." % (events, events_key))
         redis_inst.rpush(events_key, *events)
+        logger.info("Reload events list %s in redis %s done." % (events, events_key))
