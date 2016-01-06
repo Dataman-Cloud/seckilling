@@ -110,7 +110,7 @@ REDIS = {
         'current_eid': 'cur_eid',       # current event id
         'delivered_count': 'count:%s',  # Delivered SN count in the given event, arg: event_id
         'result_hash': 'tr:%s:%s',      # Result hash, arg: event_id, sn
-        'cell_key': 'phone_number',     # Winner cell key in result hash
+        'cell_key': 'phone',            # Winner cell key in result hash
     }
 }
 
