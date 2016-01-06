@@ -37,7 +37,7 @@ seckilling platform
 * `cur_eid`: Current Event ID
 * `count:<eid>`: Delivered Count for this event
 * `tr:<eid>:<sn>`: Order result hash for `sn` in event `eid`
-    - `phone_number`: user cell phone number
+    - `phone`: user cell phone number
     - ...
 
 # design
