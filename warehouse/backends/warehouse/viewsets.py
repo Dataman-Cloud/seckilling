@@ -1,14 +1,14 @@
-from django.db.models import Count
-
+from django.db.models import Count, Q
 from django.conf import settings
+
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 
+from . import redis_inst
 from .serializer import BrandStatsSerializer, PrizeSerializer, ActivitiesSerializer
 from .models import Brand, Prizes, Activities
 
-from . import redis_inst
 
 class BrandStatsViewSet(viewsets.ReadOnlyModelViewSet):
     """
@@ -38,6 +38,7 @@ class PrizeViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Prizes.objects.all()
     serializer_class = PrizeSerializer
 
+
 class ActivitiesViewSet(viewsets.ReadOnlyModelViewSet):
     """
     """
@@ -58,22 +59,34 @@ class ActivitiesViewSet(viewsets.ReadOnlyModelViewSet):
         event_key = settings.REDIS['key_fmts']['current_eid']
         current_eid = int(redis_inst.get(event_key))
         event_key = settings.REDIS['key_fmts']['event_hash'] % str(int(current_eid))
-        status = int(redis_inst.hget(event_key, 'status'))
-        update_activity_status(current_eid, status)
+        event_status = redis_inst.hget(event_key, 'status')
+        if event_status:
+            status = int(event_status)
+        else:
+            status = 2  # waiting/init status, not started yet
+        check_and_update_activity_status(current_eid, status)
         return Response({'current_eid': current_eid})
 
     queryset = Activities.objects.all()
     serializer_class = ActivitiesSerializer
 
 
-def update_activity_status(eid, status, **kwargs):
+def check_and_update_activity_status(eid, status, **kwargs):
     event_status_mapping = {
         1: 'running',
         2: 'waiting',
         3: 'end'
     }
-    qs = Activities.objects.get(id=eid)
+    cur_event = Activities.objects.get(id=eid)
+    # check events that should be finished before has the correct status, update if not
+    qs = Activities.objects.filter(Q(end_at__lte=cur_event.start_at) & ~Q(status='end'))
+    if qs:
+        # loop over to call save with `update_fields`
+        for item in qs:
+            item.status = 'end'
+            item.save(update_fields=['status'])
     status = event_status_mapping[status]
-    if qs.status != status:
-        qs.status=status
-        qs.save()
+    # update current event status accordingly
+    if cur_event.status != status:
+        cur_event.status = status
+        cur_event.save(update_fields=['status'])
