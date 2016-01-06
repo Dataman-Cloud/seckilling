@@ -69,9 +69,9 @@ class Activities(models.Model):
             if self.id:
                 this_activate = Activities.objects.get(id = self.id)
                 prizes_taken = prizes_taken - this_activate.count
-                prizes_avaliable = prizes_total - prizes_taken
+                prizes_available = prizes_total - prizes_taken
             else:
-                prizes_avaliable = prizes_total - prizes_taken
+                prizes_available = prizes_total - prizes_taken
 
             count_sum = prizes_taken + self.count
 
@@ -79,7 +79,7 @@ class Activities(models.Model):
                 raise ValidationError('the end time should be later than the start time')
             elif count_sum > prizes_total:
                 raise ValidationError('There is not enough prizes, only %d available in %d/%d' %
-                                      (prizes_avaliable, prizes_taken, prizes_total))
+                                      (prizes_available, prizes_taken, prizes_total))
         else:
             raise ValidationError('wrong conditions, brand: %s, level: %s' % (self.brand.name, str(self.level)))
 
@@ -105,38 +105,47 @@ class Prizes(models.Model):
 
 @receiver(post_save, sender=Activities)
 def update_prize_and_load_to_redis(sender, instance, created, **kwargs):
-    old_prize_count = Prizes.objects.filter(activity=instance).count()
-    if not created and instance.count != old_prize_count:
-        instance.prizes.update(activity=None)
-    if created or instance.count != old_prize_count:
-        id_qs = Prizes.objects.filter(brand=instance.brand,
-                                      level=instance.level,
-                                      activity__isnull=True).values_list('id', flat=True)
-        id_list = list(id_qs)[:instance.count]
-        qs = Prizes.objects.filter(id__in=id_list)
-        qs.update(activity=instance)
+    if kwargs['update_fields'] and 'status' in kwargs['update_fields'] and instance.status == 'end':
+        # updating activity status, we should pull the results back *only if* it's ended.
+        for prize in instance.prizes.all():
+            winner_cell = redis_inst.hget(settings.REDIS['key_fmts']['result_hash'],
+                                          settings.REDIS['key_fmts']['cell_key'])
+            prize.winner_cell = winner_cell and winner_cell or ''
+            prize.save()
+    else:
+        # create/update activity before starting, we need to reload data into redis
+        old_prize_count = Prizes.objects.filter(activity=instance).count()
+        if not created and instance.count != old_prize_count:
+            instance.prizes.update(activity=None)
+        if created or instance.count != old_prize_count:
+            id_qs = Prizes.objects.filter(brand=instance.brand,
+                                          level=instance.level,
+                                          activity__isnull=True).values_list('id', flat=True)
+            id_list = list(id_qs)[:instance.count]
+            qs = Prizes.objects.filter(id__in=id_list)
+            qs.update(activity=instance)
 
-        # load SNs for this event
-        sn_key = settings.REDIS['key_fmts']['sn_set'] % str(instance.id)
-        redis_inst.delete(sn_key)
-        source_list = list(itertools.chain.from_iterable(
-                [[item.serial_number, item.id] for item in instance.prizes.all()]))
-        redis_inst.zadd(sn_key, *source_list)
+            # load SNs for this event
+            sn_key = settings.REDIS['key_fmts']['sn_set'] % str(instance.id)
+            redis_inst.delete(sn_key)
+            source_list = list(itertools.chain.from_iterable(
+                    [[item.serial_number, item.id] for item in instance.prizes.all()]))
+            redis_inst.zadd(sn_key, *source_list)
 
-    # Load data to redis
-    # set event hash with key: event:<e_id>
-    event_key = settings.REDIS['key_fmts']['event_hash'] % str(instance.id)
-    redis_inst.delete(event_key)
-    mapping = {
-        'id': instance.id,
-        'effectOn': int(instance.start_at.timestamp()),
-        'duration': int(instance.end_at.timestamp()) - int(instance.start_at.timestamp()),
-        'desc': ''
-    }
-    redis_inst.hmset(event_key, mapping=mapping)
+        # Load data to redis
+        # set event hash with key: event:<e_id>
+        event_key = settings.REDIS['key_fmts']['event_hash'] % str(instance.id)
+        redis_inst.delete(event_key)
+        mapping = {
+            'id': instance.id,
+            'effectOn': int(instance.start_at.timestamp()),
+            'duration': int(instance.end_at.timestamp()) - int(instance.start_at.timestamp()),
+            'desc': ''
+        }
+        redis_inst.hmset(event_key, mapping=mapping)
 
-    # update events list
-    load_events()
+        # update events list
+        load_events()
 
 
 @receiver(post_delete, sender=Activities)

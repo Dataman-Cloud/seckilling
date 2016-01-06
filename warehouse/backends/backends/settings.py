@@ -104,11 +104,13 @@ REDIS = {
 
     # key related
     'key_fmts': {
-        'events_list': 'events',       # events list
-        'event_hash': 'event:%s',      # event info hash, arg: event_id
-        'sn_set': 'SN:%s',             # Serial Numbers in the given event, SortedSet, arg: event_id
-        'current_eid': 'cur_eid',      # current event id
-        'delivered_count': 'COUNT:%s'  # Delivered SN count in the given event, arg: event_id
+        'events_list': 'events',        # events list
+        'event_hash': 'event:%s',       # event info hash, arg: event_id
+        'sn_set': 'SN:%s',              # Serial Numbers in the given event, SortedSet, arg: event_id
+        'current_eid': 'cur_eid',       # current event id
+        'delivered_count': 'COUNT:%s',  # Delivered SN count in the given event, arg: event_id
+        'result_hash': 'TR:%s:%s',      # Result hash, arg: event_id, sn
+        'cell_key': 'phone_number',     # Winner cell key in result hash
     }
 }
 
