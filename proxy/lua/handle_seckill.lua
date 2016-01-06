@@ -12,4 +12,6 @@ local redisc = require "redisc"
 local redis = redisc:new()
 local res, err = redis:hget("tk:"..token, "status")
 
-ngx.say(string.format('{"c":%d, "s":%d}', ngx.now() * 1000, res))
+local uuid = require "uuid4"
+local coupon = uuid.getUUID()
+ngx.say(string.format('{"coupon":"%s"}', coupon))
