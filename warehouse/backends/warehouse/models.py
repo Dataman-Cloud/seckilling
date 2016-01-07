@@ -6,7 +6,7 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.db import models, transaction
 from django.utils import timezone
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.core.exceptions import ValidationError
 
 from . import redis_inst
@@ -85,6 +85,15 @@ class Activities(models.Model):
                                       (prizes_available, prizes_taken, prizes_total))
         else:
             raise ValidationError('wrong conditions, brand: %s, level: %s' % (self.brand.name, str(self.level)))
+
+    @property
+    def delivered_prize_count(self):
+        if self.status == 'end':
+            return self.prizes.filter(~Q(winner_cell='')).count()
+        else:
+            # NOTE(xchu): Not started yet or not finished, we only collect result *after* event finished;
+            #             For running event, we have a API to be called to get current count in Redis.
+            return 0
 
 
 class Prizes(models.Model):

@@ -22,9 +22,11 @@ class PrizeSerializer(serializers.ModelSerializer):
         model = Prizes
         fields = ('serial_number', 'brand', 'level', 'winner_cell', 'created_at')
 
+
 class ActivitiesSerializer(serializers.ModelSerializer):
     brand = serializers.CharField(source='brand.name')
+    delivered_prize_count = serializers.IntegerField()
 
     class Meta:
         model = Activities
-        fields = ('id', 'start_at', 'end_at', 'brand', 'level', 'count', 'status')
+        fields = ('id', 'start_at', 'end_at', 'brand', 'level', 'count', 'status', 'delivered_prize_count')
