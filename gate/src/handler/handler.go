@@ -51,6 +51,13 @@ func Tickets(c *echo.Context) error {
 		return c.JSON(model.UserPhoneNumNull, model.OrderInfo{Timestamp: time.Now().UTC().Unix(), UID: cookie})
 	}
 
+	eid := c.Param("id")
+	if eid == "" {
+		return c.JSON(model.UserPhoneNumNull, model.OrderInfo{Timestamp: time.Now().UTC().Unix(), UID: cookie})
+	}
+
+	model.CurrentEventId = eid
+
 	// Get user info by cookie(UUID)
 	// if cookie is not exit in redis return error
 	// if status is null or status not 1 return StatusNotOne/StatusNull
