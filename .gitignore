@@ -42,3 +42,5 @@ rel/
 queue/src/queue-conf.json
 
 seckill-proxy/dist/traefik
+
+gate/dist/seckilling-gate

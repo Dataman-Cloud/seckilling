@@ -5,8 +5,12 @@
  * 3. cp ./gate-conf.sample.yaml ~/.seckilling/gate-conf.yaml
  * 4. make run
 
-### build docker images
+### build binary
+```
+make binary
+```
 
+### build docker images
 ```
 # make image
 ```
