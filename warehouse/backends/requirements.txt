@@ -1,6 +1,9 @@
-django
-mysqlclient
-djangorestframework
-markdown
-django-filter
+Django==1.9.1
+django-filter==0.11.0
+djangorestframework==3.3.2
+gunicorn==19.4.5
+Markdown==2.6.5
+mysqlclient==1.3.7
+Pygments==2.0.2
+redis==2.10.5
 django-cors-headers

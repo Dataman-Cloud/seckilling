@@ -8,16 +8,25 @@ db:
     - MYSQL_ROOT_PASSWORD=111111
 cache:
   image: redis
-  ports: 
+  ports:
     - "6379:6379"
   command: redis-server --appendonly yes
-#warehouse:
-#  build: ./warehouse
-#  ports:
-#    - "8000:8000"
-#  volumes:
-#    - ./warehouse:/code
-#    - ./warehouse/warehouse/settings.py:/code/warehouse/settings.py
-#  links:
-#    - warehouse_db
-#    - warehouse_cache
+app:
+  build: ./backends
+  ports:
+    - "8000:8000"
+  volumes:
+    - ./backends:/code
+  links:
+    - db
+    - cache
+  env_file: .env
+  command: /usr/local/bin/gunicorn backends.wsgi:application -w 5 -b :8000
+nginx:
+  restart: always
+  build: ./nginx/
+  ports:
+    - "80:80"
+  env_file: .env
+  links:
+    - app
