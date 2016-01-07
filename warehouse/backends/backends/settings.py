@@ -102,17 +102,17 @@ WSGI_APPLICATION = 'backends.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'warehouse',
-        'USER': 'root',
-        'PASSWORD': '111111',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'NAME': os.environ['DB_NAME'],
+        'USER': os.environ['DB_USER'],
+        'PASSWORD': os.environ['DB_PASSWORD'],
+        'HOST': os.environ['DB_HOST'],
+        'PORT': os.environ['DB_PORT'],
     }
 }
 
 REDIS = {
-    'host': '127.0.0.1',
-    'port': 6379,
+    'host': os.environ['REDIS_HOST'],
+    'port': os.environ['REDIS_PORT'],
     # 'host': '123.59.58.58',
     # 'port': 5506,
     'db': 0,
@@ -146,8 +146,14 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
 
 LOGIN_URL = '/warehouse/login'
 

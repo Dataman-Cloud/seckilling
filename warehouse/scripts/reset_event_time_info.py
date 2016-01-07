@@ -3,7 +3,7 @@ import time
 
 r = redis.StrictRedis(host='123.59.58.58', port=5506)
 
-START_AHEAD = 10*60      # n minutes ahead the current time for the start of the first event
+START_AHEAD = 5*60      # n minutes ahead the current time for the start of the first event
 DURATION = 4*60          # n minutes for each round of event
 
 # reset event hash time info
