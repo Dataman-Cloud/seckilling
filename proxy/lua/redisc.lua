@@ -112,6 +112,7 @@ end
 -- change connect address as you need
 function _M.connect_mod( self, redis )    
     redis:set_timeout(self.timeout)
+    print("connect to redis. host: ", config.redis.host, " port: ", config.redis.port)
     local ok, err = redis:connect(config.redis.host, config.redis.port)
     if config.redis.password and config.redis.password ~= "" then
         local authOk, authErr = redis:auth(config.redis.password)
