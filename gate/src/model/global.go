@@ -7,13 +7,13 @@ const (
 
 	CurrentEventKey = "cur_eid"
 
-	EventIdKey = "SN:%s"
+	EventIdKey = "sn:%s"
 
-	OrderKey = "TR:%s:%s" //(eid, sn)
+	OrderKey = "tr:%s:%s" //(eid, sn)
 
 	EventInfoKey = "event:%s"
 
-	WorkOffIndexKey = "WF:%s"
+	WorkOffIndexKey = "wf:%s"
 )
 
 var (
