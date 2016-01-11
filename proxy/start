@@ -7,6 +7,8 @@ docker run \
 -v $PWD/lua:$NG_PREFIX/lua \
 -p 9200:80 \
 -e PROXY_MODE=$MODE \
+-e REDIS_HOST="123.59.58.59" \
+-e REDIS_PORT=5506 \
 -d \
 --name resty \
 testregistry.dataman.io/nginx-proxy-1.9.7.1:1.0 && docker logs -f resty
