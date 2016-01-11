@@ -1,59 +1,32 @@
+local util = require "access_util"
 local args = ngx.req.get_uri_args()
 -- parameters validations
 function validate()
     if not args.id then
-        ngx.exit(ngx.HTTP_NOT_ALLOWED)
-    end
-
-    if not args.phone or not validatePhone(args.phone) then
-        ngx.exit(ngx.HTTP_NOT_ALLOWED)
-    end
-
-    if not args.salt then
-        ngx.exit(ngx.HTTP_NOT_ALLOWED)
-    end
-    local cache = ngx.shared.scache
-    local salt, err = cache:get("salt:"..args.id)
-    if not salt or args.salt ~= salt then
+        ngx.log(ngx.INFO, "invalid id")
         ngx.exit(ngx.HTTP_NOT_ALLOWED)
         return false
     end
 
-    local effectOn, err = cache:get("eeo:"..args.id)
-    if not effectOn then
-        ngx.log(ngx.ERR, "can't get eeo ", err)
+    if not util.validatePhone(args.phone) then
+        ngx.log(ngx.INFO, "invalid phone")
         ngx.exit(ngx.HTTP_NOT_ALLOWED)
         return false
     end
 
-    local duration, err = cache:get("ed:"..args.id)
-    if not duration then
-        ngx.log(ngx.ERR, "can't get ed ", err)
+    if not util.validateSalt(args.id, args.salt) then
+        ngx.log(ngx.INFO, "invalid salt")
         ngx.exit(ngx.HTTP_NOT_ALLOWED)
         return false
     end
 
-    local now = ngx.now() * 1000
-    if effectOn > now or now > effectOn + duration then 
+    if not util.validateEffect(args.id) then
+        ngx.log(ngx.INFO, "invalid effectOn")
         ngx.exit(ngx.HTTP_NOT_ALLOWED)
         return false
     end
     return true
 end
-
-function validatePhone(phone)
-    if string.sub(phone, 1, 2) == "86" then
-        phone = string.sub(phone, 3)
-    end
-    if string.sub(phone, 1, 3) == "086" then
-        phone = string.sub(phone, 4)
-    end
-    if string.match(phone, "^1[3|5|7|8|4]%d%d%d%d%d%d%d%d%d$") then
-        return true
-    else 
-        return false
-    end
-end 
 
 -- request limit counter update
 function applyCounter()
@@ -81,6 +54,8 @@ function setToken()
     end
 
     local token = cookie:get(config.tokenCookie)
+    ngx.log(ngx.INFO, "cookie ", token)
+
     if not token then
         local uuid = require "uuid4"
         local token = uuid.getUUID()
@@ -98,6 +73,7 @@ function setTokenStatus(token)
     local redisc = require "redisc"
     local redis = redisc:new()
     local ok, err = redis:hset("tk:"..token, "status", 1)
+    ngx.log(ngx.INFO, "token set ", ok)
     if not ok then
         ngx.log(ngx.CRIT, "can't set token to redis ", err)
         ngx.exit(ngx.HTTP_NOT_ALLOWED)
