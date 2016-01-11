@@ -41,7 +41,7 @@ function _M.apply(eid)
                 ngx.log(ngx.ERR, "can't set stopped", err)
             end
         end
-        _M.reset()
+        _M.reset(eid)
     end
 end
 

@@ -1,5 +1,9 @@
 local _M = {}
 
+function _M.hasCoupon(phone) 
+
+end
+
 function _M.validatePhone(phone)
     if not phone then
         return false
