@@ -134,7 +134,7 @@ func SaveOrder(user *model.OrderInfo) {
 
 func Reset(c *echo.Context) error {
 	err := demo.Reset()
-	if err == nil {
+	if err != nil {
 		return c.String(1, err.Error())
 	}
 
