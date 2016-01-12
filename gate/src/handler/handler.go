@@ -30,26 +30,26 @@ func Hello(c *echo.Context) error {
 	return c.String(http.StatusOK, "Hello, World!\n")
 }
 
-func checkCookie(c *echo.Context) string {
-	cookies := c.Request().Cookies()
-	log.Println("cookies: ", cookies)
-	for _, cookie := range cookies {
-		log.Println(cookie.Name)
-		if cookie.Name == model.SkCookie {
-			return cookie.Value
-		}
-	}
-	ck, err := c.Request().Cookie(model.SkCookie)
-	if err != nil {
-		log.Println(err)
-	}
+// func checkCookie(c *echo.Context) string {
+// 	cookies := c.Request().Cookies()
+// 	log.Println("cookies: ", cookies)
+// 	for _, cookie := range cookies {
+// 		log.Println(cookie.Name)
+// 		if cookie.Name == model.SkCookie {
+// 			return cookie.Value
+// 		}
+// 	}
+// 	ck, err := c.Request().Cookie(model.SkCookie)
+// 	if err != nil {
+// 		log.Println(err)
+// 	}
 
-	log.Println(ck)
+// 	log.Println(ck)
 
-	log.Println(c.Get(model.SkCookie))
+// 	log.Println(c.Get(model.SkCookie))
 
-	return ""
-}
+// 	return ""
+// }
 
 func Tickets(c *echo.Context) error {
 	// cookie := checkCookie(c)
