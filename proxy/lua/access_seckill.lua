@@ -1,5 +1,7 @@
 local util = require "access_util"
 local args = ngx.req.get_uri_args()
+local config = require "config"
+
 -- parameters validations
 function validate()
     if not args.id then
@@ -25,6 +27,13 @@ function validate()
         ngx.exit(ngx.HTTP_NOT_ALLOWED)
         return false
     end
+
+    if not validateToken() then
+        ngx.log(ngx.INFO, "duplicated token")
+        ngx.exit(ngx.HTTP_NOT_ALLOWED)
+        return false
+    end
+
     return true
 end
 
@@ -43,8 +52,31 @@ function applyCounter()
     end
 end
 
+function validateToken()
+    local ck = require "resty.cookie"
+    local cookie, err = ck:new()
+    if not cookie then
+        return false
+    else 
+        local token, _ = cookie:get(config.tokenCookie)
+        print("got token ", token)
+        if token then
+            local redisc = require "redisc"
+            local redis = redisc:new()
+            local status, _ = redis:hget("tk:"..token..args.id, 'status')
+            print("got status ", status)
+            if status == '1' then
+                return false
+            else 
+                return true 
+            end
+        else 
+            return true
+        end
+    end
+end
+
 function setToken()
-    local config = require "config"
     local ck = require "resty.cookie"
     local cookie, err = ck:new()
     if not cookie then
@@ -58,13 +90,15 @@ function setToken()
 
     if not token then
         local uuid = require "uuid4"
-        local token = uuid.getUUID()
+        token = uuid.getUUID()
         local ok, err = cookie:set({key = config.tokenCookie, value = token, path = "/"})
         if not ok then
             ngx.log(ngx.CRIT, "can't set cookie ", err)
             ngx.exit(ngx.HTTP_NOT_ALLOWED)
             return
         end
+        args[config.tokenCookie] = token
+        ngx.req.set_uri_args(args)
     end
     setTokenStatus(token)
 end
@@ -72,7 +106,7 @@ end
 function setTokenStatus(token)
     local redisc = require "redisc"
     local redis = redisc:new()
-    local ok, err = redis:hset("tk:"..token, "status", 1)
+    local ok, err = redis:hset("tk:"..token..args.id, "status", 1)
     ngx.log(ngx.INFO, "token set ", ok)
     if not ok then
         ngx.log(ngx.CRIT, "can't set token to redis ", err)
