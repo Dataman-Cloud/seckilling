@@ -2,8 +2,8 @@
 logLevel: "DEBUG"
 port: ":8090"
 cache:
-    host: "10.3.10.43"
-    port: 6379
+    host: "123.59.58.58"
+    port: 5506
     password: ""
     db: 0
     poolsize: 100
