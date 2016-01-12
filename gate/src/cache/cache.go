@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"sync"
-	"time"
 
 	"github.com/Dataman-Cloud/seckilling/gate/src/model"
 	redis "github.com/garyburd/redigo/redis"
@@ -85,43 +84,22 @@ func WriteHashToRedis(key, field, value string, timeout int) error {
 	return nil
 }
 
-func GetOrderInfo(cookie string) (*model.OrderInfo, int) {
+func CheckStatus(key string) error {
 	conn := Open()
 	defer conn.Close()
 
-	status, err := redis.String(conn.Do("HGET", cookie, "status"))
+	status, err := redis.String(conn.Do("HGET", key, "status"))
 	if err == redis.ErrNil {
-		return nil, model.StatusNull
+		return fmt.Errorf("empty status of %s", key)
 	} else if err != nil {
-		return nil, model.GetStatusFailed
+		return fmt.Errorf("get status of %s has error: ", key, err.Error())
 	}
 
 	if status != "1" {
-		return nil, model.StatusNotOne
+		return fmt.Errorf("invalid status of %s", key)
 	}
 
-	eventId, err := redis.String(conn.Do("HGET", cookie, "event"))
-	if err == redis.ErrNil {
-		return nil, model.EventNull
-	} else if err != nil {
-		return nil, model.GetEventFailed
-	}
-
-	ctEvent, err := GetCurrentEventId()
-	if err != nil {
-		return nil, model.GetCtEventFailed
-	}
-
-	if ctEvent != eventId {
-		return nil, model.EventNotMatch
-	}
-
-	return &model.OrderInfo{
-		UID:       cookie,
-		EventId:   eventId,
-		Timestamp: time.Now().UTC().Unix(),
-	}, 0
-
+	return nil
 }
 
 func GetCurrentEventId() (string, error) {
@@ -152,14 +130,17 @@ func CheckPhoneNum(phone string) (bool, error) {
 func GetSerialNum() (string, int64, error) {
 	index, err := GetSeriaIndex()
 	if err != nil {
+		log.Println("GetSeriaIndex has error: ", err)
 		return "", -1, err
 	}
-
+	log.Println("indec: ", index)
 	conn := Open()
 	defer conn.Close()
 	eid, _ := GetCurrentEventId()
 	eidKey := fmt.Sprintf(model.EventIdKey, eid)
+	log.Println(eidKey)
 	indexKey := fmt.Sprintf(model.WorkOffIndexKey, eid)
+	log.Println(indexKey)
 	conn.Send("MULTI")
 	conn.Send("ZRANGE", eidKey, index, index)
 	conn.Send("INCR", indexKey)
@@ -172,10 +153,13 @@ func GetSerialNum() (string, int64, error) {
 	if r[0] == redis.ErrNil {
 		return "", index, model.ShortageStockError
 	}
+
 	var seriaNum string
-	if bytes, ok := r[0].([]byte); ok {
-		seriaNum = string(bytes)
-		return seriaNum, index, nil
+	if slice, ok := r[0].([]interface{}); ok {
+		if bytes, ok := slice[0].([]byte); ok {
+			seriaNum = string(bytes)
+			return seriaNum, index, nil
+		}
 	}
 
 	return seriaNum, index, fmt.Errorf("unknown result")
@@ -195,7 +179,7 @@ func GetSeriaIndex() (int64, error) {
 	id, _ := GetCurrentEventId()
 	indexKey := fmt.Sprintf(model.WorkOffIndexKey, id)
 	index, err := redis.Int64(conn.Do("GET", indexKey))
-	if err != redis.ErrNil {
+	if err == redis.ErrNil {
 		return 0, nil
 	} else if err != nil {
 		return -1, err

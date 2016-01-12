@@ -32,27 +32,44 @@ func Hello(c *echo.Context) error {
 
 func checkCookie(c *echo.Context) string {
 	cookies := c.Request().Cookies()
+	log.Println("cookies: ", cookies)
 	for _, cookie := range cookies {
+		log.Println(cookie.Name)
 		if cookie.Name == model.SkCookie {
 			return cookie.Value
 		}
 	}
+	ck, err := c.Request().Cookie(model.SkCookie)
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println(ck)
+
+	log.Println(c.Get(model.SkCookie))
+
 	return ""
 }
 
 func Tickets(c *echo.Context) error {
-	cookie := checkCookie(c)
+	// cookie := checkCookie(c)
+	// cookie := c.Param(model.SkCookie)
+	cookie := c.Query(model.SkCookie)
+
 	if cookie == "" {
+		log.Println("Error!! Cookie is null")
 		return c.JSON(model.CookieCheckFailed, model.OrderInfo{Timestamp: time.Now().UTC().Unix()})
 	}
 
-	phoneNum := c.Param("phone")
+	phoneNum := c.Query("phone")
 	if phoneNum == "" {
+		log.Println("Error!! Phone is null")
 		return c.JSON(model.UserPhoneNumNull, model.OrderInfo{Timestamp: time.Now().UTC().Unix(), UID: cookie})
 	}
 
-	eid := c.Param("id")
+	eid := c.Query("id")
 	if eid == "" {
+		log.Println("Error!! Id is null")
 		return c.JSON(model.UserPhoneNumNull, model.OrderInfo{Timestamp: time.Now().UTC().Unix(), UID: cookie})
 	}
 
@@ -63,32 +80,37 @@ func Tickets(c *echo.Context) error {
 	// if status is null or status not 1 return StatusNotOne/StatusNull
 	// if phone is null return UserPhoneNumNull
 	// if event is null or event is not match current event return EventNull/EventNotMatch
-	user, code := cache.GetOrderInfo(cookie)
-	if code != 0 {
-		return c.JSON(code, model.OrderInfo{Timestamp: time.Now().UTC().Unix()})
-	}
-
-	if user == nil {
-		return c.JSON(model.UnknownError, model.OrderInfo{Timestamp: time.Now().UTC().Unix()})
+	ckey := fmt.Sprintf(model.CookHashKey, cookie, eid)
+	err := cache.CheckStatus(ckey)
+	if err != nil {
+		log.Println("Error!! Status of %s is invalid", ckey)
+		return c.JSON(model.InvalidStatus, model.OrderInfo{Timestamp: time.Now().UTC().Unix(), UID: cookie, EventId: eid})
 	}
 
 	// check phone number and event id make sure one phone number only have once chance in one activity
-	repeat, err := cache.CheckPhoneNum(user.Phone)
+	repeat, err := cache.CheckPhoneNum(phoneNum)
 	if err != nil {
 		log.Println("check user phone number hs error: ", err)
 	}
 
+	order := &model.OrderInfo{
+		Timestamp: time.Now().UTC().Unix(),
+		UID:       cookie,
+		EventId:   eid,
+		Phone:     phoneNum,
+	}
+
 	if !repeat {
-		return c.JSON(model.PhoneRepaet, user)
+		return c.JSON(model.PhoneRepaet, order)
 	}
 
-	code = ProduceOrder(user)
+	code := ProduceOrder(order)
 	if code == 0 {
-		go SaveOrder(user)
-		return c.JSON(http.StatusOK, user)
+		go SaveOrder(order)
+		return c.JSON(http.StatusOK, order)
 	}
 
-	return c.JSON(code, user)
+	return c.JSON(code, order)
 }
 
 func ProduceOrder(user *model.OrderInfo) int {
