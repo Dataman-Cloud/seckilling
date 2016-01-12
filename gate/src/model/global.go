@@ -14,6 +14,8 @@ const (
 	EventInfoKey = "event:%s"
 
 	WorkOffIndexKey = "wf:%s"
+
+	CookHashKey = "tk:%s:%s"
 )
 
 var (
