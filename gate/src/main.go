@@ -29,6 +29,7 @@ func main() {
 	// Routes
 	e.Get("/hello", handler.Hello)
 	e.Get("/api/v1/seckill", handler.Tickets)
+	e.Get("/api/v1/reset", handler.Reset)
 
 	// go cache.StartUpdateEventStatus()
 

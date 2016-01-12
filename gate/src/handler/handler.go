@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Dataman-Cloud/seckilling/gate/src/cache"
+	"github.com/Dataman-Cloud/seckilling/gate/src/demo"
 	"github.com/Dataman-Cloud/seckilling/gate/src/model"
 	"github.com/labstack/echo"
 )
@@ -129,4 +130,13 @@ func ProduceOrder(user *model.OrderInfo) int {
 func SaveOrder(user *model.OrderInfo) {
 	key := fmt.Sprintf(model.OrderKey, user.EventId, user.SerialNum)
 	cache.WriteStructToRedis(user, key)
+}
+
+func Reset(c *echo.Context) error {
+	err := demo.Reset()
+	if err == nil {
+		return c.String(1, err.Error())
+	}
+
+	return c.String(http.StatusOK, "reset success")
 }
