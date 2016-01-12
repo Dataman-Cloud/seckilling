@@ -18,7 +18,7 @@ function _M.apply(eid)
         ngx.log(ngx.ERR, "can't get counter", err)
     end
 
-    if val >= config.counterBatch then
+    if val >= tonumber(config.counterBatch) then
         local redisc = require "redisc"
         local redis = redisc:new()
 

@@ -9,7 +9,7 @@ const (
 
 	UserPhoneNumNull  = 250
 	PhoneRepaet       = 256
-	StatusNotOne      = 266
+	InvalidStatus     = 266
 	StatusNull        = 267
 	EventNull         = 268
 	EventNotMatch     = 269

@@ -97,16 +97,16 @@ function setToken()
             ngx.exit(ngx.HTTP_NOT_ALLOWED)
             return
         end
-        args[config.tokenCookie] = token
-        ngx.req.set_uri_args(args)
     end
+    args[config.tokenCookie] = token
+    ngx.req.set_uri_args(args)
     setTokenStatus(token)
 end
 
 function setTokenStatus(token)
     local redisc = require "redisc"
     local redis = redisc:new()
-    local ok, err = redis:hset("tk:"..token..args.id, "status", 1)
+    local ok, err = redis:hset("tk:"..token..":"..args.id, "status", 1)
     ngx.log(ngx.INFO, "token set ", ok)
     if not ok then
         ngx.log(ngx.CRIT, "can't set token to redis ", err)
