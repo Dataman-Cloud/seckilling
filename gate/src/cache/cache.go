@@ -133,14 +133,12 @@ func GetSerialNum() (string, int64, error) {
 		log.Println("GetSeriaIndex has error: ", err)
 		return "", -1, err
 	}
-	log.Println("indec: ", index)
+	log.Println("index: ", index)
 	conn := Open()
 	defer conn.Close()
 	eid, _ := GetCurrentEventId()
 	eidKey := fmt.Sprintf(model.EventIdKey, eid)
-	log.Println(eidKey)
 	indexKey := fmt.Sprintf(model.WorkOffIndexKey, eid)
-	log.Println(indexKey)
 	conn.Send("MULTI")
 	conn.Send("ZRANGE", eidKey, index, index)
 	conn.Send("INCR", indexKey)
