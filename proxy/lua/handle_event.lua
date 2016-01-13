@@ -13,7 +13,7 @@ if (not effectOn) or (not duration) then
 else 
     local now = ngx.now() * 1000
     local offset = effectOn - now
-    if offset <= tonumber(config.saltOffset) and now < effectOn + duration then
+    if offset <= config.saltOffset and now < effectOn + duration then
         local cache = ngx.shared.scache
         local salt, err = cache:get('salt:'..id)
         print("refreshing salt ", salt)
