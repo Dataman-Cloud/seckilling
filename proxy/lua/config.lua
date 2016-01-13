@@ -9,9 +9,14 @@ redis.port =  os.getenv("REDIS_PORT") or 5506
 --redis.password = "UQPqcj7nUyii38cpYcr9OnTbIJ3dHXvJ"
 _M.redis = redis
 
-_M.counterBatch = os.getenv("COUNTER_BATCH") or 5
-_M.maxCount = os.getenv("MAX_COUNT") or 10
-_M.saltOffset = os.getenv("SALT_OFFSET") or 180000 --1000 * 60 * 3
+local counterBatch = os.getenv("COUNTER_BATCH")
+_M.counterBatch = tonumber(counterBatch) or 5
+
+local maxCount = os.getenv("MAX_COUNT")
+_M.maxCount = tonumber(maxCount) or 10
+
+local saltOffset = os.getenv("SALT_OFFSET")
+_M.saltOffset = tonumber(saltOffset) or 180000 --1000 * 60 * 3
 _M.tokenCookie = os.getenv("TOKEN_COOKIE") or "DM_SK_UID"
 
 return _M
