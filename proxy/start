@@ -11,7 +11,6 @@ docker run \
 -e REDIS_PORT=5506 \
 -e TOKEN_COOKIE="DM_SK_UID" \
 -e SALT_OFFSET=180000 \
--e MAX_COUNT=10 \
 -e COUNTER_BATCH=5 \
 -d \
 --name resty \

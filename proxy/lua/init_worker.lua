@@ -4,11 +4,12 @@
 local redisc = require "redisc"
 local cjson = require "cjson"
 local config = require "config"
+local constant = require "constant"
 
 function setEvents(redis)
     local testData = require "test_data"
     local events = testData.events
-    return redis:set("events", events)
+    return redis:set(constant.events_key, events)
 end
 
 function loadEvents()
@@ -20,7 +21,7 @@ function loadEvents()
         return testData.events
     else
         local redis = redisc:new()
-        local eids, err = redis:lrange("events", 0, -1)
+        local eids, err = redis:lrange(constant.events_key, 0, -1)
         if not eids then
             ngx.log(ngx.WARN, "can't retreive events from redis ", err)
         end
@@ -31,7 +32,7 @@ end
 function assambleEvents(redis, ids)
     local events = {}
     for i, id in ipairs(ids) do
-        local res, err = redis:hgetall("event:" .. id)
+        local res, err = redis:hgetall(constant.event_key..id)
         if not res then
             ngx.log(ngx.CRIT, "can't get event from redis id: ", id, " err: ", err)
         else 
@@ -49,12 +50,12 @@ end
 
 function initEvents()
     local cache = ngx.shared.scache
-    local val, err = cache:get("events")
+    local val, err = cache:get(constant.events_key)
     if not val then
         local events = loadEvents()
         local json = cjson.encode(events)
         ngx.log(ngx.INFO, "generated events json:\n\t", json)
-        cache:set("events", json)
+        cache:set(constant.events_key, json)
         setEventCache(cache, events)
         ngx.log(ngx.INFO, "set events successfully")
     end
@@ -64,10 +65,10 @@ function setEventCache(cache, events)
     local counter = require "sk_counter"
     for i = 1, #events do
         local event = events[i]
-        cache:set("eeo:"..event.id, event.effectOn)
-        cache:set("ed:"..event.id, event.duration)
-        cache:set("count:"..event.id, 0)
-        cache:set("stopped:"..event.id, 0)
+        cache:set(constant.effectOn_key..event.id, event.effectOn)
+        cache:set(constant.duration_key..event.id, event.duration)
+        cache:set(constant.count_key..event.id, 0)
+        cache:set(constant.stop_key..event.id, 0)
         counter.reset(event.id)
         counter.enable(event.id)
     end
