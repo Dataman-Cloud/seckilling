@@ -1,6 +1,8 @@
 local util = require "access_util"
 local args = ngx.req.get_uri_args()
 local config = require "config"
+local constant = require "constant"
+local tk_key = constant.tk_key
 
 -- parameters validations
 function validate()
@@ -63,7 +65,9 @@ function validateToken()
         if token then
             local redisc = require "redisc"
             local redis = redisc:new()
-            local status, _ = redis:hget("tk:"..token..args.id, 'status')
+            local tk = tk_key
+            string.format(tk, token, args.id)
+            local status, _ = redis:hget(tk, 'status')
             print("got status ", status)
             if status == '1' then
                 return false
@@ -106,7 +110,9 @@ end
 function setTokenStatus(token)
     local redisc = require "redisc"
     local redis = redisc:new()
-    local ok, err = redis:hset("tk:"..token..":"..args.id, "status", 1)
+    local tk = tk_key
+    string.format(tk, token, args.id)
+    local ok, err = redis:hset(tk, "status", 1)
     ngx.log(ngx.INFO, "token set ", ok)
     if not ok then
         ngx.log(ngx.CRIT, "can't set token to redis ", err)

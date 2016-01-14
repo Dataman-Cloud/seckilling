@@ -1,4 +1,5 @@
 local _M = {}
+local constant = require "constant"
 
 function _M.hasCoupon(phone) 
 
@@ -27,7 +28,7 @@ function _M.validateSalt(id, salt)
         return false
     end
     local cache = ngx.shared.scache
-    local eventSalt, err = cache:get("salt:"..id)
+    local eventSalt, err = cache:get(constant.salt_key..id)
     ngx.log(ngx.INFO, " eventSalt:", eventSalt)
     if not eventSalt or eventSalt ~= salt then
         return false
@@ -37,13 +38,13 @@ end
 
 function _M.validateEffect(id)
     local cache = ngx.shared.scache
-    local effectOn, err = cache:get("eeo:"..id)
+    local effectOn, err = cache:get(constant.effectOn_key..id)
     if not effectOn then
         ngx.log(ngx.ERR, "can't get eeo ", err)
         return false
     end
 
-    local duration, err = cache:get("ed:"..id)
+    local duration, err = cache:get(constant.duration_key..id)
     if not duration then
         ngx.log(ngx.ERR, "can't get ed ", err)
         return false

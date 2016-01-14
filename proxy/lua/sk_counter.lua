@@ -1,11 +1,12 @@
 local _M = {}
 local config = require "config"
 local constant = require "constant"
-
+local stop_key = constant.stop_key
+local count_key = constant.count_key
 
 function _M.incr(eid)
     local cache = ngx.shared.scache
-    local val, err = cache:incr(constant.count_key..eid, 1)
+    local val, err = cache:incr(count_key..eid, 1)
     if not val then
         ngx.log(ngx.ERR, "can't get counter", err)
     end
@@ -15,7 +16,7 @@ end
 
 function _M.apply(eid) 
     local cache = ngx.shared.scache
-    local val, err = cache:get(constant.count_key..eid)
+    local val, err = cache:get(count_key..eid)
     if not val then
         ngx.log(ngx.ERR, "can't get cache counter", err)
     end
@@ -39,7 +40,7 @@ function _M.apply(eid)
         ngx.log(ngx.INFO, "redis counter ", count, " maxCount ", maxCount)
 
         if count >= maxCount then
-            local success, err, forcible = cache:set(constant.stop_key..eid, 1)
+            local success, err, forcible = cache:set(stop_key..eid, 1)
             if not success then
                 ngx.log(ngx.ERR, "can't set stopped", err)
             end
@@ -50,7 +51,7 @@ end
 
 function _M.stopped(eid)
     local cache = ngx.shared.scache
-    local val, err = cache:get(constant.stop_key..eid)
+    local val, err = cache:get(stop_key..eid)
     if not val then
         ngx.log(ngx.CRIT, "can't get stopped", err)
     end
@@ -61,7 +62,7 @@ end
 function _M.enable(eid)
     local cache = ngx.shared.scache
 
-    local success, err, forcible = cache:set(constant.stop_key..eid, 0)
+    local success, err, forcible = cache:set(stop_key..eid, 0)
     if not success then
         ngx.log(ngx.ERR, "can't clear stopped", err)
     end
@@ -69,7 +70,7 @@ end
 
 function _M.reset(eid)
     local cache = ngx.shared.scache
-    local success, err, forcible = cache:set(constant.count_key..eid, 0)
+    local success, err, forcible = cache:set(count_key..eid, 0)
     if not success then
         ngx.log(ngx.ERR, "can't reset counter", err)
     end
@@ -77,7 +78,7 @@ end
 
 function _M.get(eid)
     local cache = ngx.shared.scache
-    local val, flags =  cache:get(constant.count_key..eid)
+    local val, flags =  cache:get(count_key..eid)
     return val
 end
 
