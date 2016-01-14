@@ -65,8 +65,7 @@ function validateToken()
         if token then
             local redisc = require "redisc"
             local redis = redisc:new()
-            local tk = tk_key
-            string.format(tk, token, args.id)
+            local tk = string.format(tk_key, token, args.id)
             local status, _ = redis:hget(tk, 'status')
             print("got status ", status)
             if status == '1' then
@@ -110,8 +109,7 @@ end
 function setTokenStatus(token)
     local redisc = require "redisc"
     local redis = redisc:new()
-    local tk = tk_key
-    string.format(tk, token, args.id)
+    local tk = string.format(tk_key, token, args.id)
     local ok, err = redis:hset(tk, "status", 1)
     ngx.log(ngx.INFO, "token set ", ok)
     if not ok then
