@@ -20,7 +20,7 @@ class PrizeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Prizes
-        fields = ('serial_number', 'brand', 'level', 'winner_cell', 'created_at')
+        fields = ('exchange_code', 'brand', 'level', 'winner_cell', 'created_at')
 
 
 class ActivitiesSerializer(serializers.ModelSerializer):

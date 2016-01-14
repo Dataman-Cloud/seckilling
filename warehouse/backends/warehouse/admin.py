@@ -1,32 +1,39 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Prizes, Brand, Activities
+from .models import Prizes, Brand, Activities, Activities_item
 
-admin.site.register(Brand)
+class ActivitiesItemInline(admin.TabularInline):
+    model = Activities_item
+    extra = 0
 
 class PrizesAdmin(admin.ModelAdmin):
 
-    readonly_fields = ('serial_number', 'brand', 'level', 'created_at',
-                       'is_taken', 'taken_at', 'winner_cell', 'activity'
-                      )
+    list_display = ('prize_id', 'name', 'exchange_code',
+                    'brand', 'level', 'is_taken',
+                    'winner_cell', 'activity)
 
-    list_display = ('id', 'brand', 'serial_number', 'level', 'is_taken',
-                    'winner_cell', 'activity')
-
-    list_filter = ['brand', 'is_taken', 'level', 'activity']
-
-    search_fields = ['serial_number', 'winner_cell']
+    list_filter = ['name', 'brand', 'is_taken', 'level', 'activity']
+    search_fields = ['exchange_code', 'winner_cell']
 
 
 class ActivitiesAdmin(admin.ModelAdmin):
 
-    list_display = ('id', 'start_at', 'end_at', 'brand', 'level', 'count',
-                     'status'
+    list_display = ('name', 'start_at', 'end_at', 'status'
                    )
 
-    list_filter = ['brand', 'level', 'status']
+    search_fields = ['name']
+    list_filter = ['status']
+
+    inlines = [ActivitiesItemInline]
+
+class BrandAdmin(admin.ModelAdmin):
+
+    list_display = ('brand_id', 'name', )
+
+    search_fields = ['brand_id', 'name']
 
 
 admin.site.register(Prizes, PrizesAdmin)
+admin.site.register(Brand, BrandAdmin)
 admin.site.register(Activities, ActivitiesAdmin)

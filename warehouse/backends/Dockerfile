@@ -19,4 +19,4 @@ VOLUME backends/settings.py backends/settings.py
 #RUN apt-get install python3-dev -y
 RUN pip3 install -r requirements.txt
 
-CMD /usr/local/bin/gunicorn backends.wsgi -w 5 -b :8000
+CMD /usr/local/bin/gunicorn backends.wsgi -t 60 -w 5 -b :8000

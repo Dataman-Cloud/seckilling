@@ -24,7 +24,11 @@ PRIZE_LEVEL = [
 
 
 class Brand(models.Model):
-    name = models.CharField(max_length=128)
+    brand_id = models.CharField(max_length=128) #渠道ID
+    name = models.CharField(max_length=128) #渠道名称
+    logo = models.CharField(max_length=128) #渠道logo链接
+    exchange_link = models.CharField(max_length=128) #渠道兑奖链接
+    exchange_detail = models.TextField() #渠道兑奖须知
 
     @property
     def delivered_prizes(self):
@@ -33,54 +37,65 @@ class Brand(models.Model):
     def __str__(self):
         return self.name
 
-
 class Activities(models.Model):
+    class Meta:
+        ordering = ["start_at"]
+
     STATUS = [
         ("waiting", 'waiting'),
         ("running", 'running'),
         ("end", 'end')
     ]
 
-    class Meta:
-        ordering = ["start_at"]
-
+    name = models.CharField(max_length=128)
     start_at = models.DateTimeField(null=False)
     end_at = models.DateTimeField(null=False)
-    brand = models.ForeignKey(Brand)
-    level = models.IntegerField(choices=PRIZE_LEVEL, default=0)
-    count = models.PositiveIntegerField(default=0, null=False)
     status = models.CharField(max_length=255, choices=STATUS, default='waiting')
 
     def __str__(self):
-        return ';'.join([str(self.id), self.brand.name, str(self.count), self.status])
+        return ';'.join([str(self.id), self.name, self.status])
+
+    def clean(self):
+        if self.start_at > self.end_at:
+            raise ValidationError('The end time should be later than the start time')
+
+
+
+class Activities_item(models.Model):
+
+    brand = models.ForeignKey(Brand)
+    level = models.IntegerField(choices=PRIZE_LEVEL, default=0)
+    count = models.PositiveIntegerField(default=0, null=False)
+    activity = models.ForeignKey(Activities)
+
+    def __str__(self):
+        return ';'.join([str(self.id), self.brand.name, str(self.count)])
 
     def clean(self):
         if not hasattr(self, 'brand'):
             raise ValidationError('Need choose the Brand!')
 
         prizes = Prizes.objects.filter(brand=self.brand).filter(level=self.level)
-        activates = Activities.objects.filter(brand=self.brand).filter(level=self.level)
+        items = Activities_item.objects.filter(brand=self.brand).filter(level=self.level)
 
         if prizes:
             prizes_total = prizes.count()
 
-            if activates:
-                prizes_taken = activates.aggregate(Sum('count'))['count__sum']
+            if items:
+                prizes_taken = items.aggregate(Sum('count'))['count__sum']
             else:
                 prizes_taken = 0
 
             if self.id:
-                this_activate = Activities.objects.get(id = self.id)
-                prizes_taken = prizes_taken - this_activate.count
+                this_item = Activities_item.objects.get(id = self.id)
+                prizes_taken = prizes_taken - this_item.count
                 prizes_available = prizes_total - prizes_taken
             else:
                 prizes_available = prizes_total - prizes_taken
 
             count_sum = prizes_taken + self.count
 
-            if self.start_at > self.end_at:
-                raise ValidationError('the end time should be later than the start time')
-            elif count_sum > prizes_total:
+            if count_sum > prizes_total:
                 raise ValidationError('There is not enough prizes, only %d available in %d/%d' %
                                       (prizes_available, prizes_taken, prizes_total))
         else:
@@ -99,20 +114,23 @@ class Activities(models.Model):
 class Prizes(models.Model):
 
     class Meta:
-        unique_together = ('brand', 'serial_number')
+        unique_together = ('brand', 'exchange_code')
 
-    serial_number = models.CharField(max_length=128, null=False)
-    brand = models.ForeignKey(Brand, related_name='prizes')
+    prize_id = models.CharField(max_length=128, unique=True) #奖品ID
+    name = models.CharField(max_length=128) #奖品名字
+    exchange_code = models.CharField(max_length=128, null=False) #奖品兑换码
+    thumbnail_path = models.CharField(max_length=128) #奖品展示图
+    detail = models.TextField() #奖品展示图
+    brand = models.ForeignKey(Brand, related_name='prizes') #兑奖渠道
+    winner_cell = models.CharField(max_length=20, blank=True) #中奖手机号
     level = models.IntegerField(choices=PRIZE_LEVEL, default=0)
     created_at = models.DateTimeField(default=timezone.now, null=True)
     is_taken = models.BooleanField(default=False, null=False)
     taken_at = models.DateTimeField(blank=True, null=True)
-    winner_cell = models.CharField(max_length=20, blank=True)
-
-    activity = models.ForeignKey(Activities, null=True, on_delete=models.SET_NULL, related_name='prizes')
+    activity = models.ForeignKey(Activities, null=True, on_delete=models.SET_NULL, related_name='prizes', blank=True)
 
     def __str__(self):
-        return '{0}: {1}'.format(self.brand.name, self.serial_number)
+        return '{0}: {1}'.format(self.brand.name, self.exchange_code)
 
 
 @receiver(post_save, sender=Activities)
@@ -125,7 +143,7 @@ def update_prize_and_load_to_redis(sender, instance, created, **kwargs):
         # updating activity status, we should pull the results back *only if* it's ended.
         with transaction.atomic():
             valid_count = 0
-            for prize_id, sn in instance.prizes.values_list('id', 'serial_number'):
+            for prize_id, sn in instance.prizes.values_list('id', 'exchange_code'):
                 winner_cell = redis_inst.hget(settings.REDIS['key_fmts']['result_hash'] % (instance.id, sn),
                                               settings.REDIS['key_fmts']['cell_key'])
                 if not winner_cell:
@@ -159,7 +177,7 @@ def update_prize_and_load_to_redis(sender, instance, created, **kwargs):
             sn_key = settings.REDIS['key_fmts']['sn_set'] % str(instance.id)
             redis_inst.delete(sn_key)
             source_list = list(itertools.chain.from_iterable(
-                    [[item.serial_number, item.id] for item in instance.prizes.all()]))
+                    [[item.exchange_code, item.id] for item in instance.prizes.all()]))
             redis_inst.zadd(sn_key, *source_list)
 
             logger.info("Load %s SNs into redis %s done." % (instance.prizes.count(), sn_key))
