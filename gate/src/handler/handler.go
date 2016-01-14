@@ -84,7 +84,7 @@ func Tickets(c *echo.Context) error {
 	ckey := fmt.Sprintf(model.CookHashKey, cookie, eid)
 	err := cache.CheckStatus(ckey)
 	if err != nil {
-		log.Println("Error!! Status of %s is invalid", ckey)
+		log.Printf("Error!! Status of %s is invalid", ckey)
 		return c.JSON(model.InvalidStatus, model.OrderInfo{Timestamp: time.Now().UTC().Unix(), UID: cookie, EventId: eid})
 	}
 
