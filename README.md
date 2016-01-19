@@ -12,6 +12,35 @@ seckilling platform
 }
 ```
 
+- `GET /api/v1/setevent?id=xxx&effectOn=xxx&duration=xxx&batch=xxx` 管理平台控制活动开始开关.可以主动调用这个接口来开启一个新的活动,
+  设置开一一个新的活动需要设置活动的id,开始时间,持续时间以及nginx计数的步长(可以不设使用默认值).管理平台调用这个接口的同时需要向redis中插入相同的数据方便nginx重启时加载数据.再部署多个nginx时管理平台需要轮询分别向每一个nginx发送创建活动的通知.如果设置成功则返回当前缓存的所有活动,否则返回异常状态 <br/>
+  ```json
+  {
+    "time": 1452071210514,
+    "events": [
+      {
+        "desc": "",
+        "effectOn": 1451893345000,
+        "id": 1,
+        "duration": 600000
+      },
+      {
+        "desc": "",
+        "effectOn": 1451888328000,
+        "id": 2,
+        "duration": 240000
+      },
+      {
+        "desc": "",
+        "effectOn": 1451888568000,
+        "id": 3,
+        "duration": 240000
+      }
+    ]
+  }
+  ```
+
+
 - `GET /api/v1/events`  H5加载后第一次请求，通过不同的营销活动ID获取即将进行的活动列表(Cached in Nginx)，其中包含ID、开始时间、描述和资源图片；非200返回显示`无活动`页面<br/>
 ```json
 {
