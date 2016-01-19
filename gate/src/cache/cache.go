@@ -33,6 +33,7 @@ func initConn() (redis.Conn, error) {
 	cacheHost := viper.GetString("cache.host")
 	cachePort := viper.GetInt("cache.port")
 	addr := fmt.Sprintf("%s:%d", cacheHost, cachePort)
+	log.Println("connect to cache ", addr)
 	c, err := redis.Dial("tcp", addr)
 	if err != nil {
 		return nil, err
