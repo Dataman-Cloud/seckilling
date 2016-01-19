@@ -66,6 +66,31 @@ def gen_data(request):
 
     return HttpResponse("测试数据生成完毕", status=201)
 
+def gen_brands(request):
+    brands = [{ "name": "meituan", "brand_id": "001", "logo": "logo path",
+               "exchange_link": "http://exchange/link/meituan",
+               "exchange_detail": "meituan exchange detail"},
+              { "name": "car", "brand_id": "002", "logo": "logo path",
+               "exchange_link": "http://exchange/link/car",
+               "exchange_detail": "car exchange detail"},
+              { "name": "tmall", "brand_id": "003", "logo": "logo path",
+               "exchange_link": "http://exchange/link/tmall",
+               "exchange_detail": "tmall exchange detail"},
+             ]
+
+    for brand in brands:
+        name = brand['name']
+        brand_id = brand['brand_id']
+        logo = brand['logo']
+        exchange_link = brand['exchange_link']
+        exchange_detail = brand['exchange_detail']
+
+        Brand.objects.get_or_create(name=name, brand_id=brand_id, logo=brand_id,
+            exchange_link=exchange_link, exchange_detail=exchange_detail
+            )
+    return HttpResponse("生成渠道", status=201)
+
+
 def login_view(request):
     if request.method == "GET":
         form = UserForm()
