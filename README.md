@@ -17,26 +17,9 @@ seckilling platform
   ```json
   {
     "time": 1452071210514,
-    "events": [
-      {
-        "desc": "",
-        "effectOn": 1451893345000,
-        "id": 1,
-        "duration": 600000
-      },
-      {
-        "desc": "",
-        "effectOn": 1451888328000,
-        "id": 2,
-        "duration": 240000
-      },
-      {
-        "desc": "",
-        "effectOn": 1451888568000,
-        "id": 3,
-        "duration": 240000
-      }
-    ]
+    "effectOn": 1451888568000,
+    "id": 3,
+    "duration": 240000
   }
   ```
 
@@ -45,9 +28,26 @@ seckilling platform
 ```json
 {
   "time": 1452071210514,
-  "effectOn": 1451893345000,
-  "id": 1,
-  "duration": 600000
+  "events": [
+    {
+      "desc": "",
+      "effectOn": 1451893345000,
+      "id": 1,
+      "duration": 600000
+    },
+    {
+      "desc": "",
+      "effectOn": 1451888328000,
+      "id": 2,
+      "duration": 240000
+    },
+    {
+      "desc": "",
+      "effectOn": 1451888568000,
+      "id": 3,
+      "duration": 240000
+    }
+  ]
 }
 ```
 - `GET /api/v1/event?id=xxx` 活动页刷新，返回生效时间和服务器时间，客户端进行倒计时，活动开始前xxxm会附加本次秒杀按钮的唯一salt，如果客户端没有salt，需要在进入倒计时xxxm区间是自动刷新获取salt；非200返回显示`活动已结束`页面<br/>
