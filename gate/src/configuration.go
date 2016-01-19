@@ -14,6 +14,30 @@ func initConfig() {
 	viper.SetDefault("watch", false)
 	viper.SetDefault("cache.poolSize", 100)
 
+	viper.BindEnv("init_model", "INIT_MODEL")
+	model := viper.GetInt("init_model")
+	switch model {
+	case 0:
+		initByConfigFile()
+	case 1:
+		initByEnv()
+	default:
+		initByConfigFile()
+	}
+}
+
+func initByEnv() {
+	log.Println("init params by env..")
+	viper.BindEnv("host", "HOST")
+	viper.BindEnv("port", "PORT")
+	viper.BindEnv("logLevel", "LOG_LEVEL")
+	viper.BindEnv("cache.host", "CACHE_HOST")
+	viper.BindEnv("cache.port", "CACHE_PORT")
+	viper.BindEnv("cache.poolSize", "CACHE_POOLSIZE")
+}
+
+func initByConfigFile() {
+	log.Println("init params by configfile..")
 	viper.SetConfigName("gate-conf")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".") // optionally look for config in the working directory

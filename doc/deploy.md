@@ -1,16 +1,22 @@
 ##秒杀哦服务部署流程
 
 ###部署go服务
-  镜像地址: testregistry.dataman.io/seckill/gatev:0.1
+  镜像地址: testregistry.dataman.io/seckill/gate:v0.1
   启动命令: 
   ```
     docker run \
-    -v gate-conf.sample.yaml:/etc/seckilling/gate-conf.yaml \
-    p 8090:8090 \
+    -p 8090:8090 \
+    -e INIT_MODEL=1 \
+    -e HOST="localhost" \
+    -e PORT=8090 \
+    -e LOG_LEVEL="DEBUG" \
+    -e CACHE_HOST="123.59.61.172" \
+    -e CACHE_PORT=19000 \
+    -e CACHE_POOLSIZE=100 \
+    -d \
     --name seckilling-gate \
-    testregistry.dataman.io/seckill/gatev:0.1 
+    testregistry.dataman.io/seckill/gate:v0.1
   ```
-  注: 可以不挂在配置文件使用默认配置, 也可以等container启动后进入container内部修改配置文件然后重启容器
   配置说明:
   ```
   ---

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"time"
 
 	"github.com/Dataman-Cloud/seckilling/gate/src/handler"
@@ -35,6 +36,8 @@ func main() {
 
 	// go kafka.StartKafkaProducer()
 	// Start server
-	graceful.ListenAndServe(e.Server(viper.GetString("port")), 1*time.Second)
+	port := viper.GetString("port")
+	log.Println("server port: ", port)
+	graceful.ListenAndServe(e.Server(port), 1*time.Second)
 
 }
