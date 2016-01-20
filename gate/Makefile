@@ -30,14 +30,14 @@ build-no-cache: dist
 
 run:
 	docker run \
-    -p 8090:8090 \
     -e INIT_MODEL=1 \
     -e HOST="localhost" \
-    -e PORT=8090 \
+    -e PORT=":8090" \
     -e LOG_LEVEL="DEBUG" \
-    -e CACHE_HOST="123.59.61.172" \
-    -e CACHE_PORT=19000 \
+    -e CACHE_HOST="123.59.58.58" \
+    -e CACHE_PORT=5506 \
     -e CACHE_POOLSIZE=100 \
     -d \
     --name seckilling-gate \
+    --net host \
     "$(DEV_IMAGE)"

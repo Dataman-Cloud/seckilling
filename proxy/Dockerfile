@@ -60,7 +60,7 @@ WORKDIR $NGINX_PREFIX/
 ONBUILD RUN rm -rf conf/* html/*
 ONBUILD COPY nginx $NGINX_PREFIX/
 
-ADD conf/nginx.conf $NGINX_PREFIX/nginx/conf/nginx.conf
+ADD conf/nginx.conf $NGINX_PREFIX/conf/nginx.conf
 ADD lua $NGINX_PREFIX/lua
 ADD lib $NGINX_PREFIX/lib
 
