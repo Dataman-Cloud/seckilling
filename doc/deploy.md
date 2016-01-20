@@ -32,7 +32,7 @@
   ```
 
 ###部署nginx服务
-  镜像地址: testregistry.dataman.io/nginx-proxy-1.9.7.1
+  镜像地址: testregistry.dataman.io/nginx-proxy-1.9.7.1:1.0
   启动命令: 
   ```
     PWD=$(pwd)
