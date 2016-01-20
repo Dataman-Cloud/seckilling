@@ -8,7 +8,7 @@
     -p 8090:8090 \
     -e INIT_MODEL=1 \
     -e HOST="localhost" \
-    -e PORT=8090 \
+    -e PORT=":8090" \
     -e LOG_LEVEL="DEBUG" \
     -e CACHE_HOST="123.59.61.172" \
     -e CACHE_PORT=19000 \
