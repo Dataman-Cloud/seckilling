@@ -1,4 +1,4 @@
-##秒杀哦服务部署流程
+##秒杀服务部署流程
 
 ###部署go服务
   镜像地址: testregistry.dataman.io/seckill/gate:v0.1
