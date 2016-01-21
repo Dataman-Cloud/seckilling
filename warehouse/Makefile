@@ -6,28 +6,23 @@ py-cleanup:
 	-find . -name '__pycache__' -delete
 
 init:
-	docker-compose -p omega_god up -d
-
-# TODO Improve me by docker-compose one-off cmd
-create-db:
-	docker exec -it omegagod_omega_god_db_1 mysql -uroot -p111111 -e "create database omega_god"
-	mysql -uroot -p111111 -h127.0.0.1 -e "create database omega"
+	docker-compose -p warehouse up -d
 
 # TODO Improve me by docker-compose one-off cmd
 init-db:
-	docker exec -it omegagod_omega_god_1 python3 manage.py migrate
-	mysql -uroot -p111111 -h127.0.0.1 omega < mysql_settings/omega_dump
+	docker exec -it warehouse_app_1 python3 manage.py migrate
 
 # TODO Improve me by docker-compose one-off cmd
 create-superuser:
-	docker exec -it omegagod_omega_god_1 python3 manage.py createsuperuser
+	docker exec -it warehouse_app_1 python3 manage.py createsuperuser
 
-restart-god:
-	docker restart omegagod_omega_god_1
+restart:
+	docker restart warehouse_app_1
+	docker restart warehouse_nginx_1
 
 cleanup: py-cleanup
-	docker-compose -p omega_god stop
-	docker-compose -p omega_god rm -f
+	docker-compose -p warehouse stop
+	docker-compose -p warehouse rm -f
 
 help:
 	@echo 'Usage make [command]'
@@ -42,4 +37,3 @@ help:
 
 	@echo '  py-cleanup              - Clean up *.pyc, *.pyo, __pycache__'
 	@echo '  help                    - Show this help message and exit'
-
