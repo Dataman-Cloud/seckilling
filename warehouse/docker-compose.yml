@@ -6,6 +6,7 @@ db:
     - ./mysql_settings/my.cnf:/etc/my.cnf
   environment:
     - MYSQL_ROOT_PASSWORD=111111
+    - MYSQL_DATABASE=warehouse
 cache:
   image: redis
   ports:
@@ -20,13 +21,18 @@ app:
   links:
     - db
     - cache
-  env_file: .env
+  environment:
+    - DB_HOST=db
+    - REDIS_HOST=cache
+    - REDIS_PORT=6379
   command: /usr/local/bin/gunicorn backends.wsgi:application -w 5 -b :8000
 nginx:
   restart: always
   build: ./nginx/
   ports:
     - "80:80"
-  env_file: .env
+  environment:
+    - BACKENDS_LINK=http://app:8000
+    - NGINX_SERVER_NAME=127.0.0.1
   links:
     - app

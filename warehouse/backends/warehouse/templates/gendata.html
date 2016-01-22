@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <h1>测试数据</h1>
+  {% if target_count %}
+    <p>生成测试数据奖品总数: {{ target_count }}</p>
+  {% else %}
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      奖品总数: {{form.target_count}} 建议30000 <br>
+      活动轮数: {{form.rounds}} 建议5 <br>
+      <p class="form-actions">
+      <input type="submit" value="提交" />
+      </p>
+    </form>
+  {% endif %}
+</body>
+</html>

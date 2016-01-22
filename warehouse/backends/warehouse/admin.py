@@ -13,10 +13,10 @@ class PrizesAdmin(admin.ModelAdmin):
 
     list_display = ('prize_id', 'name', 'exchange_code',
                     'brand', 'level', 'is_taken',
-                    'winner_cell', 'activity_item')
+                    'winner_cell')
 
-    list_filter = ['name', 'brand', 'is_taken', 'level', 'activity_item']
-    search_fields = ['exchange_code', 'winner_cell']
+    list_filter = ['brand', 'is_taken', 'level']
+    search_fields = ['exchange_code', 'winner_cell', 'name']
 
 
 class ActivitiesAdmin(admin.ModelAdmin):
