@@ -3,8 +3,8 @@ NG_PREFIX=/opt/openresty/nginx
 MODE=prod
 docker run \
 -e PROXY_MODE=$MODE \
--e REDIS_HOST="123.59.58.58" \
--e REDIS_PORT=5506 \
+-e REDIS_HOST="123.59.61.172" \
+-e REDIS_PORT=19000 \
 -e TOKEN_COOKIE="DM_SK_UID" \
 -e SALT_OFFSET=180000 \
 -e COUNTER_BATCH=5 \

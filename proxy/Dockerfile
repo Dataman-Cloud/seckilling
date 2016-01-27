@@ -62,6 +62,8 @@ ONBUILD COPY nginx $NGINX_PREFIX/
 
 ADD conf/nginx.conf $NGINX_PREFIX/conf/nginx.conf
 ADD lua $NGINX_PREFIX/lua
-ADD lib $NGINX_PREFIX/lib
+ADD lib $NGINX_PREFIX/lib 
+ADD ./test.sh $NGINX_PREFIX/test.sh 
 
-CMD ["nginx", "-g", "daemon off; error_log /dev/stderr info;"]
+WORKDIR $NGINX_PREFIX/
+ENTRYPOINT ["./test.sh"]
